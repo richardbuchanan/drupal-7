@@ -2,3 +2,37 @@
  * @file
  * BDG API styles.
  */
+
+/**
+ * UIkit overrides
+ */
+.uk-container {
+  max-width: 1200px;
+}
+@media (min-width: 1220px) {
+  .uk-container {
+    max-width: 1600px;
+    padding: 0 35px;
+  }
+}
+
+/**
+ * Branding
+ */
+#logo-large {
+  padding: 4px 15px;
+}
+#logo-large img {
+  height: 36px;
+}
+
+/**
+ * API Search
+ */
+#api-search-form .form-item-search .uk-form-help-block {
+  margin-top: 5px;
+  float: right;
+}
+#api-search-form .form-submit {
+  margin-top: -20px;
+}
