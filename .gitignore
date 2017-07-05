@@ -53,6 +53,7 @@ core/phpunit.xml
 *~
 .eslintrc
 .idea
-sites/*/modules/contrib/devel
+sites/*/modules/contrib/devel*
+sites/*/modules/contrib/simplehtmldom
 sites/default/files
 sites/localhost.*
