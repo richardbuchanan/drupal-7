@@ -1,0 +1,593 @@
+<?php
+
+/**
+ * @file
+ * Helper module for the docs theme.
+ */
+
+use Drupal\docs\Docs;
+
+define('UIKIT_7X_2X_CURRENT_VERSION', '7.x-2.5');
+define('UIKIT_7X_3X_CURRENT_VERSION', '7.x-3.0-beta5');
+define('UIKIT_8X_2X_CURRENT_VERSION', '8.x-2.8');
+define('UIKIT_8X_3X_CURRENT_VERSION', '8.x-3.0-beta8');
+
+/**
+ * Implements hook_menu().
+ */
+function docs_companion_menu() {
+  $items['api/uikit'] = array(
+    'title' => 'UIkit for Drupal API',
+    'page callback' => 'api_page_branch',
+    'page arguments' => array(NULL, 'uikit'),
+    'access arguments' => array('access API reference'),
+    'type' => MENU_NORMAL_ITEM,
+    'menu_name' => 'main-menu',
+    'file' => 'api.pages.inc',
+    'file path' => drupal_get_path('module', 'api'),
+    'module' => 'api',
+    'weight' => -50,
+  );
+  $items['screenshots'] = array(
+    'title' => t('Screenshots'),
+    'page callback' => 'docs_companion_screenshots',
+    'access arguments' => array('access content'),
+    'file' => 'docs_companion.module',
+    'file path' => drupal_get_path('module', 'docs_companion'),
+    'module' => 'docs_companion',
+    'type' => MENU_NORMAL_ITEM,
+    'menu_name' => 'main-menu',
+    'weight' => -48,
+  );
+  $items['frontpage'] = array(
+    'title' => t('UIkit for Drupal'),
+    'page callback' => 'docs_companion_frontpage',
+    'access arguments' => array('access content'),
+    'file' => 'docs_companion.module',
+    'file path' => drupal_get_path('module', 'docs_companion'),
+    'module' => 'docs_companion',
+  );
+  $items['user/%/messages/%/delete'] = array(
+    'title' => 'Delete message',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('docs_companion_messaging_simple_delete', 1, 3),
+    'access callback' => TRUE,
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function docs_companion_block_info() {
+  $blocks = array();
+
+  $blocks['api-projects-list'] = array(
+    'info' => t('API Project List'),
+  );
+  $blocks['docs-companion-copyright'] = array(
+    'info' => t('Docs copyright'),
+  );
+  $blocks['uikit-project-information'] = array(
+    'info' => t('UIkit Project Information'),
+  );
+  $blocks['uikit-resources'] = array(
+    'info' => t('UIkit Resources'),
+  );
+
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function docs_companion_block_view($delta = '') {
+  $block = array();
+
+  switch ($delta) {
+    case 'api-projects-list':
+      $block['subject'] = '';
+      $block['content'] = _docs_companion_api_projects_list();
+      break;
+
+    case 'docs-companion-copyright':
+      $block['subject'] = '';
+      $block['content'] = _docs_companion_copyright_block();
+      break;
+
+    case 'uikit-project-information':
+      $block['subject'] = '';
+      $block['content'] = _docs_companion_uikit_project_information();
+      break;
+
+    case 'uikit-resources':
+      $block['subject'] = '';
+      $block['content'] = _docs_companion_uikit_resources();
+      break;
+  }
+
+  return $block;
+}
+
+/**
+ * Implements hook_views_api().
+ */
+function docs_companion_views_api() {
+  return array(
+    'api' => 3,
+    'path' => drupal_get_path('module', 'docs_companion') . '/views',
+  );
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter() for messaging_simple_view_form.
+ */
+function docs_companion_form_messaging_simple_view_form_alter(&$form, &$form_state, $form_id) {
+  $form['#submit'] = array('docs_companion__messaging_simple_view_form_submit');
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter() for user_profile_form.
+ */
+function docs_companion_form_user_profile_form_alter(&$form, &$form_state, $form_id) {
+  $pictures_enabled = variable_get('user_pictures', 0);
+  $signatures_enabled = variable_get('user_signatures', 0);
+
+  if ($pictures_enabled) {
+    $form['picture']['#weight'] = 0;
+  }
+
+  if ($signatures_enabled) {
+    $form['signature_settings']['#states'] = array(
+      'visible' => array(
+        ':input[name="field_random_quotes[und]"]' => array('checked' => FALSE),
+      ),
+    );
+    $form['field_random_quotes_author']['#states'] = array(
+      'visible' => array(
+        ':input[name="field_random_quotes[und]"]' => array('checked' => TRUE),
+      ),
+    );
+  }
+  else {
+    $form['field_random_quotes']['#disabled'] = TRUE;
+    $form['field_random_quotes']['#attributes']['class'][] = 'element-invisible';
+    $form['field_random_quotes']['#attributes']['class'][] = 'uk-hidden';
+
+    $form['field_random_quotes_author']['#disabled'] = TRUE;
+    $form['field_random_quotes_author']['#attributes']['class'][] = 'element-invisible';
+    $form['field_random_quotes_author']['#attributes']['class'][] = 'uk-hidden';
+  }
+
+  $form['#validate'][] = 'docs_companion_user_profile_form_validate';
+  $form['#submit'][] = 'docs_companion_user_profile_form_submit';
+}
+
+function docs_companion_user_profile_form_validate($form, &$form_state) {
+  $signatures_enabled = variable_get('user_signatures', 0);
+  $quotes = $form_state['values']['field_random_quotes']['und'][0]['value'];
+  $quotes_author = $form_state['values']['field_random_quotes_author']['und'][0]['value'];
+
+  if ($signatures_enabled && $quotes && $quotes_author) {
+    $a = lcfirst($quotes_author[0]);
+    $author = strtolower($quotes_author);
+    $author = explode(' ', $author);
+    $author = implode('_', $author);
+    $url = "https://www.brainyquote.com/quotes/authors/$a/$author.html";
+    $status_code = docs_companion_get_http_response_code($url);
+
+    if ($status_code != '200') {
+      $message = t('The author <em class="placeholder">@author</em> was not found. Please enter a new author.', array('@author' => $quotes_author));
+      form_set_error('field_random_quotes_author', $message);
+    }
+  }
+}
+
+function docs_companion_user_profile_form_submit($form, &$form_state) {
+  $signatures_enabled = variable_get('user_signatures', 0);
+  $quotes = $form_state['values']['field_random_quotes']['und'][0]['value'];
+  $quotes_author = $form_state['values']['field_random_quotes_author']['und'][0]['value'];
+
+  if ($signatures_enabled && $quotes && $quotes_author) {
+    docs_companion_save_author_quotes($quotes_author);
+  }
+}
+
+function docs_companion_get_http_response_code($url) {
+  $headers = get_headers($url);
+  return substr($headers[0], 9, 3);
+}
+
+function docs_companion_create_directory($destination = NULL) {
+  // A directory to operate on.
+  $path = file_default_scheme() . '://' . $destination;
+
+  if ($destination && !is_dir($path)) {
+    drupal_mkdir($path, NULL, TRUE);
+  }
+
+  return $path;
+}
+
+function docs_companion_save_author_quotes($quotes_author = NULL) {
+  if ($quotes_author) {
+    $a = lcfirst($quotes_author[0]);
+    $author = strtolower($quotes_author);
+    $author = explode(' ', $author);
+    $author = implode('_', $author);
+    $url = "https://www.brainyquote.com/quotes/authors/$a/$author.html";
+    $html = file_get_html($url);
+    $contents = '';
+    $quotes = $html->find('.b-qt');
+
+    foreach ($quotes as $index => $quote) {
+      $contents .= $quote->plaintext . "\n";
+    }
+
+    $contents = rtrim($contents);
+    $filename = "$author.txt";
+    $destination = docs_companion_create_directory("quotes/$a");
+    $is_file = is_file(drupal_realpath("$destination/$filename"));
+
+    if (!$is_file) {
+      file_save_data($contents, "$destination/$filename", FILE_EXISTS_REPLACE);
+    }
+  }
+}
+
+function docs_companion_get_author_quotes($author = NULL) {
+  $quotes = array();
+
+  if ($author) {
+    $a = lcfirst($author[0]);
+    $filename = "$author.txt";
+    $uri = file_default_scheme() . "://quotes/$a/$filename";
+    $is_file = is_file(drupal_realpath($uri));
+
+    if ($is_file) {
+      $quotes = file(drupal_realpath($uri));
+    }
+  }
+
+  return $quotes;
+}
+
+function docs_companion_get_random_quote($quotes_author = NULL) {
+  if ($quotes_author) {
+    $author = strtolower($quotes_author);
+    $author = explode(' ', $author);
+    $author = implode('_', $author);
+    $quotes_array = docs_companion_get_author_quotes($author);
+    srand((double)microtime()*1000000);
+    $random_quote = rand(0, count($quotes_array)-1);
+    return trim($quotes_array[$random_quote]);
+  }
+}
+
+/**
+ * Redirect users to their messages page after deleting a simple message.
+ *
+ * @param array $form
+ *   Nested array of form elements that comprise the form.
+ *
+ * @param array $form_state
+ *   A keyed array containing the current state of the form. The arguments that
+ *   drupal_get_form() was originally called with are available in the array
+ *   $form_state['build_info']['args'].
+ */
+function docs_companion__messaging_simple_view_form_submit($form, &$form_state) {
+  global $user;
+  $uid = $user->uid;
+  $mgid = $form_state['values']['message']->mgid;
+  $form_state['redirect'] = "user/$uid/messages/$mgid/delete";
+}
+
+/**
+ * Form constructor for the simple message deletion form.
+ *
+ * @param $uid
+ *   The uid of the user, used for redirection.
+ * @param $mgid
+ *   The simple message id.
+ */
+function docs_companion_messaging_simple_delete($form, &$form_state, $uid, $mgid) {
+  $query = db_query('SELECT * FROM {messaging_simple} WHERE mgid = :nid', array(':nid' => $mgid))->fetchAssoc();
+  $form_state['subject'] = $query['subject'];
+  $form_state['mgid'] = $mgid;
+  $form_state['uid'] = $uid;
+  return confirm_form($form,
+    t('Are you sure you want to delete the message %subject?', array(
+      '%subject' => $query['subject'],
+    )),
+    "user/$uid/messages/$mgid",
+    '', t('Delete'), t('Cancel')
+  );
+}
+
+/**
+ * Form submission handler for docs_companion_messaging_simple_delete().
+ */
+function docs_companion_messaging_simple_delete_submit($form, &$form_state) {
+  $uid = $form_state['uid'];
+  db_delete('messaging_simple')
+    ->condition('mgid', $form_state['mgid'])
+    ->execute();
+  drupal_set_message(t('The message %subject has been removed.', array('%subject' => $form_state['subject'])));
+  cache_clear_all();
+  $form_state['redirect'] = "user/$uid/messages";
+  return;
+}
+
+/**
+ * Implements hook_menu_alter().
+ */
+function docs_companion_menu_alter(&$items) {
+  // Redirect default node to the frontpage.
+  $items['node']['page callback'] = '_docs_redirect_node_page';
+
+  // Remove type from user/login to remove menu item from the user menu.
+  unset($items['user/login']['type']);
+}
+
+/**
+ * Implements hook_preprocess_HOOK().
+ */
+function docs_companion_preprocess_block(&$variables) {
+  $block_id = $variables['block_html_id'];
+  $region = $variables['block']->region;
+  $feed = substr($block_id, 0, 21) === 'block-aggregator-feed';
+
+  if ($feed && $region == 'sidebar_second') {
+    $variables['theme_hook_suggestions'][] = 'block__sidebar_second__aggregator';
+  }
+}
+
+/**
+ * Implements hook_preprocess_HOOK().
+ */
+function docs_companion_preprocess_comment(&$variables) {
+  // This is just to make sure the divs property is set.
+  if (!isset($variables['elements']['#comment']->divs)) {
+    $variables['elements']['#comment']->divs = 0;
+  }
+}
+
+/**
+ * Implements hook_preprocess_HOOK().
+ */
+function docs_companion_preprocess_menu_link(&$variables) {
+  $href = $variables['element']['#href'];
+
+  if ($href == 'user/login' || $href == 'user/logout') {
+    $current_path = drupal_get_path_alias();
+    $variables['element']['#localized_options']['query']['destination'] = $current_path;
+  }
+}
+
+/**
+ * Constructs the content for the API projects list block.
+ *
+ * @return null|string
+ *   Returns the content for the API projects list block.
+ */
+function _docs_companion_api_projects_list() {
+  $branches = Docs::getApiProjects();
+  $output = '<div id="api-projects-list">';
+  $output .= '<div class="uk-button-dropdown uk-width-1-1" data-uk-dropdown="{justify:\'#api-projects-list\'}" aria-haspopup="true" aria-expanded="false">';
+  $output .= '<button class="uk-button uk-button-primary uk-button-large uk-width-1-1">Projects</button>';
+  $output .= '<div class="uk-dropdown uk-dropdown-bottom" aria-hidden="true" style="top: 30px; left: -33px;" tabindex="">';
+  $output .= '<ul class="uk-nav uk-nav-side uk-nav-dropdown">';
+
+  foreach ($branches as $branch) {
+    $active = current_path() == $branch['default_url'] || current_path() == $branch['url'] ? ' class="uk-active' : '';
+    $project_link = l($branch['title'], $branch['default_url']);
+
+    if ($active) {
+      $output .= '<li class="uk-active">' . $project_link . '</li>';
+    }
+    else {
+      $output .= "<li>$project_link</li>";
+    }
+  }
+
+  $output .= '</ul></div></div></div>';
+  return $output;
+}
+
+/**
+ * Constructs the content for the copyright block.
+ *
+ * @return null|string
+ *   Returns the content for the copyright block.
+ */
+function _docs_companion_copyright_block() {
+  $module = drupal_get_path('module', 'docs_companion');
+  $filename = $module . '/includes/copyright.inc';
+  $handle = fopen($filename, "r");
+  $contents = fread($handle, filesize($filename));
+  fclose($handle);
+
+  $output = check_markup($contents, $format_id = 'full_html');
+  return $output;
+}
+
+/**
+ * Constructs the content for the UIkit resources block.
+ *
+ * @return null|string
+ *   Returns the content for the UIkit resources block.
+ */
+function _docs_companion_uikit_resources() {
+  $module = drupal_get_path('module', 'docs_companion');
+  $filename = $module . '/includes/resources.inc';
+  $handle = fopen($filename, "r");
+  $contents = fread($handle, filesize($filename));
+  fclose($handle);
+
+  $contents = str_replace('UIKIT_7X_2X_CURRENT_VERSION', UIKIT_7X_2X_CURRENT_VERSION, $contents);
+  $contents = str_replace('UIKIT_7X_3X_CURRENT_VERSION', UIKIT_7X_3X_CURRENT_VERSION, $contents);
+  $contents = str_replace('UIKIT_8X_2X_CURRENT_VERSION', UIKIT_8X_2X_CURRENT_VERSION, $contents);
+  $contents = str_replace('UIKIT_8X_3X_CURRENT_VERSION', UIKIT_8X_3X_CURRENT_VERSION, $contents);
+
+  $output = check_markup($contents, $format_id = 'full_html');
+  return $output;
+}
+
+/**
+ * Constructs the content for the UIkit project information block.
+ *
+ * @return null|string
+ *   Returns the content for the UIkit project information block.
+ */
+function _docs_companion_uikit_project_information() {
+  $theme_path = drupal_get_path('theme', 'uikit');
+  $filename = $theme_path . '/uikit.info';
+  $info = drupal_parse_info_file($filename);
+  $version = $info['version'];
+  $date = date('F j, Y', $info['datestamp']);
+
+  $output = '<div class="uk-flex-center uk-margin-small-bottom"><a href="http://getuikit.com" target="_blank"><img src="/profiles/uikit_api/themes/custom/docs/images/logo_uikit.svg" width="90" height="30" title="UIkit" alt="UIkit"></a></div>';
+  $output .= '<ul class="uk-subnav uk-subnav-line uk-flex-center uk-margin-small-bottom">';
+  $output .= "<li>$version</li>";
+  $output .= "<li>$date</li>";
+  $output .= '</ul>';
+
+  return $output;
+}
+
+/**
+ * Page callback to redirect user to front page.
+ *
+ * The most important use of this callback is to redirect users from the default
+ * node uri to the API front page.
+ */
+function _docs_redirect_node_page() {
+  drupal_goto('<front>');
+}
+
+/**
+ * Page callback for the release cycle overview page.
+ */
+function docs_companion_release_cycle_overview() {
+  $module = drupal_get_path('module', 'docs_companion');
+  $filename = $module . '/includes/release_cycle_overview.inc';
+  $handle = fopen($filename, "r");
+  $contents = fread($handle, filesize($filename));
+  fclose($handle);
+
+  $output = check_markup($contents, $format_id = 'full_html');
+  return $output;
+}
+
+/**
+ * Page callback for the screenshots page.
+ */
+function docs_companion_screenshots() {
+  uikit_get_cdn_asset('lightbox');
+  uikit_get_cdn_asset('slidenav');
+  $module = drupal_get_path('module', 'docs_companion');
+  $filename = $module . '/includes/screenshots.inc';
+  $handle = fopen($filename, "r");
+  $contents = fread($handle, filesize($filename));
+  fclose($handle);
+
+  $output = check_markup($contents, $format_id = 'full_html');
+  return $output;
+}
+
+function docs_companion_frontpage() {
+  $module = drupal_get_path('module', 'docs_companion');
+  $filename = $module . '/includes/frontpage.inc';
+  $handle = fopen($filename, "r");
+  $contents = fread($handle, filesize($filename));
+  fclose($handle);
+  $contents = str_replace('UIKIT_7X_2X_CURRENT_VERSION', UIKIT_7X_2X_CURRENT_VERSION, $contents);
+  $contents = str_replace('UIKIT_8X_2X_CURRENT_VERSION', UIKIT_8X_2X_CURRENT_VERSION, $contents);
+
+  $output = check_markup($contents, $format_id = 'full_html');
+  return $output;
+}
+
+/**
+ * Retrieves the active API docblock object.
+ *
+ * @return object|void
+ *   The active API docblock object or NULL if not an API page.
+ */
+function _db_api_active_item() {
+  static $item;
+  if (!isset($item)) {
+    if ($item = menu_get_object('api_item', 4)) {
+      if ($item->object_type === 'group') {
+        $query = db_select('api_reference_storage', 'r');
+        $results = $query
+          ->fields('r')
+          ->condition('r.from_did', $item->did)
+          ->execute()
+          ->fetchAllAssoc('from_did');
+        $item->subgroup = !empty($results);
+      }
+    }
+    elseif ($item = menu_get_object('api_filename', 2)) {
+      // Just return the item.
+    }
+    elseif (($branch = api_get_active_branch()) && (current_path() === "api/$branch->project" || current_path() === "api/$branch->project/$branch->branch_name")) {
+      $item = db_select('api_documentation', 'd')
+        ->fields('d')
+        ->condition('branch_id', $branch->branch_id)
+        ->condition('object_type', 'mainpage')
+        ->execute()
+        ->fetchObject();
+      if ($item) {
+        api_set_html_page_title(check_plain($item->title));
+      }
+    }
+    else {
+      $item = FALSE;
+    }
+  }
+  return $item;
+}
+
+/**
+ * Extracts the group and parent groups (if applicable) from a docblock.
+ *
+ * @param array $docblock
+ *   The docblock array.
+ * @param bool $parent_only
+ *   Toggle determining whether or not to just return the parent group.
+ *
+ * @return string|false
+ *   The group or parent group. FALSE on error.
+ */
+function _db_api_find_group(array $docblock, $parent_only = FALSE) {
+  $filename = preg_replace('/^(documentation|docs|doc)?\/?/', '', $docblock['file_name']);
+  $paths = explode('/', $filename);
+  $file = preg_replace('/\.md$/i', '', array_pop($paths));
+  $parent_group = implode('_', $paths);
+  if (empty($parent_group)) {
+    $parent_group = FALSE;
+  }
+  elseif ($parent_only) {
+    return $parent_group;
+  }
+
+  // If the file is named "readme" and it's located in a sub-directory (a.k.a.
+  // $parent_group), then use it as the group name.
+  if (preg_match('/^readme$/i', $file)) {
+    if ($parent_group) {
+      $group = $parent_group;
+      $parent_group = FALSE;
+    }
+    else {
+      return FALSE;
+    }
+  }
+  else {
+    $group = strtolower($file);
+    $group = preg_replace('/\s+/', ' ', $group);
+    $group = preg_replace('/[^a-z0-9_]/', '_', $group);
+  }
+  return $parent_group ? $parent_group . '_' . $group : $group;
+}

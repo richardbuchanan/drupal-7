@@ -1,0 +1,177 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function uikit_examples_menu() {
+  $items['layouts'] = array(
+    'title' => t('Layout examples'),
+    'page callback' => 'uikit_layouts',
+    'access arguments' => array('access content'),
+    'file' => 'uikit_examples.module',
+    'file path' => drupal_get_path('module', 'uikit_examples'),
+    'module' => 'uikit_examples',
+    'type' => MENU_NORMAL_ITEM,
+    'menu_name' => 'main-menu',
+    'weight' => -49,
+    'expanded' => TRUE,
+    'options' => array(
+      'attributes' => array(
+        'docs-nolink' => '',
+      ),
+    ),
+  );
+  $items['layouts/frontpage'] = array(
+    'title' => t('Frontpage'),
+    'page callback' => 'uikit_layouts_frontpage',
+    'access arguments' => array('access content'),
+    'file' => 'uikit_examples.module',
+    'file path' => drupal_get_path('module', 'uikit_examples'),
+    'module' => 'uikit_examples',
+    'type' => MENU_NORMAL_ITEM,
+    'menu_name' => 'main-menu',
+    'weight' => -50,
+  );
+  $items['layouts/portfolio'] = array(
+    'title' => t('Portfolio'),
+    'page callback' => 'uikit_layouts_portfolio',
+    'access arguments' => array('access content'),
+    'file' => 'uikit_examples.module',
+    'file path' => drupal_get_path('module', 'uikit_examples'),
+    'module' => 'uikit_examples',
+    'type' => MENU_NORMAL_ITEM,
+    'menu_name' => 'main-menu',
+    'weight' => -49,
+  );
+  $items['layouts/blog'] = array(
+    'title' => t('Blog'),
+    'page callback' => 'uikit_layouts_blog',
+    'access arguments' => array('access content'),
+    'file' => 'uikit_examples.module',
+    'file path' => drupal_get_path('module', 'uikit_examples'),
+    'module' => 'uikit_examples',
+    'type' => MENU_NORMAL_ITEM,
+    'menu_name' => 'main-menu',
+    'weight' => -48,
+  );
+  $items['layouts/post'] = array(
+    'title' => t('Blog post'),
+    'page callback' => 'uikit_layouts_post',
+    'access arguments' => array('access content'),
+    'file' => 'uikit_examples.module',
+    'file path' => drupal_get_path('module', 'uikit_examples'),
+    'module' => 'uikit_examples',
+    'type' => MENU_NORMAL_ITEM,
+    'menu_name' => 'main-menu',
+    'weight' => -47,
+  );
+  $items['layouts/documentation'] = array(
+    'title' => t('Documentation'),
+    'page callback' => 'uikit_layouts_documentation',
+    'access arguments' => array('access content'),
+    'file' => 'uikit_examples.module',
+    'file path' => drupal_get_path('module', 'uikit_examples'),
+    'module' => 'uikit_examples',
+    'type' => MENU_NORMAL_ITEM,
+    'menu_name' => 'main-menu',
+    'weight' => -46,
+  );
+  $items['layouts/contact'] = array(
+    'title' => t('Contact'),
+    'page callback' => 'uikit_layouts_contact',
+    'access arguments' => array('access content'),
+    'file' => 'uikit_examples.module',
+    'file path' => drupal_get_path('module', 'uikit_examples'),
+    'module' => 'uikit_examples',
+    'type' => MENU_NORMAL_ITEM,
+    'menu_name' => 'main-menu',
+    'weight' => -45,
+  );
+
+  return $items;
+}
+
+/**
+ * Page callback for the frontpage.
+ */
+function uikit_layouts_frontpage() {
+  $module = drupal_get_path('module', 'uikit_examples');
+  $filename = $module . '/includes/2.x/layouts_frontpage.inc';
+  $handle = fopen($filename, "r");
+  $contents = fread($handle, filesize($filename));
+  fclose($handle);
+
+  $output = check_markup($contents, $format_id = 'demo_html');
+  return $output;
+}
+
+/**
+ * Page callback for the portfolio layout page.
+ */
+function uikit_layouts_portfolio() {
+  $module = drupal_get_path('module', 'uikit_examples');
+  $filename = $module . '/includes/2.x/layouts_portfolio.inc';
+  $handle = fopen($filename, "r");
+  $contents = fread($handle, filesize($filename));
+  fclose($handle);
+
+  $output = check_markup($contents, $format_id = 'demo_html');
+  return $output;
+}
+
+/**
+ * Page callback for the blog layout page.
+ */
+function uikit_layouts_blog() {
+  $module = drupal_get_path('module', 'uikit_examples');
+  $filename = $module . '/includes/2.x/layouts_blog.inc';
+  $handle = fopen($filename, "r");
+  $contents = fread($handle, filesize($filename));
+  fclose($handle);
+
+  $output = check_markup($contents, $format_id = 'demo_html');
+  return $output;
+}
+
+/**
+ * Page callback for the blog post layout page.
+ */
+function uikit_layouts_post() {
+  $module = drupal_get_path('module', 'uikit_examples');
+  $filename = $module . '/includes/2.x/layouts_post.inc';
+  $handle = fopen($filename, "r");
+  $contents = fread($handle, filesize($filename));
+  fclose($handle);
+
+  $output = check_markup($contents, $format_id = 'demo_html');
+  return $output;
+}
+
+/**
+ * Page callback for the documentation layout page.
+ */
+function uikit_layouts_documentation() {
+  uikit_get_cdn_asset('sticky');
+  $module = drupal_get_path('module', 'uikit_examples');
+  $filename = $module . '/includes/2.x/layouts_documentation.inc';
+  $handle = fopen($filename, "r");
+  $contents = fread($handle, filesize($filename));
+  fclose($handle);
+
+  $output = check_markup($contents, $format_id = 'demo_html');
+  return $output;
+}
+
+/**
+ * Page callback for the contact layout page.
+ */
+function uikit_layouts_contact() {
+  $module = drupal_get_path('module', 'uikit_examples');
+  $filename = $module . '/includes/2.x/layouts_contact.inc';
+  $handle = fopen($filename, "r");
+  $contents = fread($handle, filesize($filename));
+  fclose($handle);
+
+  $output = check_markup($contents, $format_id = 'demo_html');
+  return $output;
+}
