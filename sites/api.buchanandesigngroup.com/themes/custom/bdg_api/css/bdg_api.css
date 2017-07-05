@@ -38,6 +38,13 @@
 }
 
 /**
+ * Forms
+ */
+.uk-form .description {
+  color: #999!important;
+}
+
+/**
  * Views
  */
 .views-exposed-form .views-exposed-widget .form-submit {
