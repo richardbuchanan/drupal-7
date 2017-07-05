@@ -36,3 +36,10 @@
 #api-search-form .form-submit {
   margin-top: -20px;
 }
+
+/**
+ * Views
+ */
+.views-exposed-form .views-exposed-widget .form-submit {
+  margin-top: 1.325em;
+}
