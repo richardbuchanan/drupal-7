@@ -1,0 +1,15 @@
+name = 'BDG API'
+description = 'UIkit sub-theme for api.buchanandesigngroup.com'
+core = 7.x
+base theme = uikit
+
+stylesheets[all][] = css/bdg_api.css
+scripts[] = js/bdg_api.js
+
+regions[header] = 'Page heading'
+regions[highlighted] = 'Highlighted'
+regions[help] = 'Help'
+regions[content] = 'Content'
+regions[sidebar_first] = 'Sidebar first'
+regions[sidebar_second] = 'Sidebar second'
+regions[footer] = 'Footer'
