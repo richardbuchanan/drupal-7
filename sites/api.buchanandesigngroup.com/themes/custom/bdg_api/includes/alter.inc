@@ -20,7 +20,7 @@
  * Implements hook_page_alter().
  */
 function bdg_api_page_alter(&$page) {
-  $content = isset($page['content']['system_main']) ? $page['content']['system_main']['main']['#markup'] : FALSE;
+  $content = isset($page['content']['system_main']) && isset($page['content']['system_main']['main']) ? $page['content']['system_main']['main']['#markup'] : FALSE;
 
   if ($content) {
     $page['content']['system_main']['main']['#markup'] = str_replace('drupal-7.x/<wbr />', '', $content);
