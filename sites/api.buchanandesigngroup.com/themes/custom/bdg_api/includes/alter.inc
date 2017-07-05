@@ -15,3 +15,19 @@
  * @see drupal_render()
  * @see theme()
  */
+
+/**
+ * Implements hook_page_alter().
+ */
+function bdg_api_page_alter(&$page) {
+  $content = isset($page['content']['system_main']) ? $page['content']['system_main']['main']['#markup'] : FALSE;
+
+  if ($content) {
+    $page['content']['system_main']['main']['#markup'] = str_replace('drupal-7.x/<wbr />', '', $content);
+    $page['content']['system_main']['main']['#markup'] = str_replace('drupal-8.0.x/<wbr />', '', $content);
+    $page['content']['system_main']['main']['#markup'] = str_replace('drupal-8.1.x/<wbr />', '', $content);
+    $page['content']['system_main']['main']['#markup'] = str_replace('drupal-8.2.x/<wbr />', '', $content);
+    $page['content']['system_main']['main']['#markup'] = str_replace('drupal-8.3.x/<wbr />', '', $content);
+    $page['content']['system_main']['main']['#markup'] = str_replace('drupal-8.4.x/<wbr />', '', $content);
+  }
+}
