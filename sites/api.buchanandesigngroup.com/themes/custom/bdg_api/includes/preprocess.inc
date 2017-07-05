@@ -10,3 +10,11 @@
  *
  * @see process.inc
  */
+
+/**
+ * Implements hook_preprocess_HOOK() for theme_menu_local_tasks().
+ */
+function bdg_api_preprocess_menu_local_tasks(&$variables) {
+  $variables['primary_attributes_array']['class'][] = 'uk-margin-bottom';
+  $variables['secondary_attributes_array']['class'][] = 'uk-margin-bottom';
+}
