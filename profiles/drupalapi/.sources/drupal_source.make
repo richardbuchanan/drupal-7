@@ -42,6 +42,13 @@ libraries[drupal-8.0.x][api_project_title] = Drupal
 libraries[drupal-8.0.x][api_project_type] = core
 libraries[drupal-8.0.x][api_preferred] = true
 
+libraries[documentation-8.x][download][type] = git
+libraries[documentation-8.x][download][url] = http://git.drupal.org/project/documentation.git
+libraries[documentation-8.x][download][branch] = 8.x-1.x
+libraries[documentation-8.x][destination] = .sources
+libraries[documentation-8.x][api_project_name] = drupal
+libraries[documentation-8.x][api_branch] = 8.0.x
+
 libraries[drupal-8.1.x][download][type] = git
 libraries[drupal-8.1.x][download][url] = http://git.drupal.org/project/drupal.git
 libraries[drupal-8.1.x][download][branch] = 8.1.x
@@ -50,6 +57,13 @@ libraries[drupal-8.1.x][api_project_name] = drupal
 libraries[drupal-8.1.x][api_project_title] = Drupal
 libraries[drupal-8.1.x][api_project_type] = core
 libraries[drupal-8.1.x][api_preferred] = true
+
+libraries[documentation-8.x][download][type] = git
+libraries[documentation-8.x][download][url] = http://git.drupal.org/project/documentation.git
+libraries[documentation-8.x][download][branch] = 8.x-1.x
+libraries[documentation-8.x][destination] = .sources
+libraries[documentation-8.x][api_project_name] = drupal
+libraries[documentation-8.x][api_branch] = 8.1.x
 
 libraries[drupal-8.2.x][download][type] = git
 libraries[drupal-8.2.x][download][url] = http://git.drupal.org/project/drupal.git
@@ -60,6 +74,13 @@ libraries[drupal-8.2.x][api_project_title] = Drupal
 libraries[drupal-8.2.x][api_project_type] = core
 libraries[drupal-8.2.x][api_preferred] = true
 
+libraries[documentation-8.x][download][type] = git
+libraries[documentation-8.x][download][url] = http://git.drupal.org/project/documentation.git
+libraries[documentation-8.x][download][branch] = 8.x-1.x
+libraries[documentation-8.x][destination] = .sources
+libraries[documentation-8.x][api_project_name] = drupal
+libraries[documentation-8.x][api_branch] = 8.2.x
+
 libraries[drupal-8.3.x][download][type] = git
 libraries[drupal-8.3.x][download][url] = http://git.drupal.org/project/drupal.git
 libraries[drupal-8.3.x][download][branch] = 8.3.x
@@ -68,6 +89,13 @@ libraries[drupal-8.3.x][api_project_name] = drupal
 libraries[drupal-8.3.x][api_project_title] = Drupal
 libraries[drupal-8.3.x][api_project_type] = core
 libraries[drupal-8.3.x][api_preferred] = true
+
+libraries[documentation-8.x][download][type] = git
+libraries[documentation-8.x][download][url] = http://git.drupal.org/project/documentation.git
+libraries[documentation-8.x][download][branch] = 8.x-1.x
+libraries[documentation-8.x][destination] = .sources
+libraries[documentation-8.x][api_project_name] = drupal
+libraries[documentation-8.x][api_branch] = 8.3.x
 
 libraries[drupal-8.4.x][download][type] = git
 libraries[drupal-8.4.x][download][url] = http://git.drupal.org/project/drupal.git
@@ -83,4 +111,4 @@ libraries[documentation-8.x][download][url] = http://git.drupal.org/project/docu
 libraries[documentation-8.x][download][branch] = 8.x-1.x
 libraries[documentation-8.x][destination] = .sources
 libraries[documentation-8.x][api_project_name] = drupal
-libraries[documentation-8.x][api_branch] = 8.x
+libraries[documentation-8.x][api_branch] = 8.4.x
