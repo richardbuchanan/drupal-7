@@ -12,6 +12,44 @@
  */
 
 /**
+ * Implements template_preprocess_page().
+ */
+function bdg_api_preprocess_page(&$variables) {
+  $bdg_api = drupal_get_path('theme', 'bdg_api');
+  $variables['logo_small'] = "/$bdg_api/logo-small.png";
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for block.tpl.php.
+ */
+function bdg_api_preprocess_block(&$variables) {
+  $variables['title_attributes_array']['class'][] = 'block-title';
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for theme_item_list().
+ */
+function bdg_api_preprocess_item_list(&$variables) {
+  if (isset($variables['striped']) && $variables['striped']) {
+    $variables['attributes']['class'][] = 'uk-list-striped';
+  }
+  if (isset($variables['line']) && $variables['line']) {
+    $variables['attributes']['class'][] = 'uk-list-line';
+  }
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for theme_link().
+ */
+function bdg_api_preprocess_link(&$variables) {
+  $classes = isset($variables['options']['attributes']) && isset($variables['options']['attributes']['class']) ? $variables['options']['attributes']['class'] : array();
+
+  if (in_array('active', $classes)) {
+    $variables['options']['attributes']['class'][] = 'uk-active';
+  }
+}
+
+/**
  * Implements hook_preprocess_HOOK() for theme_menu_local_tasks().
  */
 function bdg_api_preprocess_menu_local_tasks(&$variables) {
@@ -23,9 +61,6 @@ function bdg_api_preprocess_menu_local_tasks(&$variables) {
  * Implements template_preprocess_views_view_table().
  */
 function bdg_api_preprocess_views_view_table(&$variables) {
-  drupal_add_js('misc/tableheader.js');
-  // Add 'sticky-enabled' class to the table to identify it for JS.
-  // This is needed to target tables constructed by this function.
   $variables['classes_array'][] = 'sticky-enabled';
   $variables['classes_array'][] = 'uk-table';
   $variables['classes_array'][] = 'uk-table-striped';

@@ -63,6 +63,7 @@ function bdg_api_load_include($type, $theme, $name = NULL, $sub_directory = '') 
 /**
  * Load BDG API's include files for theme processing.
  */
+bdg_api_load_include('inc', 'bdg_api', 'api', 'includes');
 bdg_api_load_include('inc', 'bdg_api', 'preprocess', 'includes');
 bdg_api_load_include('inc', 'bdg_api', 'process', 'includes');
 bdg_api_load_include('inc', 'bdg_api', 'theme', 'includes');
