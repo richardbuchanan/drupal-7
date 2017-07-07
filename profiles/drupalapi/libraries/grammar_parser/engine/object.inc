@@ -4173,11 +4173,11 @@ class PGPUse extends PGPBase {
       $space = PGPWriter::getWhitespace($this->settings(), $add_space);
       switch ($key) {
         case 'type':
-          if (!$expression->nouse) {
+          //if (!$expression->nouse) {
             $type = PGPWriter::statementTypeToString($element);
             $string .= /*$space .*/ $type;
             $add_space = -1;
-          }
+          //}
           break;
 
         case 'values':
