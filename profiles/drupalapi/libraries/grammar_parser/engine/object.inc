@@ -4153,54 +4153,38 @@ class PGPUse extends PGPBase {
     $expression = $this; // @todo Why use this variable name now?
 
     $add_space = 1;
-    $string = $indent . $prepend;
-    foreach ($expression as $key => $element) {
-      $this->debugPrint("inside $key");
+    $string = $indent . $prepend . 'use';
+
+    $current = $expression->values->first();
+    while ($current->next != NULL) {
+      $key = $current->type;
+      $element = $current->data;
+
+      $this->debugPrint(__METHOD__ . " key = $key");
       $space = PGPWriter::getWhitespace($this->settings(), $add_space);
       switch ($key) {
-        case 'type':
-          if (!$expression->nouse) {
-            $type = PGPWriter::statementTypeToString($element);
-            $string .= $space . $type;
-            $add_space = 1;
-          }
+        case 'name':
+          $string .= $space . $element->toString();
           break;
 
-        case 'values':
-          // Add list of use items.
-          if (is_object($element)) {
-            // @todo Enhance PGPList::toString() to be able to use next line.
-            //             $string .= $space . $element->toString();
-            $string .= $space . $expression->valuesToString();
-          }
+        case 'alias':
+          $string .= $space . $element->toString();
           break;
 
-        case 'body':
-          // @todo Copied from PGPClass; all may not apply.
-          if ($this->preserveWhitespace && $expression->nobraces) {
-            // This case should not occur on interface, class, or function.
-            // Allow for no braces with an empty body.
-            $open_brace = $close_brace = '';
-          }
-          else {
-            // Include body comment following the block beginning token.
-            $space2 = PGPWriter::getWhitespace($this->settings());
-            $open_brace = isset($expression->bodyComment) && $expression->bodyComment ? '{' . $space2 . $expression->bodyComment : '{';
-            if (TRUE || !is_object($expression->name)) {
-              // Indent closing brace on anonymous function.
-              $indent = PGPWriter::getIndent($this->settings());
-            }
-            $close_brace = $this->preserveWhitespace ? '}' : "\n" . $indent . '}';
-          }
+        case 'as':
+          $string .= $space . $element;
+          break;
 
-          $string .= $space . $open_brace;
-          if (isset($element) && !$element->isEmpty()) {
-            $string .= PGPWriter::getDelimiter($this->settings());
-            $string .= $element->toString();
-          }
-          $string .= $close_brace;
+        case 'comma':
+          $separator = '';
+          $string .= $separator . $element;
           break;
       }
+      if ($add_space <= 0) {
+        $add_space++;
+      }
+
+      $current = $current->next;
     }
     $string .= isset($expression->semicolon) && $expression->semicolon ? ';' : '';
     return $string;
