@@ -22,7 +22,7 @@ function bdg_api_preprocess_api_class_page(&$variables) {
     $items = [];
 
     foreach ($alternatives as $alternative) {
-      $alternative = _api_remove_branch_from_text($alternative);
+      //$alternative = _api_remove_branch_from_text($alternative);
       $items[] = $alternative;
     }
 
@@ -41,7 +41,7 @@ function bdg_api_preprocess_api_constant_page(&$variables) {
     $items = [];
 
     foreach ($alternatives as $alternative) {
-      $alternative = _api_remove_branch_from_text($alternative);
+      //$alternative = _api_remove_branch_from_text($alternative);
       $items[] = $alternative;
     }
 
@@ -58,10 +58,10 @@ function bdg_api_preprocess_api_defined(&$variables) {
   $file_info_array = explode('<wbr />', $api_file_link);
   unset($file_info_array[0]);
   $file_link = implode('<wbr />', $file_info_array);
-  $variables['file_link'] = $file_link;
+  //$variables['file_link'] = $file_link;
 
   if ($object->start_line) {
-    $variables['file_link'] = t('!file, line @start_line', array('!file' => $file_link, '@start_line' => $object->start_line));
+    //$variables['file_link'] = t('!file, line @start_line', array('!file' => $file_link, '@start_line' => $object->start_line));
   }
 }
 
@@ -73,14 +73,14 @@ function bdg_api_preprocess_api_file_page(&$variables) {
   $defined = $variables['defined'];
   $defined_array = explode('/', $defined);
   unset($defined_array[0]);
-  $variables['defined'] = implode('/', $defined_array);
+  //$variables['defined'] = implode('/', $defined_array);
 
   if ($alternatives) {
     $alternatives = _api_get_html_by_tags($alternatives, 'li');
     $items = [];
 
     foreach ($alternatives as $alternative) {
-      $alternative = _api_remove_branch_from_text($alternative);
+      //$alternative = _api_remove_branch_from_text($alternative);
       $items[] = $alternative;
     }
 
@@ -94,7 +94,7 @@ function bdg_api_preprocess_api_file_page(&$variables) {
 function bdg_api_preprocess_api_functions(&$variables) {
   foreach ($variables['functions'] as $index => $function) {
     $file = _api_remove_branch_from_beginning_text($function['file']);
-    $variables['functions'][$index]['file'] = $file;
+    //$variables['functions'][$index]['file'] = $file;
   }
 }
 
@@ -109,7 +109,7 @@ function bdg_api_preprocess_api_global_page(&$variables) {
     $items = [];
 
     foreach ($alternatives as $alternative) {
-      $alternative = _api_remove_branch_from_text($alternative);
+      //$alternative = _api_remove_branch_from_text($alternative);
       $items[] = $alternative;
     }
 
@@ -128,7 +128,7 @@ function bdg_api_preprocess_api_group_page(&$variables) {
     $items = [];
 
     foreach ($alternatives as $alternative) {
-      $alternative = _api_remove_branch_from_text($alternative);
+      //$alternative = _api_remove_branch_from_text($alternative);
       $items[] = $alternative;
     }
 
@@ -147,7 +147,7 @@ function bdg_api_preprocess_api_property_page(&$variables) {
     $items = [];
 
     foreach ($alternatives as $alternative) {
-      $alternative = _api_remove_branch_from_text($alternative);
+      //$alternative = _api_remove_branch_from_text($alternative);
       $items[] = $alternative;
     }
 
@@ -166,7 +166,7 @@ function bdg_api_preprocess_api_service_page(&$variables) {
     $items = [];
 
     foreach ($alternatives as $alternative) {
-      $alternative = _api_remove_branch_from_text($alternative);
+      //$alternative = _api_remove_branch_from_text($alternative);
       $items[] = $alternative;
     }
 
@@ -189,7 +189,7 @@ function bdg_api_preprocess_views_view_field(&$variables) {
     $output = _api_remove_branch_from_beginning_text($variables['output']);
   }
 
-  $variables['output'] = $output;
+  //$variables['output'] = $output;
 }
 
 /**
