@@ -23,4 +23,3 @@ sites/*/modules/*/devel*
 sites/*/modules/*/simplehtmldom
 sites/default/files
 sites/localhost.*
-profiles/uikit_api/sources
