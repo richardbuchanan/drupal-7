@@ -5,32 +5,18 @@
  * Base classes for tests for the API module.
  */
 
-// Some functions in these files are called directly in methods below.
-module_load_include('inc', 'api', 'api.admin');
-module_load_include('inc', 'api', 'parser');
-
-
 /**
  * Provides a base class for testing the API module.
  */
-class ApiTestCase extends DrupalWebTestCase {
-  /**
-   * Default branch object.
-   */
-  protected $default_branch;
-
-  /**
-   * User with permission to administer and see everything.
-   */
-  protected $super_user;
+abstract class ApiTestCase extends DrupalWebTestCase {
 
   /**
    * Default set up: Sets up branch using API calls, removes PHP branch, parses.
    */
-  function setUp() {
+  public function setUp() {
     $this->baseSetUp();
-    $this->setUpBranchAPICall();
-    $this->removePHPBranch();
+    $this->setUpBranchApiCall();
+    $this->removePhpBranch();
 
     $this->resetBranchesAndCache();
     $this->updateBranches();
@@ -44,9 +30,19 @@ class ApiTestCase extends DrupalWebTestCase {
    * @param array $extra_modules
    *   Extra modules to install.
    */
-  function baseSetUp($extra_modules = array()) {
-    $modules = array_merge(array('api', 'ctools', 'gplib', 'node', 'comment', 'dblog', 'views'), $extra_modules);
+  protected function baseSetUp(array $extra_modules = array()) {
+    $modules = array_merge(array(
+      'api',
+      'ctools',
+      'composer_manager',
+      'node',
+      'comment',
+      'dblog',
+      'views',
+    ), $extra_modules);
     DrupalWebTestCase::setUp($modules);
+
+    $this->ensureAutoLoader();
 
     // Set the line break tag to nothing for most tests.
     variable_set('api_breaks_tag', '');
@@ -55,22 +51,22 @@ class ApiTestCase extends DrupalWebTestCase {
     $this->drupalGet('admin/reports/dblog');
 
     $this->verifyCounts(array(
-        'api_project' => 0,
-        'api_branch' => 0,
-        'api_documentation' => 0,
-        'node' => 0,
-        'comment' => 0,
-        'api_file' => 0,
-        'api_function' => 0,
-        'api_reference_storage' => 0,
-        'api_overrides' => 0,
-        'api_members' => 0,
-        'api_php_branch' => 1,
-        'api_php_documentation' => 0,
-      ), 0, 'Immediately after install');
+      'api_project' => 0,
+      'api_branch' => 0,
+      'api_documentation' => 0,
+      'node' => 0,
+      'comment' => 0,
+      'api_file' => 0,
+      'api_function' => 0,
+      'api_reference_storage' => 0,
+      'api_overrides' => 0,
+      'api_members' => 0,
+      'api_php_branch' => 1,
+      'api_php_documentation' => 0,
+    ), 0, 'Immediately after install');
 
     // Set up a super-user.
-    $this->super_user = $this->drupalCreateUser(array(
+    $super_user = $this->drupalCreateUser(array(
       'access API reference',
       'administer API reference',
       'access content',
@@ -80,27 +76,52 @@ class ApiTestCase extends DrupalWebTestCase {
       'access site reports',
       'administer site configuration',
     ));
-    $this->drupalLogin($this->super_user);
+    $this->drupalLogin($super_user);
+  }
+
+  /**
+   * Ensures that the Composer auto-loader is set up properly.
+   *
+   * If running tests locally on an API site, the Composer auto-loader will be
+   * working automatically. But on the DrupalCI testing site, Composer is
+   * using a different directory, and also hook_boot()/hook_init() don't get run
+   * because the Composer Manager module is enabled after Drupal starts up. So,
+   * this method ensures (hopefully) that whichever platform is running the
+   * tests, the auto-loader gets found and initialized.
+   *
+   * Must be run after the composer_manager module is enabled.
+   */
+  protected function ensureAutoLoader() {
+    // Test to see if one of the classes that the auto-loader should know
+    // about has been defined.
+    if (!class_exists('Symfony\Component\Yaml\Parser')) {
+      // This most likely means that we are running on DrupalCI, so set
+      // up for that.
+      variable_set('composer_manager_vendor_dir', 'vendor');
+      composer_manager_register_autoloader();
+    }
   }
 
   /**
    * Sets up a project and a files branch using API function calls.
    *
-   * @param $prefix
+   * @param string $prefix
    *   Directory prefix to prepend on the data directories.
-   * @param $default
+   * @param bool $default
    *   TRUE to set this as the default branch; FALSE to not set it as default.
-   * @param $info
+   * @param array $info
    *   Array of information to override the defaults (see function code to see
    *   what they are). Note that $prefix is applied after this information is
    *   read, and that only one directory and one excluded are supported in this
    *   function.
    *
-   * @return
+   * @return array
    *   Array of information (defaults with overrides) used to create the
    *   branch and project.
    */
-  function setUpBranchAPICall($prefix = '', $default = TRUE, $info = array()) {
+  protected function setUpBranchApiCall($prefix = '', $default = TRUE, array $info = array()) {
+    module_load_include('inc', 'api', 'api.db');
+
     // Set up defaults.
     $info += array(
       'project' => 'test',
@@ -153,7 +174,7 @@ class ApiTestCase extends DrupalWebTestCase {
   /**
    * Removes the PHP branch, which most tests do not need.
    */
-  function removePHPBranch() {
+  protected function removePhpBranch() {
     db_delete('api_php_branch')
       ->execute();
     api_get_php_branches(TRUE);
@@ -162,7 +183,7 @@ class ApiTestCase extends DrupalWebTestCase {
   /**
    * Returns the first branch in the branches list.
    */
-  function getBranch() {
+  protected function getBranch() {
     $branches = api_get_branches();
     return reset($branches);
   }
@@ -170,13 +191,13 @@ class ApiTestCase extends DrupalWebTestCase {
   /**
    * Asserts the right number of documentation objects are in the given branch.
    *
-   * @param $branch
+   * @param object|null $branch
    *   Branch object to look in. Omit to use the default branch.
-   * @param $num
+   * @param int $num
    *   Number of objects to assert. Omit to use the current number that should
    *   be present for the default branch.
    */
-  function assertObjectCount($branch = NULL, $num = 68) {
+  protected function assertObjectCount($branch = NULL, $num = 68) {
     if (is_null($branch)) {
       $branch = $this->getBranch();
     }
@@ -189,7 +210,8 @@ class ApiTestCase extends DrupalWebTestCase {
   /**
    * Makes sure all variables and branches have been reset.
    */
-  function resetBranchesAndCache() {
+  protected function resetBranchesAndCache() {
+    module_load_include('inc', 'api', 'api.db');
     cache_clear_all('variables', 'cache_bootstrap', 'cache');
     drupal_static_reset();
     variable_initialize();
@@ -199,7 +221,9 @@ class ApiTestCase extends DrupalWebTestCase {
   /**
    * Updates branches and runs all update branch jobs.
    */
-  function updateBranches() {
+  protected function updateBranches() {
+    module_load_include('inc', 'api', 'api.update_branch');
+
     api_update_all_branches();
 
     $queues = api_cron_queue_info();
@@ -210,7 +234,6 @@ class ApiTestCase extends DrupalWebTestCase {
     $function = $info['worker callback'];
     $queue = DrupalQueue::get($queue_name);
 
-    $count = 0;
     while ($item = $queue->claimItem()) {
       $function($item->data);
       $queue->deleteItem($item);
@@ -222,13 +245,13 @@ class ApiTestCase extends DrupalWebTestCase {
   /**
    * Processes the API parse queue.
    *
-   * @param $verbose
+   * @param bool $verbose
    *   TRUE to print verbose output; FALSE (default) to omit.
    *
-   * @return
+   * @return int
    *   Number of files parsed.
    */
-  function processApiParseQueue($verbose = FALSE) {
+  protected function processApiParseQueue($verbose = FALSE) {
     $queues = api_cron_queue_info();
     drupal_alter('cron_queue_info', $queues);
 
@@ -247,6 +270,7 @@ class ApiTestCase extends DrupalWebTestCase {
       $count++;
     }
 
+    module_load_include('inc', 'api', 'api.parser');
     api_shutdown();
     $this->resetBranchesAndCache();
 
@@ -256,7 +280,7 @@ class ApiTestCase extends DrupalWebTestCase {
   /**
    * Returns the approximate number of items in the API parse queue.
    */
-  function countParseQueue() {
+  protected function countParseQueue() {
     $queue = DrupalQueue::get('api_parse');
     return $queue->numberOfItems();
   }
@@ -264,7 +288,7 @@ class ApiTestCase extends DrupalWebTestCase {
   /**
    * Returns the number of files that have been marked as needing to be parsed.
    */
-  function howManyToParse() {
+  protected function howManyToParse() {
     return db_query('SELECT COUNT(*) from {api_file} WHERE modified < :modified', array(':modified' => 100))->fetchField();
   }
 
@@ -280,7 +304,7 @@ class ApiTestCase extends DrupalWebTestCase {
    * @param string $message
    *   String to append to assertion messages.
    */
-  function verifyCounts($counts, $queue, $message) {
+  protected function verifyCounts(array $counts, $queue, $message) {
     // Add some generic tables to test along with main tables.
     if (isset($counts['node'])) {
       $counts['node_revision'] = $counts['node'];
@@ -307,37 +331,74 @@ class ApiTestCase extends DrupalWebTestCase {
   /**
    * Checks the log for messages, and then clears the log.
    *
-   * @param $messages
+   * @param array $messages
    *   Array of messages to assert are in the log.
-   * @param $notmessages
+   * @param array $notmessages
    *   Array of messages to assert are not in the log.
    */
-  function checkAndClearLog($messages = array(), $notmessages = array()) {
+  protected function checkAndClearLog(array $messages = array(), array $notmessages = array()) {
     $this->drupalGet('admin/reports/dblog');
-    foreach($messages as $message) {
+    foreach ($messages as $message) {
       $this->assertRaw($message, "Message $message appears in the log");
     }
-    foreach($notmessages as $message) {
+    foreach ($notmessages as $message) {
       $this->assertNoRaw($message, "Message $message does not appear in the log");
     }
     $this->drupalPost(NULL, array(), t('Clear log messages'));
   }
+
+  /**
+   * Asserts that code formatting did not change the code.
+   *
+   * @param string $formatted
+   *   Formatted code to check.
+   * @param string $file
+   *   File name to read code from, to check against.
+   */
+  protected function assertCodeFormatting($formatted, $file) {
+    $original = file_get_contents($file);
+
+    // In formatted output, strip out the formatting tags, and then decode
+    // HTML entities, which should get us back to the original HTML that was
+    // in the file. Hopefully. That is what we're testing in this assert.
+    $formatted = html_entity_decode(strip_tags($formatted));
+
+    // Remove spaces at ends of lines, and vertical whitespace.
+    $patterns = array(
+      '|\s+$|m' => '',
+      '|\n+|' => "\n",
+    );
+    foreach ($patterns as $pattern => $replace) {
+      $original = preg_replace($pattern, $replace, $original);
+      $formatted = preg_replace($pattern, $replace, $formatted);
+    }
+
+    // Trim and compare.
+    $original = trim($original);
+    $formatted = trim($formatted);
+    $this->assertEqual($original, $formatted, "Formatted code matches code in $file");
+  }
+
 }
 
 /**
  * Provides a base class for testing web pages (user/admin) for the API module.
  */
-class ApiWebPagesBaseTest extends ApiTestCase {
+abstract class ApiWebPagesBaseTest extends ApiTestCase {
 
   /**
    * Array of branch information for the sample functions branch.
+   *
+   * @var array
    */
-  protected $branch_info;
+  protected $branchInfo;
 
   /**
    * Array of branch information for the sample PHP functions branch.
+   *
+   * @var array
    */
-  protected $php_branch_info;
+  protected $phpBranchInfo;
 
   /**
    * Overrides ApiTestCase::setUp().
@@ -349,14 +410,14 @@ class ApiWebPagesBaseTest extends ApiTestCase {
     $this->baseSetUp();
 
     // Create a "file" branch with the sample code, from the admin interface.
-    $this->branch_info = $this->setUpBranchUI();
+    $this->branchInfo = $this->setUpBranchUi();
 
     // Remove the default PHP branch, which most tests do not need.
-    $this->removePHPBranch();
+    $this->removePhpBranch();
 
     // Create a "php" branch with the sample PHP function list, from the admin
     // interface.
-    $this->php_branch_info = $this->createPHPBranchUI();
+    $this->phpBranchInfo = $this->createPhpBranchUi();
 
     // Parse the code.
     $this->resetBranchesAndCache();
@@ -367,23 +428,22 @@ class ApiWebPagesBaseTest extends ApiTestCase {
   /**
    * Sets up a project and branch using the user interface.
    *
-   * @param $prefix
+   * @param string $prefix
    *   Directory prefix to prepend on the data directories.
-   * @param $default
+   * @param bool $default
    *   TRUE to set this as the default branch; FALSE to not set it as default.
-   * @param $info
+   * @param array $info
    *   Array of information to override the defaults (see function code to see
    *   what they are). Note that $prefix is applied after this information is
    *   read, and that only one directory and one excluded are supported in this
    *   function.
    *
-   * @return
+   * @return array
    *   Array of information (defaults with overrides) used to create the
    *   branch and project.
    */
-  function setUpBranchUI($prefix = '', $default = TRUE, $info = array()) {
+  protected function setUpBranchUi($prefix = '', $default = TRUE, array $info = array()) {
     // Set up defaults.
-
     $info += array(
       'project' => 'test',
       'project_title' => 'Project 6',
@@ -436,12 +496,11 @@ class ApiWebPagesBaseTest extends ApiTestCase {
       // setting if the branch doesn't exist yet, in an attempt to make sure
       // a branch exists.
       $this->drupalPost('admin/config/development/api', array(
-          'api_default_core_compatibility' => $info['core_compatibility'],
-          'api_default_project' => $info['project'],
-        ), t('Save configuration'));
+        'api_default_core_compatibility' => $info['core_compatibility'],
+        'api_default_project' => $info['project'],
+      ), t('Save configuration'));
 
       $branches = api_get_branches(TRUE);
-      $this_id = 0;
       foreach ($branches as $branch) {
         if ($branch->title == $info['title']) {
           $this->assertEqual(variable_get('api_default_branch', 99), $branch->branch_id, 'Variable for default branch is set correctly');
@@ -456,13 +515,13 @@ class ApiWebPagesBaseTest extends ApiTestCase {
   /**
    * Sets up a PHP reference branch using the sample code, in the admin UI.
    *
-   * @return
+   * @return array
    *   Information array used to create the branch.
    */
-  function createPHPBranchUI() {
+  protected function createPhpBranchUi() {
     $info = array(
       'title' => 'php2',
-      'data[summary]' => url('<front>', array('absolute' => TRUE )) . '/' . drupal_get_path('module', 'api') . '/tests/php_sample/funcsummary.json',
+      'data[summary]' => url('<front>', array('absolute' => TRUE)) . '/' . drupal_get_path('module', 'api') . '/tests/php_sample/funcsummary.json',
       'data[path]' => 'http://example.com/function/!function',
       'update_frequency' => 1,
     );
@@ -478,18 +537,18 @@ class ApiWebPagesBaseTest extends ApiTestCase {
   /**
    * Sets up an API reference branch using the sample code, in the admin UI.
    *
-   * @param $info
+   * @param array $info
    *   Array of information to override the defaults (see function code to see
    *   what they are).
    *
-   * @return
+   * @return array
    *   Information array used to create the branch.
    */
-  function createAPIBranchUI($info = array()) {
+  protected function createApiBranchUi(array $info = array()) {
     $info += array(
       'title' => 'sample_api_branch',
-      'data[url]' => url('<front>', array('absolute' => TRUE )) . '/' . drupal_get_path('module', 'api') . '/tests/php_sample/sample_drupal_listing.json',
-      'data[search_url]' => url('<front>', array('absolute' => TRUE )) . '/api/test_api_project/test_api_branch/search/',
+      'data[url]' => url('<front>', array('absolute' => TRUE)) . '/' . drupal_get_path('module', 'api') . '/tests/php_sample/sample_drupal_listing.json',
+      'data[search_url]' => url('<front>', array('absolute' => TRUE)) . '/api/test_api_project/test_api_branch/search/',
       'data[core_compatibility]' => '7.x',
       'data[project_type]' => 'core',
       'data[page_limit]' => 2000,
@@ -508,16 +567,16 @@ class ApiWebPagesBaseTest extends ApiTestCase {
   /**
    * Asserts that a link exists, with the given URL.
    *
-   * @param $label
+   * @param string $label
    *   Label of the link to find.
-   * @param $url
+   * @param string $url
    *   URL to match.
-   * @param $message_link
+   * @param string $message_link
    *   Message to use in link exist assertion.
-   * @param $message_url
+   * @param string $message_url
    *   Message to use for URL matching assertion.
    */
-  protected function assertLinkURL($label, $url, $message_link, $message_url) {
+  protected function assertLinkUrl($label, $url, $message_link, $message_url) {
     // Code follows DrupalWebTestCase::clickLink() and assertLink().
     $links = $this->xpath('//a[text()="' . $label . '"]');
     $this->assert(isset($links[0]), $message_link);
@@ -530,18 +589,18 @@ class ApiWebPagesBaseTest extends ApiTestCase {
   /**
    * Asserts that a link exists, with substring matching on the URL.
    *
-   * @param $label
+   * @param string $label
    *   Label of the link to find.
-   * @param $url
+   * @param string $url
    *   URL to match. The test passes if $url is a substring of the link's URL.
-   * @param $message_link
+   * @param string $message_link
    *   Message to use in link exist assertion.
-   * @param $message_url
+   * @param string $message_url
    *   Message to use for URL matching assertion.
-   * @param $index
-   *   Index of the link on the page, like assertLink().
+   * @param int $index
+   *   (optional) Index of the link on the page, like assertLink(). Default: 0.
    */
-  protected function assertLinkURLSubstring($label, $url, $message_link, $message_url, $index = 0) {
+  protected function assertLinkUrlSubstring($label, $url, $message_link, $message_url, $index = 0) {
     // Code follows DrupalWebTestCase::clickLink() and assertLink().
     $links = $this->xpath('//a[text()="' . $label . '"]');
     $this->assert(isset($links[$index]), $message_link);
@@ -554,9 +613,9 @@ class ApiWebPagesBaseTest extends ApiTestCase {
   /**
    * Asserts that the current page's title contains a string.
    *
-   * @param $string
+   * @param string $string
    *   String to match in the title.
-   * @param $message
+   * @param string $message
    *   Message to print.
    */
   protected function assertTitleContains($string, $message) {
@@ -567,27 +626,28 @@ class ApiWebPagesBaseTest extends ApiTestCase {
   /**
    * Asserts that the current page's URL contains a string.
    *
-   * @param $string
+   * @param string $string
    *   String to match in the URL.
-   * @param $message
+   * @param string $message
    *   Message to print.
    */
-  protected function assertURLContains($string, $message) {
+  protected function assertUrlContains($string, $message) {
     $this->assertTrue(strpos($this->url, $string) !== FALSE, $message);
   }
 
   /**
    * Asserts that the count of links with the given label is correct.
    *
-   * @param $label
+   * @param string $label
    *   Label to search for.
-   * @param $count
+   * @param int $count
    *   Count to assert.
-   * @param $message
+   * @param string $message
    *   Message to display.
    */
-  function assertLinkCount($label, $count, $message) {
+  protected function assertLinkCount($label, $count, $message) {
     $links = $this->xpath('//a[normalize-space(text())=:label]', array(':label' => $label));
     $this->assertEqual(count($links), $count, $message);
   }
+
 }

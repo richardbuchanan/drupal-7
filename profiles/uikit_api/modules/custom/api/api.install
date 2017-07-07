@@ -552,6 +552,44 @@ function api_schema() {
     ),
   );
 
+  $schema['api_reference_counts'] = array(
+    'documentation' => 'Aggregated counts of certain references',
+    'fields' => array(
+      'record_id' => array(
+        'type' => 'serial',
+        'not null' => TRUE,
+      ),
+      'branch_id' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'reference_type' => array(
+        'type' => 'varchar',
+        'length' => '31',
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'object_name' => array(
+        'type' => 'varchar',
+        'mysql_type' => 'varbinary(255)',
+        'length' => '255',
+        'not null' => TRUE,
+      ),
+      'reference_count' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+    ),
+    'primary key' => array('record_id'),
+    'indexes' => array(
+      'branch_id' => array('branch_id'),
+      'reference_type' => array('reference_type'),
+      'object_name' => array('object_name'),
+    ),
+  );
+
   $schema['api_overrides'] = array(
     'description' => 'Keep track of method, property, and class constant parents.',
     'fields' => array(
@@ -653,6 +691,8 @@ function api_schema() {
  * Implements hook_enable().
  */
 function api_enable() {
+  module_load_include('inc', 'api', 'api.db');
+
   // Make sure a few things are reset. This is only necessary for running tests.
   drupal_static_reset('api_get_branches');
   drupal_static_reset('api_get_branch_names');
@@ -822,18 +862,18 @@ function api_update_7102() {
 function api_update_7103() {
   // Update the field to the new definition.
   db_drop_index('api_reference_storage', 'object_name');
-  db_change_field('api_reference_storage', 'object_name', 'object_name', array(
-    'type' => 'varchar',
-    'mysql_type' => 'varbinary(127)',
-    'length' => '127',
-  ),
+  db_change_field('api_reference_storage', 'object_name', 'object_name',
+    array(
+      'type' => 'varchar',
+      'mysql_type' => 'varbinary(127)',
+      'length' => '127',
+    ),
     array('indexes' => array('object_name' => array('object_name'))));
 
   // Also reparse everything, because the old field definition left things
   // in a bad state.
-  api_update_mark_for_reparse();
-
-  return 'Due to database change, everything was marked for reparse.';
+  $count = api_update_mark_for_reparse();
+  return format_string('@count files marked for reparse, starting at next cron run', array('@count' => $count));
 }
 
 /**
@@ -853,21 +893,23 @@ function api_update_7104() {
 function api_update_7106() {
   db_drop_index('api_documentation', 'file_name');
   db_drop_index('api_documentation', 'object_name');
-  db_change_field('api_documentation', 'file_name', 'file_name', array(
-    'description' => 'Full path of file',
-    'type' => 'varchar',
-    'length' => '255',
-    'not null' => TRUE,
-    'default' => '',
-  ),
+  db_change_field('api_documentation', 'file_name', 'file_name',
+    array(
+      'description' => 'Full path of file',
+      'type' => 'varchar',
+      'length' => '255',
+      'not null' => TRUE,
+      'default' => '',
+    ),
     array('indexes' => array('file_name' => array('file_name'))));
-  db_change_field('api_documentation', 'object_name', 'object_name', array(
-    'description' => 'Name of object',
-    'type' => 'varchar',
-    'length' => '255',
-    'not null' => TRUE,
-    'default' => '',
-  ),
+  db_change_field('api_documentation', 'object_name', 'object_name',
+    array(
+      'description' => 'Name of object',
+      'type' => 'varchar',
+      'length' => '255',
+      'not null' => TRUE,
+      'default' => '',
+    ),
     array(
       'indexes' => array(
         'object_name' => array(
@@ -910,11 +952,15 @@ function api_update_7107(&$sandbox) {
 
     // Delete entries in API tables that don't correspond to existing entries
     // in {api_documentation}.
+    // These are queries using a WHERE EXISTS, and there is no apparent way
+    // to write it using the database API, so use ANSI syntax.
+    // @codingStandardsIgnoreStart
     db_query("DELETE FROM {api_file} WHERE NOT EXISTS ( SELECT * FROM {api_documentation} d WHERE d.did = {api_file}.did )");
     db_query("DELETE FROM {api_function} WHERE NOT EXISTS ( SELECT * FROM {api_documentation} d WHERE d.did = {api_function}.did )");
     db_query("DELETE FROM {api_members} WHERE NOT EXISTS ( SELECT * FROM {api_documentation} d WHERE d.did = {api_members}.did )");
     db_query("DELETE FROM {api_overrides} WHERE NOT EXISTS ( SELECT * FROM {api_documentation} d WHERE d.did = {api_overrides}.did )");
     db_query("DELETE FROM {api_reference_storage} WHERE NOT EXISTS ( SELECT * FROM {api_documentation} d WHERE d.did = {api_reference_storage}.from_did )");
+    // @codingStandardsIgnoreEnd
 
     // Initiate batch for future calls.
     $sandbox['last'] = 0;
@@ -967,7 +1013,7 @@ function api_update_7107(&$sandbox) {
 }
 
 /**
- * Removed.
+ * This update has been removed.
  */
 function api_update_7108() {
   // This used to create the api_extends table, but since the table is
@@ -1135,48 +1181,48 @@ function api_update_7109() {
   }
 
   // Modify the branch table -- add and remove fields.
-  db_add_field('api_branch', 'core_compatibility', array(
-    'description' => '6.x, 7.x, etc.',
-    'type' => 'varchar',
-    'length' => '31',
-    'not null' => TRUE,
-    'default' => '',
-  ));
+  db_add_field('api_branch', 'core_compatibility',
+    array(
+      'description' => '6.x, 7.x, etc.',
+      'type' => 'varchar',
+      'length' => '31',
+      'not null' => TRUE,
+      'default' => '',
+    ));
 
-  db_add_field('api_branch', 'preferred', array(
-    'description' => 'Whether this is the preferred branch within this core compatibility for this project',
-    'type' => 'int',
-    'size' => 'tiny',
-    'unsigned' => TRUE,
-    'not null' => TRUE,
-    'default' => 1,
-  ), array(
-    'indexes' => array(
-      'core_preferred' => array(
-        'core_compatibility',
-        'preferred',
-      ),
+  db_add_field('api_branch', 'preferred',
+    array(
+      'description' => 'Whether this is the preferred branch within this core compatibility for this project',
+      'type' => 'int',
+      'size' => 'tiny',
+      'unsigned' => TRUE,
+      'not null' => TRUE,
+      'default' => 1,
     ),
-  ));
+    array(
+      'indexes' => array(
+        'core_preferred' => array(
+          'core_compatibility', 'preferred',
+        ),
+      ),
+    ));
 
-  db_add_field('api_branch', 'last_updated', array(
-    'description' => 'When this branch was last checked for updated files',
-    'type' => 'int',
-    'not null' => TRUE,
-    'default' => 0,
-  ), array(
-    'indexes' => array(
-      'last_updated' => array(
-        'last_updated',
-      ),
+  db_add_field('api_branch', 'last_updated',
+    array(
+      'description' => 'When this branch was last checked for updated files',
+      'type' => 'int',
+      'not null' => TRUE,
+      'default' => 0,
     ),
-  ));
-  db_add_field('api_branch', 'update_frequency', array(
-    'description' => 'Number of seconds to wait before updating again',
-    'type' => 'int',
-    'not null' => TRUE,
-    'default' => 0,
-  ));
+    array('indexes' => array('last_updated' => array('last_updated'))));
+
+  db_add_field('api_branch', 'update_frequency',
+    array(
+      'description' => 'Number of seconds to wait before updating again',
+      'type' => 'int',
+      'not null' => TRUE,
+      'default' => 0,
+    ));
 
   db_drop_field('api_branch', 'type');
   db_drop_index('api_branch', 'status');
@@ -1185,23 +1231,22 @@ function api_update_7109() {
   db_drop_field('api_branch', 'project_title');
 
   db_drop_unique_key('api_branch', 'project_name');
-  db_change_field('api_branch', 'project', 'project', array(
-    'description' => '{api_project}.{project_name}',
-    'type' => 'varchar',
-    'length' => '50',
-    'not null' => TRUE,
-    'default' => '',
-  ), array(
-    'unique_keys' => array(
-      'project_name' => array(
-        'project',
-        'branch_name',
-      ),
+  db_change_field('api_branch', 'project', 'project',
+    array(
+      'description' => '{api_project}.{project_name}',
+      'type' => 'varchar',
+      'length' => '50',
+      'not null' => TRUE,
+      'default' => '',
     ),
-  ));
+    array(
+      'unique_keys' => array(
+        'project_name' => array('project', 'branch_name'),
+      ),
+    ));
 
   // Attempt to set the core compatibility field values and variable.
-  variable_set('api_default_core_compatibility', $default_compat = _api_extract_compatibility(isset($default_branch->branch_name) ? $default_branch->branch_name : ''));
+  variable_set('api_default_core_compatibility', _api_extract_compatibility(isset($default_branch->branch_name) ? $default_branch->branch_name : ''));
 
   $branches = db_select('api_branch', 'b')
     ->fields('b')
@@ -1261,31 +1306,34 @@ function api_update_7110() {
   // Add the queue valid timestamp field to the branch table. Note that for
   // existing branches, having a value of zero is good, since that means
   // that existing queue entries without the timestamp are still valid.
-  db_add_field('api_branch', 'queue_valid', array(
-    'description' => 'File parse jobs before this time are invalid',
-    'type' => 'int',
-    'not null' => TRUE,
-    'default' => 0,
-  ));
+  db_add_field('api_branch', 'queue_valid',
+    array(
+      'description' => 'File parse jobs before this time are invalid',
+      'type' => 'int',
+      'not null' => TRUE,
+      'default' => 0,
+    ));
 }
 
 /**
  * Add fields to branch database tables for updates queue.
  */
 function api_update_7111() {
-  db_add_field('api_branch', 'queued', array(
-    'description' => 'Time when this branch was queued for update checking',
-    'type' => 'int',
-    'not null' => TRUE,
-    'default' => 0,
-  ));
+  db_add_field('api_branch', 'queued',
+    array(
+      'description' => 'Time when this branch was queued for update checking',
+      'type' => 'int',
+      'not null' => TRUE,
+      'default' => 0,
+    ));
 
-  db_add_field('api_php_branch', 'queued', array(
-    'description' => 'Time when this branch was queued for update checking',
-    'type' => 'int',
-    'not null' => TRUE,
-    'default' => 0,
-  ));
+  db_add_field('api_php_branch', 'queued',
+    array(
+      'description' => 'Time when this branch was queued for update checking',
+      'type' => 'int',
+      'not null' => TRUE,
+      'default' => 0,
+    ));
 }
 
 /**
@@ -1308,11 +1356,12 @@ function api_update_7113() {
  * Make function signature field be text instead of varchar.
  */
 function api_update_7114() {
-  db_change_field('api_function', 'signature', 'signature', array(
-    'type' => 'text',
-    'size' => 'medium',
-    'not null' => TRUE,
-  ));
+  db_change_field('api_function', 'signature', 'signature',
+    array(
+      'type' => 'text',
+      'size' => 'medium',
+      'not null' => TRUE,
+    ));
 }
 
 /**
@@ -1341,7 +1390,7 @@ function api_update_7115() {
  * Reset branches as sorting has been updated.
  */
 function api_update_7116() {
-  module_load_include('module', 'api');
+  module_load_include('inc', 'api', 'api.db');
   api_reset_branches();
 }
 
@@ -1415,21 +1464,25 @@ function api_update_7119() {
     ),
   ));
 
-  db_add_field('api_documentation', 'namespace', array(
-    'description' => 'Namespace, if any',
-    'type' => 'varchar',
-    'length' => '255',
-    'not null' => TRUE,
-    'default' => '',
-  ), array('indexes' => array('namespace' => array('namespace'))));
+  db_add_field('api_documentation', 'namespace',
+    array(
+      'description' => 'Namespace, if any',
+      'type' => 'varchar',
+      'length' => '255',
+      'not null' => TRUE,
+      'default' => '',
+    ),
+    array('indexes' => array('namespace' => array('namespace'))));
 
-  db_add_field('api_documentation', 'namespaced_name', array(
-    'description' => 'Fully-qualified namespaced name, starting with backslash',
-    'type' => 'varchar',
-    'length' => '255',
-    'not null' => TRUE,
-    'default' => '',
-  ), array('indexes' => array('namespaced_name' => array('namespaced_name'))));
+  db_add_field('api_documentation', 'namespaced_name',
+    array(
+      'description' => 'Fully-qualified namespaced name, starting with backslash',
+      'type' => 'varchar',
+      'length' => '255',
+      'not null' => TRUE,
+      'default' => '',
+    ),
+    array('indexes' => array('namespaced_name' => array('namespaced_name'))));
 }
 
 /**
@@ -1444,13 +1497,14 @@ function api_update_7120() {
  * Add modifiers field to {api_documentation} table.
  */
 function api_update_7121() {
-  db_add_field('api_documentation', 'modifiers', array(
-    'description' => 'Modifiers such as static, abstract, etc.',
-    'type' => 'varchar',
-    'length' => '255',
-    'not null' => TRUE,
-    'default' => '',
-  ));
+  db_add_field('api_documentation', 'modifiers',
+    array(
+      'description' => 'Modifiers such as static, abstract, etc.',
+      'type' => 'varchar',
+      'length' => '255',
+      'not null' => TRUE,
+      'default' => '',
+    ));
 }
 
 /**
@@ -1547,12 +1601,13 @@ function api_update_7124() {
  * Add deprecated field to {api_documentation} table.
  */
 function api_update_7125() {
-  db_add_field('api_documentation', 'deprecated', array(
-    'description' => 'Deprecation descriptions',
-    'type' => 'text',
-    'size' => 'medium',
-    'not null' => FALSE,
-  ));
+  db_add_field('api_documentation', 'deprecated',
+    array(
+      'description' => 'Deprecation descriptions',
+      'type' => 'text',
+      'size' => 'medium',
+      'not null' => FALSE,
+    ));
 }
 
 /**
@@ -1560,13 +1615,15 @@ function api_update_7125() {
  */
 function api_update_7126() {
   db_drop_index('api_branch', 'weight');
-  db_change_field('api_branch', 'weight', 'weight', array(
-    'description' => 'Ordering weight',
-    'type' => 'int',
-    'unsigned' => TRUE,
-    'not null' => TRUE,
-    'default' => 0,
-  ), array('indexes' => array('weight' => array('weight'))));
+  db_change_field('api_branch', 'weight', 'weight',
+    array(
+      'description' => 'Ordering weight',
+      'type' => 'int',
+      'unsigned' => TRUE,
+      'not null' => TRUE,
+      'default' => 0,
+    ),
+    array('indexes' => array('weight' => array('weight'))));
 }
 
 /**
@@ -1581,34 +1638,37 @@ function api_update_7127() {
  * Make the api_documentation.code field binary instead of text.
  */
 function api_update_7128() {
-  db_change_field('api_documentation', 'code', 'code', array(
-    'description' => 'Formatted source code',
-    'type' => 'blob',
-    'size' => 'big',
-    'not null' => TRUE,
-  ));
+  db_change_field('api_documentation', 'code', 'code',
+    array(
+      'description' => 'Formatted source code',
+      'type' => 'blob',
+      'size' => 'big',
+      'not null' => TRUE,
+    ));
 }
 
 /**
  * Add an index to the api_documentation table.
  */
 function api_update_7129() {
-  db_add_index('api_documentation', 'branch_object_class', array(
-    'branch_id',
-    'object_type',
-    'class_did',
-  ));
+  db_add_index(
+    'api_documentation',
+    'branch_object_class',
+    array('branch_id', 'object_type', 'class_did'));
 }
 
 /**
  * Make the api_external_documentation.url field text instead of varchar.
  */
 function api_update_7130() {
-  db_change_field('api_external_documentation', 'url', 'url', array(
-    'type' => 'text',
-    'size' => 'medium',
-    'not null' => TRUE,
-  ));
+  module_load_include('inc', 'api', 'api.db');
+
+  db_change_field('api_external_documentation', 'url', 'url',
+    array(
+      'type' => 'text',
+      'size' => 'medium',
+      'not null' => TRUE,
+    ));
 
   // Due to a previous code update, it would be a good idea to reset the
   // branch list too.
@@ -1619,42 +1679,44 @@ function api_update_7130() {
  * Make the api_external_documentation.object_name longer.
  */
 function api_update_7131() {
-  db_change_field('api_external_documentation', 'object_name', 'object_name', array(
-    'type' => 'varchar',
-    'length' => '255',
-    'not null' => TRUE,
-    'default' => '',
-  ));
+  db_change_field('api_external_documentation', 'object_name', 'object_name',
+    array(
+      'type' => 'varchar',
+      'length' => '255',
+      'not null' => TRUE,
+      'default' => '',
+    ));
 }
 
 /**
  * Add field is_drupal to the api_documentation table.
  */
 function api_update_7132() {
-  db_add_field('api_documentation', 'is_drupal', array(
-    'description' => 'Whether this is or is not a Drupal object',
-    'type' => 'int',
-    'size' => 'tiny',
-    'unsigned' => TRUE,
-    'not null' => TRUE,
-    'default' => 1,
-  ), array('indexes' => array('is_drupal' => array('is_drupal'))));
+  db_add_field('api_documentation', 'is_drupal',
+    array(
+      'description' => 'Whether this is or is not a Drupal object',
+      'type' => 'int',
+      'size' => 'tiny',
+      'unsigned' => TRUE,
+      'not null' => TRUE,
+      'default' => 1,
+    ),
+    array('indexes' => array('is_drupal' => array('is_drupal'))));
 }
 
 /**
- * Replace field extends_did.
- *
- * Add field extends_did to the api_reference_storage table, in place of the
- * api_extends table.
+ * Add field extends_did to api_reference_storage table; remove api_extends.
  */
 function api_update_7133() {
   // Add the new field to api_reference_storage.
-  db_add_field('api_reference_storage', 'extends_did', array(
-    'description' => 'If this is a class or interface inheritance, the computed did value',
-    'type' => 'int',
-    'unsigned' => TRUE,
-    'not null' => FALSE,
-  ), array('indexes' => array('extends_did' => array('extends_did'))));
+  db_add_field('api_reference_storage', 'extends_did',
+    array(
+      'description' => 'If this is a class or interface inheritance, the computed did value',
+      'type' => 'int',
+      'unsigned' => TRUE,
+      'not null' => FALSE,
+    ),
+    array('indexes' => array('extends_did' => array('extends_did'))));
 
   // Delete the {api_extends} table, if it even exists.
   if (db_table_exists('api_extends')) {
@@ -1708,13 +1770,14 @@ function api_update_7136() {
  * Add alias field to api_members table.
  */
 function api_update_7137() {
-  db_add_field('api_members', 'member_alias', array(
-    'description' => 'Alias of the member, for trait inheritance',
-    'type' => 'varchar',
-    'length' => 127,
-    'not null' => FALSE,
-    'default' => NULL,
-  ));
+  db_add_field('api_members', 'member_alias',
+    array(
+      'description' => 'Alias of the member, for trait inheritance',
+      'type' => 'varchar',
+      'length' => 127,
+      'not null' => FALSE,
+      'default' => NULL,
+    ));
 }
 
 /**
@@ -1737,52 +1800,64 @@ function api_update_7139() {
  * Increase size of various columns.
  */
 function api_update_7140() {
-  db_change_field('api_documentation', 'var', 'var', array(
-    'description' => 'Variable type from var tag',
-    'type' => 'text',
-    'size' => 'medium',
-    'not null' => TRUE,
-  ));
-  db_change_field('api_documentation', 'member_name', 'member_name', array(
-    'description' => 'For class members, the name without Class::',
-    'type' => 'varchar',
-    'length' => 255,
-    'not null' => TRUE,
-    'default' => '',
-  ));
-  db_change_field('api_documentation', 'member_name', 'member_name', array(
-    'description' => 'For class members, the name without Class::',
-    'type' => 'varchar',
-    'length' => 255,
-    'not null' => TRUE,
-    'default' => '',
-  ));
-  db_change_field('api_members', 'member_alias', 'member_alias', array(
-    'description' => 'Alias of the member, for trait inheritance',
-    'type' => 'varchar',
-    'length' => 255,
-    'not null' => FALSE,
-    'default' => NULL,
-  ));
-  db_change_field('api_namespace', 'class_name', 'class_name', array(
-    'description' => 'Name of class or namespace',
-    'type' => 'varchar',
-    'mysql_type' => 'varbinary(255)',
-    'length' => '255',
-    'default' => '',
-  ));
-  db_change_field('api_namespace', 'class_alias', 'class_alias', array(
-    'description' => 'Alias of the class, blank for namespaces',
-    'type' => 'varchar',
-    'mysql_type' => 'varbinary(255)',
-    'length' => '255',
-    'default' => '',
-  ));
-  db_change_field('api_reference_storage', 'object_name', 'object_name', array(
-    'type' => 'varchar',
-    'mysql_type' => 'varbinary(255)',
-    'length' => '255',
-  ));
+  db_change_field('api_documentation', 'var', 'var',
+    array(
+      'description' => 'Variable type from var tag',
+      'type' => 'text',
+      'size' => 'medium',
+      'not null' => TRUE,
+    ));
+
+  db_change_field('api_documentation', 'member_name', 'member_name',
+    array(
+      'description' => 'For class members, the name without Class::',
+      'type' => 'varchar',
+      'length' => 255,
+      'not null' => TRUE,
+      'default' => '',
+    ));
+
+  db_change_field('api_documentation', 'member_name', 'member_name',
+    array(
+      'description' => 'For class members, the name without Class::',
+      'type' => 'varchar',
+      'length' => 255,
+      'not null' => TRUE,
+      'default' => '',
+    ));
+
+  db_change_field('api_members', 'member_alias', 'member_alias',
+    array(
+      'description' => 'Alias of the member, for trait inheritance',
+      'type' => 'varchar',
+      'length' => 255,
+      'not null' => FALSE,
+      'default' => NULL,
+    ));
+
+  db_change_field('api_namespace', 'class_name', 'class_name',
+    array(
+      'description' => 'Name of class or namespace',
+      'type' => 'varchar',
+      'mysql_type' => 'varbinary(255)',
+      'length' => '255',
+      'default' => '',
+    ));
+
+  db_change_field('api_namespace', 'class_alias', 'class_alias',
+    array(
+      'description' => 'Alias of the class, blank for namespaces',
+      'type' => 'varchar',
+      'mysql_type' => 'varbinary(255)',
+      'length' => '255',
+      'default' => '',
+    ));
+  db_change_field('api_reference_storage', 'object_name', 'object_name',
+    array(
+      'type' => 'varchar',
+      'mysql_type' => 'varbinary(255)',
+      'length' => '255',
+    ));
 }
 
 /**
@@ -1791,6 +1866,61 @@ function api_update_7140() {
 function api_update_7141() {
   $count = api_update_mark_for_reparse();
   return format_string('@count files marked for reparse, starting at next cron run', array('@count' => $count));
+}
+
+/**
+ * Add the {api_reference_counts} table to the database.
+ */
+function api_update_7142() {
+  // Create new table.
+  db_create_table('api_reference_counts', array(
+    'documentation' => 'Aggregated counts of certain references',
+    'fields' => array(
+      'record_id' => array(
+        'type' => 'serial',
+        'not null' => TRUE,
+      ),
+      'branch_id' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'reference_type' => array(
+        'type' => 'varchar',
+        'length' => '31',
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'object_name' => array(
+        'type' => 'varchar',
+        'mysql_type' => 'varbinary(255)',
+        'length' => '255',
+        'not null' => TRUE,
+      ),
+      'reference_count' => array(
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+    ),
+    'primary key' => array('record_id'),
+    'indexes' => array(
+      'branch_id' => array('branch_id'),
+      'reference_type' => array('reference_type'),
+      'object_name' => array('object_name'),
+    ),
+  ));
+
+  // Mark one file from each branch for reparse, to trigger population of
+  // this table over the next cron run(s).
+  module_load_include('inc', 'api', 'api.db');
+  $select = db_select('api_documentation', 'ad')
+    ->condition('object_type', 'file')
+    ->groupBy('ad.branch_id');
+  $select->addExpression('MIN(ad.did)', 'fdid');
+  $dids = $select->execute()->fetchCol();
+  api_mark_items_for_reparse($dids);
+  return format_string('@count files marked for reparse, starting at next cron run, to populate new table', array('@count' => count($dids)));
 }
 
 /**

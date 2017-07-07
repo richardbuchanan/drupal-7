@@ -10,7 +10,11 @@ module_load_include('php', 'api', 'tests/api_test_case');
 /**
  * Tests branch and object creation.
  */
-class ApiBranchCreation extends ApiTestCase {
+class ApiTestBranchCreation extends ApiTestCase {
+
+  /**
+   * {@inheritdoc}
+   */
   public static function getInfo() {
     return array(
       'name' => 'Branch and object creation',
@@ -22,7 +26,7 @@ class ApiBranchCreation extends ApiTestCase {
   /**
    * Tests that branch and API objects are created correctly.
    */
-  function testBranchObjects() {
+  public function testBranchObjects() {
     // Make sure we have the right number of doc objects.
     $this->assertObjectCount();
 
@@ -30,9 +34,7 @@ class ApiBranchCreation extends ApiTestCase {
     $branch = $this->getBranch();
     $object = api_filename_load('sample.php', $branch->project, $branch->branch_name);
     $this->assertEqual($object->summary, 'A sample file.', 'sample.php has summary ' . $object->summary);
-    $parsed = trim(strip_tags($object->code));
-    $file = trim(htmlspecialchars(trim(file_get_contents($branch->directories . '/' . $object->file_name))));
-    $this->assertEqual($parsed, $file, 'sample.php\'s code matches file.');
+    $this->assertCodeFormatting($object->code, $branch->directories . '/' . $object->file_name);
 
     // Check sample_function().
     $object = api_object_load('sample_function', $branch, 'function', 'sample.php');
@@ -58,6 +60,9 @@ class ApiBranchCreation extends ApiTestCase {
     $this->assertTrue(strpos($object->return_value, 'second paragraph about the return') !== FALSE, 'sample_function() return contains second paragraph.');
 
     // Check list formatting.
+    // Ignoring coding standards checks here because the strings are easier
+    // to read and maintain broken up into lines as they are.
+    // @codingStandardsIgnoreStart
     $list1 = "<p>This is a sample list:</p>" .
       "<ul><li>One item." .
       "</li><li>Another item." .
@@ -75,6 +80,7 @@ class ApiBranchCreation extends ApiTestCase {
       "<li>The following item should not have strong formatting.</li>" .
       "<li>http://example.com</li>" .
       "</ul>";
+    // @codingStandardsIgnoreEnd
 
     // Test the list HTML with no whitespace, and then spot check some of the
     // list text to make sure the spaces are there. Trying to get all the
@@ -99,21 +105,27 @@ class ApiBranchCreation extends ApiTestCase {
     // Check group samp_GRP-6.x.
     $samples_group = api_object_load('samp_GRP-6.x', $branch, 'group', 'sample.php');
     $this->assertEqual($samples_group->summary, 'A sample group.', 'Group samples has summary ' . $samples_group->summary);
-    $count = db_query("SELECT count(*) FROM {api_reference_storage} WHERE branch_id = :branch_id AND object_name = :object_name AND object_type = :object_type", array(':branch_id' => $branch->branch_id, ':object_name' => $samples_group->object_name, ':object_type' => 'group'))->fetchField();
+    $count = db_query("SELECT count(*) FROM {api_reference_storage} WHERE branch_id = :branch_id AND object_name = :object_name AND object_type = :object_type", array(
+      ':branch_id' => $branch->branch_id,
+      ':object_name' => $samples_group->object_name,
+      ':object_type' => 'group',
+    ))->fetchField();
     $this->assertEqual($count, 8, 'Group samples has ' . $count . ' members');
 
     // Check group class_samples.
     $class_samples_group = api_object_load('class_samples', $branch, 'group', 'classes.php');
     $this->assertEqual($class_samples_group->summary, 'A sample group of classes. Should not include members.', 'Group class_samples has summary ' . $class_samples_group->summary);
-    $count = db_query("SELECT count(*) FROM {api_reference_storage} WHERE branch_id = :branch_id AND object_name = :object_name AND object_type = :object_type", array(':branch_id' => $branch->branch_id, ':object_name' => $class_samples_group->object_name, ':object_type' => 'group'))->fetchField();
+    $count = db_query("SELECT count(*) FROM {api_reference_storage} WHERE branch_id = :branch_id AND object_name = :object_name AND object_type = :object_type", array(
+      ':branch_id' => $branch->branch_id,
+      ':object_name' => $class_samples_group->object_name,
+      ':object_type' => 'group',
+    ))->fetchField();
     $this->assertEqual($count, 10, 'Group class_samples has ' . $count . ' members.');
 
     // Check classes.php.
     $object = api_filename_load('classes.php', $branch->project, $branch->branch_name);
     $this->assertEqual($object->summary, 'Object-oriented tests.', 'classes.php has summary ' . $object->summary);
-    $parsed = trim(strip_tags($object->code));
-    $file = trim(htmlspecialchars(trim(file_get_contents($branch->directories . '/' . $object->file_name))));
-    $this->assertEqual($parsed, $file, 'classes.php\'s code matches file.');
+    $this->assertCodeFormatting($object->code, $branch->directories . '/' . $object->file_name);
 
     // Check Sample class.
     $class = api_object_load('Sample', $branch, 'class', 'classes.php');
@@ -149,8 +161,18 @@ class ApiBranchCreation extends ApiTestCase {
 
     // Check inheritance.
     $subclass = api_object_load('SubSample', $branch, 'class', 'classes.php');
-    $this->assertEqual(db_query("SELECT count(*) FROM {api_reference_storage} WHERE branch_id = :branch_id AND from_did = :from_did AND object_name = :object_name AND object_type = :object_type", array(':branch_id' => $branch->branch_id, ':from_did' => $class->did, ':object_name' => $interface->namespaced_name, ':object_type' => 'interface'))->fetchField(), 1, 'Sample implements SampleInterface.');
-    $this->assertEqual(db_query("SELECT count(*) FROM {api_reference_storage} WHERE branch_id = :branch_id AND from_did = :from_did AND object_name = :object_name AND object_type = :object_type", array(':branch_id' => $branch->branch_id, ':from_did' => $subclass->did, ':object_name' => $class->namespaced_name, ':object_type' => 'class'))->fetchField(), 1, 'SubSample extends Sample.');
+    $this->assertEqual(db_query("SELECT count(*) FROM {api_reference_storage} WHERE branch_id = :branch_id AND from_did = :from_did AND object_name = :object_name AND object_type = :object_type", array(
+      ':branch_id' => $branch->branch_id,
+      ':from_did' => $class->did,
+      ':object_name' => $interface->namespaced_name,
+      ':object_type' => 'interface',
+    ))->fetchField(), 1, 'Sample implements SampleInterface.');
+    $this->assertEqual(db_query("SELECT count(*) FROM {api_reference_storage} WHERE branch_id = :branch_id AND from_did = :from_did AND object_name = :object_name AND object_type = :object_type", array(
+      ':branch_id' => $branch->branch_id,
+      ':from_did' => $subclass->did,
+      ':object_name' => $class->namespaced_name,
+      ':object_type' => 'class',
+    ))->fetchField(), 1, 'SubSample extends Sample.');
 
     // Check overrides.
     $subSample_bar = api_object_load('SubSample::bar', $branch, 'function', 'classes.php');
@@ -180,5 +202,18 @@ class ApiBranchCreation extends ApiTestCase {
     $this->assertEqual($dids[$sample_constant->did], TRUE, 'Sample::constant is a member of SubSample.');
     $this->assertEqual($dids[$sample_property->did], TRUE, 'Sample::property is a member of SubSample.');
     $this->assertEqual($dids[$subSample_bar->did], TRUE, 'SubSample::bar is a member of SubSample.');
+
+    // Check formatting for remaining PHP files in top directory of this branch.
+    $files = array(
+      'duplicates.php',
+      'onefunction.php',
+      'sample--doubledash.tpl.php',
+      'sample-three.tpl.php',
+    );
+    foreach ($files as $file) {
+      $object = api_filename_load($file, $branch->project, $branch->branch_name);
+      $this->assertCodeFormatting($object->code, $branch->directories . '/' . $object->file_name);
+    }
   }
+
 }

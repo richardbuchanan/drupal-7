@@ -11,4 +11,6 @@
  *   something else instead.
  */
 ?>
-<p>Foo: <?php print $foo; ?></p>
+<p>Foo: <?php
+print $foo;
+?></p>

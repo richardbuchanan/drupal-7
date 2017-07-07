@@ -53,6 +53,9 @@ class Sample extends ClassNotDefinedHere implements SampleInterface {
   /**
    * Metasyntatic member function.
    *
+   * @return null|SubSample|int
+   *   This return type is to test that classes make links with | characters.
+   *
    * @throws SampleException when it all goes wrong.
    */
   public function foo() {

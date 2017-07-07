@@ -10,7 +10,18 @@ module_load_include('php', 'api', 'tests/api_test_case');
 /**
  * Tests that "cruft" in the API module is removed appropriately.
  */
-class ApiCruftTestCase extends ApiWebPagesBaseTest {
+class ApiTestCruft extends ApiWebPagesBaseTest {
+
+  /**
+   * The directory where the source files to parse are located.
+   *
+   * @var string
+   */
+  protected $sourceFileDirectory;
+
+  /**
+   * {@inheritdoc}
+   */
   public static function getInfo() {
     return array(
       'name' => 'Cruft removal',
@@ -19,7 +30,10 @@ class ApiCruftTestCase extends ApiWebPagesBaseTest {
     );
   }
 
-  function setUp() {
+  /**
+   * {@inheritdoc}
+   */
+  public function setUp() {
     $this->baseSetUp();
 
     // Set up a new super-user.
@@ -40,20 +54,25 @@ class ApiCruftTestCase extends ApiWebPagesBaseTest {
 
     // Set up comment settings.
     $this->drupalPost('admin/config/development/api/comments', array(
-        'comment' => 2,
-      ), t('Save comment settings'));
+      'comment' => 2,
+    ), t('Save comment settings'));
 
     // We don't need the PHP branch for this test, so for speed, remove it.
-    $this->removePHPBranch();
+    $this->removePhpBranch();
 
     // Add one node to the database.
     $this->drupalCreateNode();
+
+    // Set up a temporary copy of the files to parse.
+    $source = drupal_get_path('module', 'api') . '/tests/sample';
+    $this->sourceFileDirectory = $this->public_files_directory . '/sample_files';
+    ApiTestCruft::recursiveCopyFiles($source, $this->sourceFileDirectory);
   }
 
   /**
    * Tests that cruft is removed appropriately.
    */
-  function testCruftRemoval() {
+  public function testCruftRemoval() {
     $counts = array(
       'api_project' => 0,
       'api_branch' => 0,
@@ -72,7 +91,10 @@ class ApiCruftTestCase extends ApiWebPagesBaseTest {
     $this->verifyCounts($counts, 0, 'No branches');
 
     // Add a branch without the usual exclude directory excluded.
-    $this->setUpBranchUI('', TRUE, array('excluded' => ''));
+    $this->setUpBranchUi('', TRUE, array(
+      'directory' => $this->sourceFileDirectory,
+      'excluded' => '',
+    ));
     $counts['api_project'] = 1;
     $counts['api_branch'] = 1;
     $this->resetBranchesAndCache();
@@ -89,8 +111,8 @@ class ApiCruftTestCase extends ApiWebPagesBaseTest {
     // Update the branch to exclude the exclude directory.
     $default_branch = api_get_branch_by_id();
     $this->drupalPost('admin/config/development/api/branches/' . $default_branch->branch_id, array(
-        'data[excluded_directories]' => drupal_get_path('module', 'api') . '/tests/sample/to_exclude',
-      ), t('Save branch'));
+      'data[excluded_directories]' => $this->sourceFileDirectory . '/to_exclude',
+    ), t('Save branch'));
     $this->resetBranchesAndCache();
 
     // Parse everything and verify counts. Also verify that there are 'skip'
@@ -122,18 +144,18 @@ class ApiCruftTestCase extends ApiWebPagesBaseTest {
     // verify counts.
     $this->drupalGet('api/' . $default_branch->project . '/classes.php/class/Sample');
     $this->drupalPost(NULL, array(
-        'subject' => 'Subject 1',
-        'comment_body[und][0][value]' => 'Comment 1 body',
-      ), t('Save'));
+      'subject' => 'Subject 1',
+      'comment_body[und][0][value]' => 'Comment 1 body',
+    ), t('Save'));
     $this->assertText(t('Your comment has been posted'), 'Confirm message appears');
     $this->assertLink('Subject 1', 0, 'Comment subject appears');
     $this->assertText('Comment 1 body', 'Comment body appears');
 
     $this->drupalGet('api/' . $default_branch->project . '/subdirectory!classes-subdir.php/class/SampleInSubDir');
     $this->drupalPost(NULL, array(
-        'subject' => 'Subject 2',
-        'comment_body[und][0][value]' => 'Comment 2 body',
-      ), t('Save'));
+      'subject' => 'Subject 2',
+      'comment_body[und][0][value]' => 'Comment 2 body',
+    ), t('Save'));
     $this->assertText(t('Your comment has been posted'), 'Confirm message appears');
     $this->assertLink('Subject 2', 0, 'Comment subject appears');
     $this->assertText('Comment 2 body', 'Comment body appears');
@@ -143,8 +165,8 @@ class ApiCruftTestCase extends ApiWebPagesBaseTest {
 
     // Update the branch to exclude the subdirectory.
     $this->drupalPost('admin/config/development/api/branches/' . $default_branch->branch_id, array(
-        'data[excluded_directories]' => drupal_get_path('module', 'api') . "/tests/sample/to_exclude\n" . drupal_get_path('module', 'api') . "/tests/sample/subdirectory\n",
-      ), t('Save branch'));
+      'data[excluded_directories]' => $this->sourceFileDirectory . "/to_exclude\n" . $this->sourceFileDirectory . "/subdirectory\n",
+    ), t('Save branch'));
     $this->resetBranchesAndCache();
 
     // Run the branch update and verify counts, and that the one comment is
@@ -180,9 +202,11 @@ class ApiCruftTestCase extends ApiWebPagesBaseTest {
     // At this point, make sure the reference storage table is cleared out
     // too. We haven't been tracking it.
     $counts['api_reference_storage'] = 0;
+    $counts['api_reference_counts'] = 0;
     $this->verifyCounts($counts, 0, 'Branch deleted');
     // Go back to not tracking reference storage.
     unset($counts['api_reference_storage']);
+    unset($counts['api_reference_counts']);
 
     // Add a job using the deleted branch to the queue, and attempt to parse it.
     // Verify that the log message is generated.
@@ -190,12 +214,12 @@ class ApiCruftTestCase extends ApiWebPagesBaseTest {
     $queue = DrupalQueue::get('api_parse');
     $queue->createItem(array(
       'parser' => 'api_parse_php_file',
-      'path' => drupal_get_path('module', 'api') . '/tests/sample/sample.php',
+      'path' => $this->sourceFileDirectory . '/sample.php',
       'branch' => $default_branch,
       'file' => 'sample.php',
       'branch_name' => $default_branch->branch_name,
       'timestamp' => time(),
-      ));
+    ));
     $this->verifyCounts($counts, 1, 'Bad parse queue job added');
     $this->checkAndClearLog();
     $this->processApiParseQueue();
@@ -203,7 +227,7 @@ class ApiCruftTestCase extends ApiWebPagesBaseTest {
     $this->checkAndClearLog(array('Invalid or deleted branch requested in API parse'));
 
     // Add the fake PHP branch.
-    $this->createPHPBranchUI();
+    $this->createPhpBranchUi();
     $this->resetBranchesAndCache();
     $counts['api_php_branch'] = 1;
     $this->verifyCounts($counts, 0, 'Create PHP branch');
@@ -225,7 +249,7 @@ class ApiCruftTestCase extends ApiWebPagesBaseTest {
     $this->verifyCounts($counts, 0, 'Delete PHP branch');
 
     // Add the fake API branch.
-    $this->createAPIBranchUI();
+    $this->createApiBranchUi();
     $this->resetBranchesAndCache();
     $counts['api_php_branch'] = 1;
     $this->verifyCounts($counts, 0, 'Create API branch');
@@ -246,22 +270,40 @@ class ApiCruftTestCase extends ApiWebPagesBaseTest {
     $counts['api_external_documentation'] = 0;
     $this->verifyCounts($counts, 0, 'Delete API branch');
 
-    // Add and parse the sample branch again, then delete the project, and
-    // verify counts.
-    $this->setUpBranchUI();
+    // Add and update the sample branch again, without excluding the
+    // directory.
+    $this->setUpBranchUi('', TRUE, array(
+      'directory' => $this->sourceFileDirectory,
+      'excluded' => '',
+    ));
     $this->resetBranchesAndCache();
     $this->updateBranches();
+    $counts['api_project'] = 1;
+    $counts['api_branch'] = 1;
+    $counts['node'] = 13;
+    $counts['api_documentation'] = 12;
+    $counts['api_file'] = 12;
+    $this->verifyCounts($counts, 12, 'Add and update branch with no exclusion, take 2');
+
+    // Test for issue https://www.drupal.org/node/2860975 :
+    // Delete the file in the excluded directory, and process the queue to
+    // verify that the files are skipped and no errors are generated.
+    unlink($this->sourceFileDirectory . '/to_exclude/excluded.php');
     $this->processApiParseQueue();
     $counts['api_project'] = 1;
     $counts['api_branch'] = 1;
-    $counts['api_documentation'] = 68;
-    $counts['api_file'] = 11;
+    // The file and documentation tables have one extra entry for the deleted
+    // file, which is added to the database when the branch is updated.
+    $counts['api_documentation'] = 69;
+    $counts['api_file'] = 12;
     $counts['api_function'] = 30;
     $counts['api_members'] = 30;
     $counts['api_overrides'] = 22;
-    $counts['node'] = 69;
-    $this->verifyCounts($counts, 0, 'Branch added again');
+    $counts['node'] = 70;
+    $this->verifyCounts($counts, 0, 'File deleted');
+    $this->checkAndClearLog(array('Skipped API parse'));
 
+    // Delete the project and verify counts.
     $default_branch = api_get_branch_by_id();
     $this->drupalPost('admin/config/development/api/projects/' . $default_branch->project . '/delete', array(), t('Delete'));
     $counts['api_branch'] = 0;
@@ -275,13 +317,16 @@ class ApiCruftTestCase extends ApiWebPagesBaseTest {
     // At this point, make sure the reference storage table is cleared out
     // too. We haven't been tracking it.
     $counts['api_reference_storage'] = 0;
+    $counts['api_reference_counts'] = 0;
     $this->verifyCounts($counts, 0, 'Project deleted');
 
     // Add both sample and fake PHP/API branches again.
     // Update the branches, but don't parse.
-    $this->createPHPBranchUI();
-    $this->createAPIBranchUI();
-    $this->setUpBranchUI();
+    $this->createPhpBranchUi();
+    $this->createApiBranchUi();
+    $this->setUpBranchUi('', TRUE, array(
+      'directory' => $this->sourceFileDirectory,
+    ));
     $this->resetBranchesAndCache();
     $this->updateBranches();
 
@@ -311,4 +356,33 @@ class ApiCruftTestCase extends ApiWebPagesBaseTest {
     // Verify that there are no auto-complete files left over.
     $this->assertFalse(is_dir('public://api'), 'API files directory is empty');
   }
+
+  /**
+   * Recursively copies files from a source to a destination directory.
+   *
+   * Slightly modified (variable names and coding standards) from a comment
+   * on http://php.net/manual/en/function.copy.php .
+   *
+   * @param string $source
+   *   Source directory to copy.
+   * @param string $destination
+   *   Desintation to copy to.
+   */
+  protected static function recursiveCopyFiles($source, $destination) {
+    $dir = opendir($source);
+    @mkdir($destination);
+
+    while (FALSE !== ($file = readdir($dir))) {
+      if (($file != '.') && ($file != '..')) {
+        if (is_dir($source . '/' . $file)) {
+          ApiTestCruft::recursiveCopyFiles($source . '/' . $file, $destination . '/' . $file);
+        }
+        else {
+          copy($source . '/' . $file, $destination . '/' . $file);
+        }
+      }
+    }
+    closedir($dir);
+  }
+
 }

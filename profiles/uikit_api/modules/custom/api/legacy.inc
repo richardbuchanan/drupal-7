@@ -8,6 +8,7 @@
 /**
  * Redirects legacy URLs for files.
  *
+ * The redirect is:
  * api/file/{directory}/{file.php}[/{branch}] ->
  * api/{project}/{directory}{separator}{file.php}/{branch}
  *

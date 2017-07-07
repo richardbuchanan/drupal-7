@@ -16,7 +16,11 @@ module_load_include('php', 'api', 'tests/api_test_case');
  * This test verifies that queries tagged "node_access" work: that the API nodes
  * are not included, and that other nodes are included.
  */
-class ApiNodeAccessTestCase extends ApiWebPagesBaseTest {
+class ApiTestNodeAccess extends ApiWebPagesBaseTest {
+
+  /**
+   * {@inheritdoc}
+   */
   public static function getInfo() {
     return array(
       'name' => 'Node access',
@@ -28,7 +32,7 @@ class ApiNodeAccessTestCase extends ApiWebPagesBaseTest {
   /**
    * Tests node access functionality.
    */
-  function testNodeAccess() {
+  public function testNodeAccess() {
     // Create a couple of nodes. There should already be plenty of API nodes.
     $page = $this->drupalCreateNode();
     $article = $this->drupalCreateNode(array('type' => 'article'));
@@ -38,7 +42,11 @@ class ApiNodeAccessTestCase extends ApiWebPagesBaseTest {
     // Verify that a node query without the node_access tag returns both API
     // and non-API nodes.
     $results = db_query('SELECT * FROM {node}');
-    $this->verifyQueryResults($results, 'All nodes, no tag', array($page->nid, $article->nid, $object->did), array('page', 'article', 'api'));
+    $this->verifyQueryResults(
+      $results,
+      'All nodes, no tag',
+      array($page->nid, $article->nid, $object->did),
+      array('page', 'article', 'api'));
 
     // Verify that a node query with the node_access tag returns only non-API
     // nodes.
@@ -55,7 +63,11 @@ class ApiNodeAccessTestCase extends ApiWebPagesBaseTest {
       ->addTag('node_access')
       ->addTag('api_ignore_node_access')
       ->execute();
-    $this->verifyQueryResults($results, 'All nodes, both tags', array($page->nid, $article->nid, $object->did), array('page', 'article', 'api'));
+    $this->verifyQueryResults(
+      $results,
+      'All nodes, both tags',
+      array($page->nid, $article->nid, $object->did),
+      array('page', 'article', 'api'));
 
     // Try a more complicated query with the node_access tag.
     $query = db_select('node_revision', 'r');
@@ -78,19 +90,19 @@ class ApiNodeAccessTestCase extends ApiWebPagesBaseTest {
   /**
    * Asserts that the correct node IDs and node types are in query results.
    *
-   * @param $results
+   * @param DatabaseStatementInterface|array $results
    *   Result set from a node query, or array of node objects. Must contain the
-   *   type and nid fields.
-   * @param $query_message
+   *   type and nid fields on each node.
+   * @param string $query_message
    *   String explaining what the query is for assert messages.
-   * @param $nids_yes
+   * @param array $nids_yes
    *   Specific node IDs to verify are part of the query.
-   * @param $types_yes
+   * @param array $types_yes
    *   Node types to verify are part of the query.
-   * @param $types_no
+   * @param array $types_no
    *   Node types to verify are not part of the query.
    */
-  function verifyQueryResults($results, $query_message, $nids_yes = array(), $types_yes = array(), $types_no = array()) {
+  protected function verifyQueryResults($results, $query_message, array $nids_yes = array(), array $types_yes = array(), array $types_no = array()) {
 
     $nids_found = array();
     $types_found = array();
@@ -112,4 +124,5 @@ class ApiNodeAccessTestCase extends ApiWebPagesBaseTest {
     $bad_types_found = array_intersect($types_no, $types_found);
     $this->assertEqual(count($bad_types_found), 0, 'No forbidden node types (' . implode(', ', $types_no) . ') were found in query: ' . $query_message . ' (' . implode(', ', $bad_types_found) . ')');
   }
+
 }

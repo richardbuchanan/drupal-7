@@ -10,18 +10,20 @@
  */
 class api_views_handler_argument_partial_match extends views_handler_argument_string {
 
-  function init(&$view, &$options) {
-    parent::init($view, $options);
-  }
-
-  function option_definition() {
+  /**
+   * {@inheritdoc}
+   */
+  public function option_definition() {
     $options = parent::option_definition();
 
     $options['partial_match'] = array('default' => FALSE, 'bool' => TRUE);
     return $options;
   }
 
-  function options_form(&$form, &$form_state) {
+  /**
+   * {@inheritdoc}
+   */
+  public function options_form(&$form, &$form_state) {
     parent::options_form($form, $form_state);
 
     $form['partial_match'] = array(
@@ -33,9 +35,9 @@ class api_views_handler_argument_partial_match extends views_handler_argument_st
   }
 
   /**
-   * Build the query.
+   * Builds the query.
    */
-  function query($group_by = FALSE) {
+  public function query($group_by = FALSE) {
     $argument = $this->argument;
 
     if (!empty($this->options['transform_dash'])) {
@@ -104,4 +106,5 @@ class api_views_handler_argument_partial_match extends views_handler_argument_st
       $this->query->add_where(0, $field, $argument, $operator);
     }
   }
+
 }

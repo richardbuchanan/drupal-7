@@ -55,4 +55,8 @@ foreach ($call_links as $link) {
 <h3><?php print t('File'); ?></h3>
 <?php print $defined; ?>
 
-<?php print theme('ctools_collapsible', array('handle' => t('View source'), 'content' => $code, 'collapsed' => TRUE)); ?>
+<?php print theme('ctools_collapsible', array(
+  'handle' => t('View source'),
+  'content' => $code,
+  'collapsed' => TRUE,
+)); ?>

@@ -13,5 +13,5 @@ interface InterfaceC {
   /**
    * An exciting method.
    */
-  function cMethod() {}
+  function cMethod();
 }

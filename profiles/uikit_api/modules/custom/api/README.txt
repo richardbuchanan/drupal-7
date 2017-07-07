@@ -15,11 +15,11 @@ This is an implementation of a subset of the Doxygen documentation generator
 specification, tuned to produce output that best benefits the Drupal code base.
 It is designed to assume the code it documents follows Drupal coding
 conventions, and supports Doxygen constructs as documented on
-http://drupal.org/node/1354.
+https://drupal.org/node/1354.
 
 In addition to standard Doxygen syntax requirements, the following restrictions
 are made on the code format. These are all Drupal coding conventions (see
-http://drupal.org/node/1354 for more details and suggestions).
+https://drupal.org/node/1354 for more details and suggestions).
 
 1. All documentation blocks must use the syntax:
 
@@ -54,7 +54,7 @@ following features:
 
 INSTALLATION AND SETUP
 
-See http://drupal.org/node/1516558 for information on how to install and set up
+See https://drupal.org/node/1516558 for information on how to install and set up
 this module.
 
 
@@ -147,7 +147,7 @@ just // or /* is parsed by the API module, and this turns into the documentation
 pages on the API site.
 
 For instance, take a look at this code from Drupal Core:
-  http://cgit.drupalcode.org/drupal/tree/core/modules/node/node.module#n189
+  https://cgit.drupalcode.org/drupal/tree/core/modules/node/node.module#n189
 And here is what this node_title_list() function looks like on api.drupal.org:
   https://api.drupal.org/api/drupal/core!modules!node!node.module/function/node_title_list/8
 So the @param documentation in the Drupal Core code comment is shown in the
@@ -187,7 +187,7 @@ instance, the worker for the "update branches" queue is
 api_queue_update_branch(). The queue/cron architecture:
 - cron: See if any branches need updating, and add them to the update
   branch queue. This is function api_cron() in api.module. It calls
-  api_update_all_branches(), which is in the include file parser.inc.
+  api_update_all_branches(), which is in the include file api.update_branch.inc.
 - update branch queue: See if any files have changed, and add them to the
   parse queue. Also if any files have been deleted, add entries to the node
   delete queue for everything that file used to contain.

@@ -10,7 +10,11 @@ module_load_include('php', 'api', 'tests/api_test_case');
 /**
  * Tests that links are generated correctly on API pages.
  */
-class ApiWebLinksTestCase extends ApiWebPagesBaseTest {
+class ApiTestWebLinks extends ApiWebPagesBaseTest {
+
+  /**
+   * {@inheritdoc}
+   */
   public static function getInfo() {
     return array(
       'name' => 'Web links',
@@ -22,17 +26,17 @@ class ApiWebLinksTestCase extends ApiWebPagesBaseTest {
   /**
    * Runs all the tests in this section, so setUp() doesn't have to run again.
    */
-  function testAll() {
-    $this->_testInCodeLinks();
-    $this->_testDocumentationLinks();
-    $this->_testClassLinks();
-    $this->_test404();
+  public function testAll() {
+    $this->verifyInCodeLinks();
+    $this->verifyDocumentationLinks();
+    $this->verifyClassLinks();
+    $this->verify404();
   }
 
   /**
    * Tests that links are generated correctly in code.
    */
-  function _testInCodeLinks() {
+  protected function verifyInCodeLinks() {
     // Test a bunch of links on the sample_in_code_links page.
     $links = array(
       'sample_function' => 'sample.php/function/sample_function',
@@ -42,18 +46,18 @@ class ApiWebLinksTestCase extends ApiWebPagesBaseTest {
       'sample_four__option' => 'sample.php/function/theme_sample_four',
       'sample_name' => 'sample.php/function/hook_sample_name',
       'another_sample' => 'sample.php/function/hook_another_sample_alter',
-      'duplicate_function' => $this->branch_info['project'] . '/' . $this->branch_info['branch_name'] . '/search/duplicate_function',
+      'duplicate_function' => $this->branchInfo['project'] . '/' . $this->branchInfo['branch_name'] . '/search/duplicate_function',
       'SubSample' => 'classes.php/class/SubSample',
       'SAMPLE_CONSTANT' => 'sample.php/constant/SAMPLE_CONSTANT',
-      'DUPLICATE_CONSTANT' => $this->branch_info['project'] . '/' . $this->branch_info['branch_name'] . '/search/DUPLICATE_CONSTANT',
+      'DUPLICATE_CONSTANT' => $this->branchInfo['project'] . '/' . $this->branchInfo['branch_name'] . '/search/DUPLICATE_CONSTANT',
       'Samples' => 'sample.php/group/samp_GRP-6.x/',
       'sample_global' => 'sample.php/global/sample_global',
     );
 
-    $this->drupalGet('api/' . $this->branch_info['project'] . '/sample.php/function/sample_in_code_links');
+    $this->drupalGet('api/' . $this->branchInfo['project'] . '/sample.php/function/sample_in_code_links');
 
     foreach ($links as $text => $url) {
-      $this->assertLinkURLSubstring($text, $url, 'Link to ' . $text . ' exists', $text . ' link went to right place');
+      $this->assertLinkUrlSubstring($text, $url, 'Link to ' . $text . ' exists', $text . ' link went to right place');
     }
 
     // Test for text that should be there but not linked.
@@ -66,7 +70,7 @@ class ApiWebLinksTestCase extends ApiWebPagesBaseTest {
       'global',
     );
 
-    $this->drupalGet('api/' . $this->branch_info['project'] . '/sample.php/function/sample_in_code_links');
+    $this->drupalGet('api/' . $this->branchInfo['project'] . '/sample.php/function/sample_in_code_links');
     foreach ($no_links as $text) {
       $this->assertText($text, $text . ' is present');
       $this->assertNoLink($text, $text . ' is not a link');
@@ -76,19 +80,19 @@ class ApiWebLinksTestCase extends ApiWebPagesBaseTest {
   /**
    * Tests that links are generated correctly in documentation.
    */
-  function _testDocumentationLinks() {
+  protected function verifyDocumentationLinks() {
     // Test a variety of links on the documentation page for sample_function().
     $links = array(
-      'duplicate_function' => $this->branch_info['project'] . '/' . $this->branch_info['branch_name'] . '/search/duplicate_function',
+      'duplicate_function' => $this->branchInfo['project'] . '/' . $this->branchInfo['branch_name'] . '/search/duplicate_function',
       'http://example.com' => 'http://example.com',
       'this is a link for the parameter' => 'http://php.net',
       'SAMPLE_CONSTANT' => 'sample.php/constant/SAMPLE_CONSTANT',
       'Samples' => 'sample.php/group/samp_GRP-6.x',
     );
 
-    $this->drupalGet('api/' . $this->branch_info['project'] . '/sample.php/function/sample_function');
+    $this->drupalGet('api/' . $this->branchInfo['project'] . '/sample.php/function/sample_function');
     foreach ($links as $text => $url) {
-      $this->assertLinkURLSubstring($text, $url, 'Link to ' . $text . ' exists', $text . ' link went to right place');
+      $this->assertLinkUrlSubstring($text, $url, 'Link to ' . $text . ' exists', $text . ' link went to right place');
     }
 
     // Test some links on the duplicate_function() page.
@@ -99,20 +103,20 @@ class ApiWebLinksTestCase extends ApiWebPagesBaseTest {
       'newsletter issues' => 'classes.php/group/class_samples',
     );
 
-    $this->drupalGet('api/' . $this->branch_info['project'] . '/sample.php/function/duplicate_function');
+    $this->drupalGet('api/' . $this->branchInfo['project'] . '/sample.php/function/duplicate_function');
     foreach ($links as $text => $url) {
-      $this->assertLinkURLSubstring($text, $url, 'Link to ' . $text . ' exists', $text . ' link went to right place');
+      $this->assertLinkUrlSubstring($text, $url, 'Link to ' . $text . ' exists', $text . ' link went to right place');
     }
   }
 
   /**
    * Tests a variety of class member links.
    */
-  function _testClassLinks() {
+  protected function verifyClassLinks() {
     $pages = array(
-      'Sample::foo' => 'api/' . $this->branch_info['project'] . '/classes.php/function/Sample::foo',
-      'Sample::baz' => 'api/' . $this->branch_info['project'] . '/classes.php/function/Sample::baz',
-      'SubSample::bar' => 'api/' . $this->branch_info['project'] . '/classes.php/function/SubSample::bar',
+      'Sample::foo' => 'api/' . $this->branchInfo['project'] . '/classes.php/function/Sample::foo',
+      'Sample::baz' => 'api/' . $this->branchInfo['project'] . '/classes.php/function/Sample::baz',
+      'SubSample::bar' => 'api/' . $this->branchInfo['project'] . '/classes.php/function/SubSample::bar',
     );
 
     $links = array(
@@ -132,6 +136,11 @@ class ApiWebLinksTestCase extends ApiWebPagesBaseTest {
         'url' => 'classes.php/constant/Sample',
       ),
       array(
+        'page' => 'Sample::foo',
+        'text' => 'SubSample',
+        'url' => 'classes.php/class/SubSample',
+      ),
+      array(
         'page' => 'Sample::baz',
         'text' => 'foo',
         'url' => 'classes.php/function/Sample',
@@ -139,7 +148,7 @@ class ApiWebLinksTestCase extends ApiWebPagesBaseTest {
       array(
         'page' => 'Sample::baz',
         'text' => 'bar',
-        'url' => $this->branch_info['project'] . '/' . $this->branch_info['branch_name'] . '/search/bar',
+        'url' => $this->branchInfo['project'] . '/' . $this->branchInfo['branch_name'] . '/search/bar',
       ),
       array(
         'page' => 'SubSample::bar',
@@ -155,7 +164,7 @@ class ApiWebLinksTestCase extends ApiWebPagesBaseTest {
 
     foreach ($links as $item) {
       $this->drupalGet($pages[$item['page']]);
-      $this->assertLinkURLSubstring($item['text'], $item['url'], 'Link to ' . $item['text'] . ' exists', $item['text'] . ' link went to right place');
+      $this->assertLinkUrlSubstring($item['text'], $item['url'], 'Link to ' . $item['text'] . ' exists', $item['text'] . ' link went to right place');
     }
 
     $no_links = array(
@@ -175,16 +184,16 @@ class ApiWebLinksTestCase extends ApiWebPagesBaseTest {
   /**
    * Tests that the 'apis' path can be set to be the 404 handler.
    */
-  function _test404() {
+  protected function verify404() {
     // Set the 404 handler to be the 'apis' path.
     $this->drupalPost('admin/config/system/site-information', array(
-        'site_404' => 'apis',
-      ), t('Save configuration'));
+      'site_404' => 'apis',
+    ), t('Save configuration'));
 
     // Try to go to path 'sample_function' and verify it redirects to the
     // function page.
     $this->drupalGet('sample_function');
-    $this->assertURLContains('sample.php/function/sample_function', 'sample_function 404 went to right page');
+    $this->assertUrlContains('sample.php/function/sample_function', 'sample_function 404 went to right page');
     $this->assertText('This is a sample list', 'Text of page is correct');
 
     // Try to go to the path 'foobarbaz' and verify it redirects to a search
@@ -194,4 +203,5 @@ class ApiWebLinksTestCase extends ApiWebPagesBaseTest {
     $this->assertText('Sorry', 'Text of page is correct');
     $this->assertText('foobarbaz', 'Text of page is correct');
   }
+
 }

@@ -13,5 +13,5 @@ interface InterfaceD {
   /**
    * Yet another exciting method.
    */
-  function dtwoMethod() {}
+  function dtwoMethod();
 }

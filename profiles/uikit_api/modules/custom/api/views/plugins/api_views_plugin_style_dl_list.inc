@@ -11,7 +11,11 @@
  * Note that the rows must be formatted into DT and DD elements!
  */
 class api_views_plugin_style_dl_list extends views_plugin_style {
-  function option_definition() {
+
+  /**
+   * {@inheritdoc}
+   */
+  public function option_definition() {
     $options = parent::option_definition();
 
     $options['class'] = array('default' => '');
@@ -20,7 +24,10 @@ class api_views_plugin_style_dl_list extends views_plugin_style {
     return $options;
   }
 
-  function options_form(&$form, &$form_state) {
+  /**
+   * {@inheritdoc}
+   */
+  public function options_form(&$form, &$form_state) {
     parent::options_form($form, $form_state);
 
     $form['note'] = array(
@@ -43,6 +50,6 @@ class api_views_plugin_style_dl_list extends views_plugin_style {
       '#size' => '30',
       '#default_value' => $this->options['class'],
     );
-
   }
+
 }

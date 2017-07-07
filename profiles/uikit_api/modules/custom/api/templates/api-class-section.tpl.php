@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Displays the documentation for a class containing a member.

@@ -117,9 +117,13 @@ function sample_function($parameter, $complex_parameter) {
   // as a function call.
   $foo = sample_function();
 
-  $bar = array('#theme' => 'sample_two');
+  $bar = array(
+    '#theme' => 'sample_two',
+  );
 
-  $baz = array('#type' => 'subdir_sample');
+  $baz = array(
+    '#type' => 'subdir_sample',
+  );
 }
 
 /**
@@ -352,8 +356,12 @@ function sample_one() {
 
 // For testing that functions without names are not saved as doc objects.
 $var = 1;
-function () use ($var) {};
-function () use ($var) {};
+
+function () use ($var) {
+};
+
+function () use ($var) {
+};
 
 /**
  * @defgroup listing_page_class Page header for Functions page

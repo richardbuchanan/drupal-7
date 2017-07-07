@@ -14,6 +14,7 @@ function api_views_default_views() {
   $views = array();
 
   // API Listings view.
+
   $view = new view();
   $view->name = 'api_listings';
   $view->description = 'Blocks for listing API documentation items. Used directly by the API module. Do not delete or disable.';
@@ -130,6 +131,116 @@ function api_views_default_views() {
   $handler = $view->new_display('block', 'Default List Block', 'block_listing');
   $handler->display->display_options['display_description'] = 'Block for listing functions, constants, etc.';
   $handler->display->display_options['defaults']['hide_admin_links'] = FALSE;
+  $handler->display->display_options['defaults']['style_plugin'] = FALSE;
+  $handler->display->display_options['style_plugin'] = 'table';
+  $handler->display->display_options['style_options']['columns'] = array(
+    'title' => 'title',
+    'deprecated' => 'title',
+    'file_name' => 'file_name',
+    'summary' => 'summary',
+    'reference_count' => 'reference_count',
+    'reference_count_1' => 'reference_count_1',
+  );
+  $handler->display->display_options['style_options']['default'] = 'title';
+  $handler->display->display_options['style_options']['info'] = array(
+    'title' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => ' ',
+      'empty_column' => 0,
+    ),
+    'deprecated' => array(
+      'sortable' => 0,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'file_name' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'summary' => array(
+      'sortable' => 0,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'reference_count' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'desc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'reference_count_1' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'desc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+  );
+  $handler->display->display_options['defaults']['style_options'] = FALSE;
+  $handler->display->display_options['defaults']['row_plugin'] = FALSE;
+  $handler->display->display_options['defaults']['row_options'] = FALSE;
+  $handler->display->display_options['defaults']['relationships'] = FALSE;
+  /* Relationship: API documentation: Reference counts: direct */
+  $handler->display->display_options['relationships']['references_count_call']['id'] = 'references_count_call';
+  $handler->display->display_options['relationships']['references_count_call']['table'] = 'api_documentation';
+  $handler->display->display_options['relationships']['references_count_call']['field'] = 'references_count_call';
+  /* Relationship: API documentation: Reference count: strings */
+  $handler->display->display_options['relationships']['references_count_string']['id'] = 'references_count_string';
+  $handler->display->display_options['relationships']['references_count_string']['table'] = 'api_documentation';
+  $handler->display->display_options['relationships']['references_count_string']['field'] = 'references_count_string';
+  $handler->display->display_options['defaults']['fields'] = FALSE;
+  /* Field: API documentation: Title */
+  $handler->display->display_options['fields']['title']['id'] = 'title';
+  $handler->display->display_options['fields']['title']['table'] = 'api_documentation';
+  $handler->display->display_options['fields']['title']['field'] = 'title';
+  $handler->display->display_options['fields']['title']['label'] = 'Name';
+  $handler->display->display_options['fields']['title']['link_to_docs'] = 'object';
+  /* Field: API documentation: Deprecated */
+  $handler->display->display_options['fields']['deprecated']['id'] = 'deprecated';
+  $handler->display->display_options['fields']['deprecated']['table'] = 'api_documentation';
+  $handler->display->display_options['fields']['deprecated']['field'] = 'deprecated';
+  $handler->display->display_options['fields']['deprecated']['label'] = '';
+  $handler->display->display_options['fields']['deprecated']['alter']['alter_text'] = TRUE;
+  $handler->display->display_options['fields']['deprecated']['alter']['text'] = '<span class="api-deprecated">Deprecated</span>';
+  $handler->display->display_options['fields']['deprecated']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['deprecated']['hide_empty'] = TRUE;
+  /* Field: API documentation: File name */
+  $handler->display->display_options['fields']['file_name']['id'] = 'file_name';
+  $handler->display->display_options['fields']['file_name']['table'] = 'api_documentation';
+  $handler->display->display_options['fields']['file_name']['field'] = 'file_name';
+  $handler->display->display_options['fields']['file_name']['label'] = 'Location';
+  $handler->display->display_options['fields']['file_name']['link_to_docs'] = 'file_base';
+  /* Field: API documentation: Summary */
+  $handler->display->display_options['fields']['summary']['id'] = 'summary';
+  $handler->display->display_options['fields']['summary']['table'] = 'api_documentation';
+  $handler->display->display_options['fields']['summary']['field'] = 'summary';
+  $handler->display->display_options['fields']['summary']['label'] = 'Description';
+  /* Field: API reference counts: Reference count */
+  $handler->display->display_options['fields']['reference_count']['id'] = 'reference_count';
+  $handler->display->display_options['fields']['reference_count']['table'] = 'api_reference_counts';
+  $handler->display->display_options['fields']['reference_count']['field'] = 'reference_count';
+  $handler->display->display_options['fields']['reference_count']['relationship'] = 'references_count_call';
+  $handler->display->display_options['fields']['reference_count']['label'] = 'Direct uses';
+  $handler->display->display_options['fields']['reference_count']['hide_empty'] = TRUE;
+  $handler->display->display_options['fields']['reference_count']['empty_zero'] = TRUE;
+  /* Field: API reference counts: Reference count */
+  $handler->display->display_options['fields']['reference_count_1']['id'] = 'reference_count_1';
+  $handler->display->display_options['fields']['reference_count_1']['table'] = 'api_reference_counts';
+  $handler->display->display_options['fields']['reference_count_1']['field'] = 'reference_count';
+  $handler->display->display_options['fields']['reference_count_1']['relationship'] = 'references_count_string';
+  $handler->display->display_options['fields']['reference_count_1']['label'] = 'Strings';
+  $handler->display->display_options['fields']['reference_count_1']['hide_empty'] = TRUE;
+  $handler->display->display_options['fields']['reference_count_1']['empty_zero'] = TRUE;
   $handler->display->display_options['defaults']['filter_groups'] = FALSE;
   $handler->display->display_options['defaults']['filters'] = FALSE;
   /* Filter criterion: API documentation: Class documentation ID */
@@ -336,6 +447,9 @@ function api_views_default_views() {
     'namespace' => 'namespace',
     'file_name' => 'file_name',
     'summary' => 'summary',
+    'reference_count_2' => 'reference_count_2',
+    'reference_count' => 'reference_count',
+    'reference_count_1' => 'reference_count_1',
   );
   $handler->display->display_options['style_options']['default'] = 'object_name';
   $handler->display->display_options['style_options']['info'] = array(
@@ -388,11 +502,44 @@ function api_views_default_views() {
       'separator' => '',
       'empty_column' => 0,
     ),
+    'reference_count_2' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'desc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'reference_count' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'desc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'reference_count_1' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'desc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
   );
   $handler->display->display_options['defaults']['style_options'] = FALSE;
   $handler->display->display_options['defaults']['row_plugin'] = FALSE;
   $handler->display->display_options['defaults']['row_options'] = FALSE;
   $handler->display->display_options['defaults']['relationships'] = FALSE;
+  /* Relationship: API documentation: Reference counts: use statements */
+  $handler->display->display_options['relationships']['references_count_use']['id'] = 'references_count_use';
+  $handler->display->display_options['relationships']['references_count_use']['table'] = 'api_documentation';
+  $handler->display->display_options['relationships']['references_count_use']['field'] = 'references_count_use';
+  /* Relationship: API documentation: Reference count: strings, namespaced */
+  $handler->display->display_options['relationships']['references_count_string_namespaced']['id'] = 'references_count_string_namespaced';
+  $handler->display->display_options['relationships']['references_count_string_namespaced']['table'] = 'api_documentation';
+  $handler->display->display_options['relationships']['references_count_string_namespaced']['field'] = 'references_count_string_namespaced';
+  /* Relationship: API documentation: Reference counts: direct, namespaced */
+  $handler->display->display_options['relationships']['references_count_call_namespaced']['id'] = 'references_count_call_namespaced';
+  $handler->display->display_options['relationships']['references_count_call_namespaced']['table'] = 'api_documentation';
+  $handler->display->display_options['relationships']['references_count_call_namespaced']['field'] = 'references_count_call_namespaced';
   $handler->display->display_options['defaults']['fields'] = FALSE;
   /* Field: API documentation: Object name */
   $handler->display->display_options['fields']['object_name']['id'] = 'object_name';
@@ -439,6 +586,30 @@ function api_views_default_views() {
   $handler->display->display_options['fields']['summary']['table'] = 'api_documentation';
   $handler->display->display_options['fields']['summary']['field'] = 'summary';
   $handler->display->display_options['fields']['summary']['label'] = 'Description';
+  /* Field: API reference counts: Reference count */
+  $handler->display->display_options['fields']['reference_count_2']['id'] = 'reference_count_2';
+  $handler->display->display_options['fields']['reference_count_2']['table'] = 'api_reference_counts';
+  $handler->display->display_options['fields']['reference_count_2']['field'] = 'reference_count';
+  $handler->display->display_options['fields']['reference_count_2']['relationship'] = 'references_count_call_namespaced';
+  $handler->display->display_options['fields']['reference_count_2']['label'] = 'Direct uses';
+  $handler->display->display_options['fields']['reference_count_2']['hide_empty'] = TRUE;
+  $handler->display->display_options['fields']['reference_count_2']['empty_zero'] = TRUE;
+  /* Field: API reference counts: Reference count */
+  $handler->display->display_options['fields']['reference_count']['id'] = 'reference_count';
+  $handler->display->display_options['fields']['reference_count']['table'] = 'api_reference_counts';
+  $handler->display->display_options['fields']['reference_count']['field'] = 'reference_count';
+  $handler->display->display_options['fields']['reference_count']['relationship'] = 'references_count_use';
+  $handler->display->display_options['fields']['reference_count']['label'] = 'Use statements';
+  $handler->display->display_options['fields']['reference_count']['hide_empty'] = TRUE;
+  $handler->display->display_options['fields']['reference_count']['empty_zero'] = TRUE;
+  /* Field: API reference counts: Reference count */
+  $handler->display->display_options['fields']['reference_count_1']['id'] = 'reference_count_1';
+  $handler->display->display_options['fields']['reference_count_1']['table'] = 'api_reference_counts';
+  $handler->display->display_options['fields']['reference_count_1']['field'] = 'reference_count';
+  $handler->display->display_options['fields']['reference_count_1']['relationship'] = 'references_count_string_namespaced';
+  $handler->display->display_options['fields']['reference_count_1']['label'] = 'Strings';
+  $handler->display->display_options['fields']['reference_count_1']['hide_empty'] = TRUE;
+  $handler->display->display_options['fields']['reference_count_1']['empty_zero'] = TRUE;
   $handler->display->display_options['defaults']['arguments'] = FALSE;
   /* Contextual filter: API documentation: Branch */
   $handler->display->display_options['arguments']['branch_id']['id'] = 'branch_id';
@@ -693,6 +864,97 @@ function api_views_default_views() {
 
   /* Display: Deprecated Block */
   $handler = $view->new_display('block', 'Deprecated Block', 'block_deprecated');
+  $handler->display->display_options['defaults']['style_plugin'] = FALSE;
+  $handler->display->display_options['style_plugin'] = 'table';
+  $handler->display->display_options['style_options']['columns'] = array(
+    'title' => 'title',
+    'file_name' => 'file_name',
+    'object_type' => 'object_type',
+    'summary' => 'summary',
+    'reference_count' => 'reference_count',
+    'reference_count_1' => 'reference_count_1',
+    'reference_count_2' => 'reference_count_2',
+    'reference_count_3' => 'reference_count_3',
+  );
+  $handler->display->display_options['style_options']['default'] = 'title';
+  $handler->display->display_options['style_options']['info'] = array(
+    'title' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => ' ',
+      'empty_column' => 0,
+    ),
+    'file_name' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'object_type' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'summary' => array(
+      'sortable' => 0,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'reference_count' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'desc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'reference_count_1' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'desc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'reference_count_2' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'desc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'reference_count_3' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'desc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+  );
+  $handler->display->display_options['defaults']['style_options'] = FALSE;
+  $handler->display->display_options['defaults']['row_plugin'] = FALSE;
+  $handler->display->display_options['defaults']['row_options'] = FALSE;
+  $handler->display->display_options['defaults']['relationships'] = FALSE;
+  /* Relationship: API documentation: Reference counts: use statements */
+  $handler->display->display_options['relationships']['references_count_use']['id'] = 'references_count_use';
+  $handler->display->display_options['relationships']['references_count_use']['table'] = 'api_documentation';
+  $handler->display->display_options['relationships']['references_count_use']['field'] = 'references_count_use';
+  /* Relationship: API documentation: Reference counts: direct */
+  $handler->display->display_options['relationships']['references_count_call']['id'] = 'references_count_call';
+  $handler->display->display_options['relationships']['references_count_call']['table'] = 'api_documentation';
+  $handler->display->display_options['relationships']['references_count_call']['field'] = 'references_count_call';
+  /* Relationship: API documentation: Reference count: overrides */
+  $handler->display->display_options['relationships']['references_count_override']['id'] = 'references_count_override';
+  $handler->display->display_options['relationships']['references_count_override']['table'] = 'api_documentation';
+  $handler->display->display_options['relationships']['references_count_override']['field'] = 'references_count_override';
+  /* Relationship: API documentation: Reference counts: direct, namespaced */
+  $handler->display->display_options['relationships']['references_count_call_namespaced']['id'] = 'references_count_call_namespaced';
+  $handler->display->display_options['relationships']['references_count_call_namespaced']['table'] = 'api_documentation';
+  $handler->display->display_options['relationships']['references_count_call_namespaced']['field'] = 'references_count_call_namespaced';
   $handler->display->display_options['defaults']['fields'] = FALSE;
   /* Field: API documentation: Title */
   $handler->display->display_options['fields']['title']['id'] = 'title';
@@ -716,6 +978,38 @@ function api_views_default_views() {
   $handler->display->display_options['fields']['summary']['table'] = 'api_documentation';
   $handler->display->display_options['fields']['summary']['field'] = 'summary';
   $handler->display->display_options['fields']['summary']['label'] = 'Description';
+  /* Field: API reference counts: Reference count */
+  $handler->display->display_options['fields']['reference_count']['id'] = 'reference_count';
+  $handler->display->display_options['fields']['reference_count']['table'] = 'api_reference_counts';
+  $handler->display->display_options['fields']['reference_count']['field'] = 'reference_count';
+  $handler->display->display_options['fields']['reference_count']['relationship'] = 'references_count_call';
+  $handler->display->display_options['fields']['reference_count']['label'] = 'Direct uses';
+  $handler->display->display_options['fields']['reference_count']['hide_empty'] = TRUE;
+  $handler->display->display_options['fields']['reference_count']['empty_zero'] = TRUE;
+  /* Field: API reference counts: Reference count */
+  $handler->display->display_options['fields']['reference_count_2']['id'] = 'reference_count_2';
+  $handler->display->display_options['fields']['reference_count_2']['table'] = 'api_reference_counts';
+  $handler->display->display_options['fields']['reference_count_2']['field'] = 'reference_count';
+  $handler->display->display_options['fields']['reference_count_2']['relationship'] = 'references_count_call_namespaced';
+  $handler->display->display_options['fields']['reference_count_2']['label'] = 'Namespaced uses';
+  $handler->display->display_options['fields']['reference_count_2']['hide_empty'] = TRUE;
+  $handler->display->display_options['fields']['reference_count_2']['empty_zero'] = TRUE;
+  /* Field: API reference counts: Reference count */
+  $handler->display->display_options['fields']['reference_count_1']['id'] = 'reference_count_1';
+  $handler->display->display_options['fields']['reference_count_1']['table'] = 'api_reference_counts';
+  $handler->display->display_options['fields']['reference_count_1']['field'] = 'reference_count';
+  $handler->display->display_options['fields']['reference_count_1']['relationship'] = 'references_count_override';
+  $handler->display->display_options['fields']['reference_count_1']['label'] = 'Overrides';
+  $handler->display->display_options['fields']['reference_count_1']['hide_empty'] = TRUE;
+  $handler->display->display_options['fields']['reference_count_1']['empty_zero'] = TRUE;
+  /* Field: API reference counts: Reference count */
+  $handler->display->display_options['fields']['reference_count_3']['id'] = 'reference_count_3';
+  $handler->display->display_options['fields']['reference_count_3']['table'] = 'api_reference_counts';
+  $handler->display->display_options['fields']['reference_count_3']['field'] = 'reference_count';
+  $handler->display->display_options['fields']['reference_count_3']['relationship'] = 'references_count_use';
+  $handler->display->display_options['fields']['reference_count_3']['label'] = 'Use statements';
+  $handler->display->display_options['fields']['reference_count_3']['hide_empty'] = TRUE;
+  $handler->display->display_options['fields']['reference_count_3']['empty_zero'] = TRUE;
   $handler->display->display_options['defaults']['arguments'] = FALSE;
   /* Contextual filter: API documentation: Branch */
   $handler->display->display_options['arguments']['branch_id']['id'] = 'branch_id';
@@ -733,10 +1027,12 @@ function api_views_default_views() {
   $handler->display->display_options['filters']['deprecated']['table'] = 'api_documentation';
   $handler->display->display_options['filters']['deprecated']['field'] = 'deprecated';
   $handler->display->display_options['filters']['deprecated']['value'] = '1';
+  $handler->display->display_options['filters']['deprecated']['group'] = 1;
   /* Filter criterion: API documentation: Object type */
   $handler->display->display_options['filters']['object_type']['id'] = 'object_type';
   $handler->display->display_options['filters']['object_type']['table'] = 'api_documentation';
   $handler->display->display_options['filters']['object_type']['field'] = 'object_type';
+  $handler->display->display_options['filters']['object_type']['group'] = 1;
   $handler->display->display_options['filters']['object_type']['exposed'] = TRUE;
   $handler->display->display_options['filters']['object_type']['expose']['operator_id'] = 'object_type_op';
   $handler->display->display_options['filters']['object_type']['expose']['label'] = 'Type';
@@ -752,6 +1048,46 @@ function api_views_default_views() {
   $handler = $view->new_display('block', 'Services Block', 'block_services');
   $handler->display->display_options['display_description'] = 'Block for listing services';
   $handler->display->display_options['defaults']['hide_admin_links'] = FALSE;
+  $handler->display->display_options['defaults']['style_plugin'] = FALSE;
+  $handler->display->display_options['style_plugin'] = 'table';
+  $handler->display->display_options['style_options']['columns'] = array(
+    'title' => 'title',
+    'file_name' => 'file_name',
+    'summary' => 'summary',
+    'all_service_tags_1' => 'all_service_tags_1',
+  );
+  $handler->display->display_options['style_options']['default'] = 'title';
+  $handler->display->display_options['style_options']['info'] = array(
+    'title' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => ' ',
+      'empty_column' => 0,
+    ),
+    'file_name' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'summary' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'all_service_tags_1' => array(
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+  );
+  $handler->display->display_options['defaults']['style_options'] = FALSE;
+  $handler->display->display_options['defaults']['row_plugin'] = FALSE;
+  $handler->display->display_options['defaults']['row_options'] = FALSE;
   $handler->display->display_options['defaults']['relationships'] = FALSE;
   $handler->display->display_options['defaults']['fields'] = FALSE;
   /* Field: API documentation: Title */
@@ -1309,7 +1645,6 @@ function api_views_default_views() {
 
   $views[$view->name] = $view;
 
-
   // API Namespaces view.
 
   $view = new view();
@@ -1510,6 +1845,7 @@ function api_views_default_views() {
     'summary' => 'summary',
     'title_1' => 'summary',
     'member_alias' => 'summary',
+    'reference_count' => 'reference_count',
   );
   $handler->display->display_options['style_options']['default'] = 'title';
   $handler->display->display_options['style_options']['info'] = array(
@@ -1555,6 +1891,20 @@ function api_views_default_views() {
       'separator' => '',
       'empty_column' => 0,
     ),
+    'member_alias' => array(
+      'sortable' => 0,
+      'default_sort_order' => 'asc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
+    'reference_count' => array(
+      'sortable' => 1,
+      'default_sort_order' => 'desc',
+      'align' => '',
+      'separator' => '',
+      'empty_column' => 0,
+    ),
   );
   /* Relationship: API documentation: Documentation object of member item */
   $handler->display->display_options['relationships']['did']['id'] = 'did';
@@ -1574,6 +1924,11 @@ function api_views_default_views() {
   $handler->display->display_options['relationships']['overrides_did']['field'] = 'overrides_did';
   $handler->display->display_options['relationships']['overrides_did']['relationship'] = 'override_did';
   $handler->display->display_options['relationships']['overrides_did']['label'] = 'Overridden item';
+  /* Relationship: API documentation: Reference count: overrides */
+  $handler->display->display_options['relationships']['references_count_override']['id'] = 'references_count_override';
+  $handler->display->display_options['relationships']['references_count_override']['table'] = 'api_documentation';
+  $handler->display->display_options['relationships']['references_count_override']['field'] = 'references_count_override';
+  $handler->display->display_options['relationships']['references_count_override']['relationship'] = 'did';
   /* Field: API documentation: Title */
   $handler->display->display_options['fields']['title']['id'] = 'title';
   $handler->display->display_options['fields']['title']['table'] = 'api_documentation';
@@ -1629,6 +1984,14 @@ function api_views_default_views() {
   $handler->display->display_options['fields']['member_alias']['alter']['text'] = '<em class="api-inheritance-source">Aliased as: [member_alias]</em>';
   $handler->display->display_options['fields']['member_alias']['element_label_colon'] = FALSE;
   $handler->display->display_options['fields']['member_alias']['hide_empty'] = TRUE;
+  /* Field: API reference counts: Reference count */
+  $handler->display->display_options['fields']['reference_count']['id'] = 'reference_count';
+  $handler->display->display_options['fields']['reference_count']['table'] = 'api_reference_counts';
+  $handler->display->display_options['fields']['reference_count']['field'] = 'reference_count';
+  $handler->display->display_options['fields']['reference_count']['relationship'] = 'references_count_override';
+  $handler->display->display_options['fields']['reference_count']['label'] = 'Overrides';
+  $handler->display->display_options['fields']['reference_count']['hide_empty'] = TRUE;
+  $handler->display->display_options['fields']['reference_count']['empty_zero'] = TRUE;
   /* Contextual filter: API documentation: Documentation ID of class for members */
   $handler->display->display_options['arguments']['class_did']['id'] = 'class_did';
   $handler->display->display_options['arguments']['class_did']['table'] = 'api_members';

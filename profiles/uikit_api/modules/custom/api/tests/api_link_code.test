@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Tests for the api_link_code() function of the API module.
@@ -10,7 +11,11 @@ module_load_include('inc', 'api', 'api.formatting');
 /**
  * Tests the api_link_code() function.
  */
-class ApiLinkCodeTest extends ApiTestCase {
+class ApiTestLinkCode extends ApiTestCase {
+
+  /**
+   * {@inheritdoc}
+   */
   public static function getInfo() {
     return array(
       'name' => 'Code linking',
@@ -22,9 +27,9 @@ class ApiLinkCodeTest extends ApiTestCase {
   /**
    * Overrides ApiTestCase::setUp() so we do have the PHP branch.
    */
-  function setUp() {
+  public function setUp() {
     $this->baseSetUp();
-    $this->setUpBranchAPICall();
+    $this->setUpBranchApiCall();
 
     $this->resetBranchesAndCache();
     $this->updateBranches();
@@ -35,14 +40,13 @@ class ApiLinkCodeTest extends ApiTestCase {
   /**
    * Tests the api_link_code() function.
    */
-  function testApiLinkCode() {
+  public function testApiLinkCode() {
     $branch = $this->getBranch();
-    $interface = api_object_load('SampleInterface', $branch, 'interface', 'classes.php');
     $class = api_object_load('Sample', $branch, 'class', 'classes.php');
     $subclass = api_object_load('SubSample', $branch, 'class', 'classes.php');
 
     $tests = array(
-      // Should be linked
+      // Items that should be linked.
       array(
         'message' => 'Marked-up function name linking',
         'data' => '<span class="php-function-or-constant">sample_function</span>',
@@ -135,7 +139,7 @@ class ApiLinkCodeTest extends ApiTestCase {
         'data' => '<span class="php-function-or-constant">drupal_alter</span>(<span class="php-string potential-alter">\'another_sample\'</span>',
         'expected' => '<span class="php-function-or-constant">drupal_alter</span>(<span class="php-function-or-constant">\'<a href="' . url('api/test/sample.php/function/hook_another_sample_alter/6') . '" title="Alter samples." class="local">another_sample</a>\'</span>',
       ),
-      // Should not be linked
+      // Items that should not be linked.
       array(
         'message' => 'Function name linking',
         'data' => 'sample_function',
@@ -198,4 +202,5 @@ class ApiLinkCodeTest extends ApiTestCase {
       $this->assertEqual($result, $expected, $test['message'] . ' Got: <code>' . check_plain($result) . ' and expected ' . check_plain($expected) . '</code>');
     }
   }
+
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file
  * Displays the documentation for a file and line number where an object is.

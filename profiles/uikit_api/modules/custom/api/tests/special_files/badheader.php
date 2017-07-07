@@ -13,7 +13,8 @@
  * A function.
  */
 function badheader_fun() {
-  theme('sample', array());
+  theme('sample', array(
+  ));
 }
 
 /**
@@ -30,4 +31,18 @@ class ClassWithDefgroupDocBlock {
   function foo() {
     return 1;
   }
+}
+
+/**
+ * First duplicate function in same file.
+ */
+function twice_in_one_file() {
+  $foo = 'string in first version';
+}
+
+/**
+ * Second duplicate function in same file.
+ */
+function twice_in_one_file() {
+  $foo = 'string in second version';
 }

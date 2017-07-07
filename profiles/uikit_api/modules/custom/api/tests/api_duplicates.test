@@ -10,7 +10,11 @@ module_load_include('php', 'api', 'tests/api_test_case');
 /**
  * Tests that duplicate classes, interfaces, and groups work.
  */
-class ApiDuplicatesTestCase extends ApiWebPagesBaseTest {
+class ApiTestDuplicates extends ApiWebPagesBaseTest {
+
+  /**
+   * {@inheritdoc}
+   */
   public static function getInfo() {
     return array(
       'name' => 'Duplicates',
@@ -19,14 +23,17 @@ class ApiDuplicatesTestCase extends ApiWebPagesBaseTest {
     );
   }
 
-  function setUp() {
+  /**
+   * {@inheritdoc}
+   */
+  public function setUp() {
     $this->baseSetUp();
 
     // Set up a files branch, but do not exclude the usual directories.
-    $this->branch_info = $this->setUpBranchUI('', TRUE, array('excluded' => ''));
+    $this->branchInfo = $this->setUpBranchUi('', TRUE, array('excluded' => ''));
 
     // We don't need the PHP branch for this test, so for speed, remove it.
-    $this->removePHPBranch();
+    $this->removePhpBranch();
 
     // Parse the code.
     $this->resetBranchesAndCache();
@@ -37,9 +44,9 @@ class ApiDuplicatesTestCase extends ApiWebPagesBaseTest {
   /**
    * Tests that duplicate classes, interfaces, and groups work.
    */
-  function testDuplicates() {
+  public function testDuplicates() {
     // Verify that both Sample classes and interfaces are listed.
-    $this->drupalGet('api/' . $this->branch_info['project'] . '/classes');
+    $this->drupalGet('api/' . $this->branchInfo['project'] . '/classes');
     $this->assertLink('Sample', 0, 'Sample is present once');
     $this->assertLink('Sample', 1, 'Sample is present twice');
     $this->assertLink('SampleInterface', 0, 'SampleInterface is present once');
@@ -47,22 +54,22 @@ class ApiDuplicatesTestCase extends ApiWebPagesBaseTest {
 
     // Visit both the Sample pages and verify they show the interface they
     // implement, and that each links to the other one.
-    $this->drupalGet('api/' . $this->branch_info['project'] . '/classes.php/class/Sample');
+    $this->drupalGet('api/' . $this->branchInfo['project'] . '/classes.php/class/Sample');
     $this->assertText('SampleInterface', 'SampleInterface is shown');
-    $this->assertLinkURLSubstring($this->branch_info['branch_name'] . ' to_exclude/excluded.php', 'excluded.php/class/Sample', 'Link to other version exists', 'Link to other version goes to right place');
-    $this->drupalGet('api/' . $this->branch_info['project'] . '/to_exclude!excluded.php/class/Sample');
+    $this->assertLinkUrlSubstring($this->branchInfo['branch_name'] . ' to_exclude/excluded.php', 'excluded.php/class/Sample', 'Link to other version exists', 'Link to other version goes to right place');
+    $this->drupalGet('api/' . $this->branchInfo['project'] . '/to_exclude!excluded.php/class/Sample');
     $this->assertText('SampleInterface', 'SampleInterface is shown');
-    $this->assertLinkURLSubstring($this->branch_info['branch_name'] . ' classes.php', 'api/' . $this->branch_info['project'] . '/classes.php/class/Sample', 'Link to other version exists', 'Link to other version goes to right place');
+    $this->assertLinkUrlSubstring($this->branchInfo['branch_name'] . ' classes.php', 'api/' . $this->branchInfo['project'] . '/classes.php/class/Sample', 'Link to other version exists', 'Link to other version goes to right place');
 
     // Visit both the SampleInterface pages and verify they link to each other.
-    $this->drupalGet('api/' . $this->branch_info['project'] . '/classes.php/interface/SampleInterface');
-    $this->assertLinkURLSubstring($this->branch_info['branch_name'] . ' to_exclude/excluded.php', 'excluded.php/interface/SampleInterface', 'Link to other version exists', 'Link to other version goes to right place');
-    $this->drupalGet('api/' . $this->branch_info['project'] . '/to_exclude!excluded.php/interface/SampleInterface');
-    $this->assertLinkURLSubstring($this->branch_info['branch_name'] . ' classes.php', 'api/' . $this->branch_info['project'] . '/classes.php/interface/SampleInterface', 'Link to other version exists', 'Link to other version goes to right place');
+    $this->drupalGet('api/' . $this->branchInfo['project'] . '/classes.php/interface/SampleInterface');
+    $this->assertLinkUrlSubstring($this->branchInfo['branch_name'] . ' to_exclude/excluded.php', 'excluded.php/interface/SampleInterface', 'Link to other version exists', 'Link to other version goes to right place');
+    $this->drupalGet('api/' . $this->branchInfo['project'] . '/to_exclude!excluded.php/interface/SampleInterface');
+    $this->assertLinkUrlSubstring($this->branchInfo['branch_name'] . ' classes.php', 'api/' . $this->branchInfo['project'] . '/classes.php/interface/SampleInterface', 'Link to other version exists', 'Link to other version goes to right place');
 
     // Verify that the group is listed only once, and verify that all the
     // members are shown.
-    $this->drupalGet('api/' . $this->branch_info['project'] . '/groups');
+    $this->drupalGet('api/' . $this->branchInfo['project'] . '/groups');
     $this->assertLinkCount('Samples', 1, 'Exactly one link to sample group exists');
     $this->clickLink('Samples');
     $this->assertLink('Sample', 0, 'Sample class is on topic page');
@@ -83,10 +90,11 @@ class ApiDuplicatesTestCase extends ApiWebPagesBaseTest {
     $this->assertEqual(count($results), 2, '2 files have been marked for parsing');
 
     // Verify that the other group gets created.
-    $this->drupalGet('api/' . $this->branch_info['project'] . '/groups');
+    $this->drupalGet('api/' . $this->branchInfo['project'] . '/groups');
     $this->assertLinkCount('Test group', 1, 'Exactly one link to test group exists');
     $this->clickLink('Test group');
     $this->assertLink('some_name', 0, 'Correct function is on topic page');
     $this->assertText('A group whose machine name', 'Description is on topic page');
   }
+
 }

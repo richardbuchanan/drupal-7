@@ -17,7 +17,7 @@ class api_views_handler_field_api_project extends views_handler_field {
    *
    * Adds additional database fields that we need for formatting.
    */
-  function init(&$view, &$options) {
+  public function init(&$view, &$options) {
     parent::init($view, $options);
     // Make sure we have the information we need.
     if (!empty($this->options['link_to_project']) && $this->options['link_to_project'] != 'none') {
@@ -28,7 +28,7 @@ class api_views_handler_field_api_project extends views_handler_field {
   /**
    * Overrides views_handler_field::option_definition().
    */
-  function option_definition() {
+  public function option_definition() {
     $options = parent::option_definition();
     $options['link_to_project'] = array(
       'default' => 'none',
@@ -39,7 +39,7 @@ class api_views_handler_field_api_project extends views_handler_field {
   /**
    * Provides the option to make the text into a link.
    */
-  function options_form(&$form, &$form_state) {
+  public function options_form(&$form, &$form_state) {
     $form['link_to_project'] = array(
       '#title' => t('Make this a link'),
       '#type' => 'radios',
@@ -58,7 +58,7 @@ class api_views_handler_field_api_project extends views_handler_field {
    *
    * Data should be made XSS safe prior to calling this function.
    */
-  function render_link($data, $values) {
+  protected function render_link($data, $values) {
     if (!empty($this->options['link_to_project']) && $this->options['link_to_project'] != 'none' && !empty($this->additional_fields['project_name'])) {
       if ($data !== NULL && $data !== '') {
         $project_name = $this->get_value($values, 'project_name');
@@ -80,8 +80,9 @@ class api_views_handler_field_api_project extends views_handler_field {
   /**
    * Overrides views_handler_field::render().
    */
-  function render($values) {
+  public function render($values) {
     $value = $this->get_value($values);
     return $this->render_link($this->sanitize_value($value), $values);
   }
+
 }

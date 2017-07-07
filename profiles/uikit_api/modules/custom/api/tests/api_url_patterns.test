@@ -16,9 +16,12 @@ module_load_include('php', 'api', 'tests/api_test_case');
  * use ! as a directory separator instead of --, so that files with -- in the
  * name could be supported.
  */
-class ApiURLPatternsTest extends ApiTestCase {
+class ApiTestUrlPatterns extends ApiTestCase {
 
-  static function getInfo() {
+  /**
+   * {@inheritdoc}
+   */
+  public static function getInfo() {
     return array(
       'name' => 'URL functioning',
       'description' => 'Test URLs specified in api_menu(), both old and current.',
@@ -33,7 +36,7 @@ class ApiURLPatternsTest extends ApiTestCase {
    * successfully by checking for a 200 response code and expected text.
    * Some 404 patterns are also checked.
    */
-  function testApiUrlPaths() {
+  public function testApiUrlPaths() {
 
     // Check listing pages.
     $project_name = 'test';
@@ -55,12 +58,21 @@ class ApiURLPatternsTest extends ApiTestCase {
       ),
       array(
         'url' => 'api/' . $project_name . '/classes',
-        'text' => array(t('Classes, traits, and interfaces'), 'Sample class', 'Sample interface'),
+        'text' => array(
+          t('Classes, traits, and interfaces'),
+          'Sample class',
+          'Sample interface',
+        ),
         'links' => array('Sample', 'SampleInterface'),
       ),
       array(
         'url' => 'api/' . $project_name . '/classes/' . $branch_name,
-        'text' => array(t('Classes, traits, and interfaces'), 'Sample class', 'Sample interface', 'subdirectory'),
+        'text' => array(
+          t('Classes, traits, and interfaces'),
+          'Sample class',
+          'Sample interface',
+          'subdirectory',
+        ),
         'links' => array('Sample', 'SampleInterface', 'classes.php'),
       ),
       array(
@@ -128,14 +140,37 @@ class ApiURLPatternsTest extends ApiTestCase {
       array(
         'url' => 'api/' . $project_name . '/subdirectory!classes-subdir.php/class/SampleInSubDir/' . $branch_name,
         'aliases' => array('api/' . $project_name . '/subdirectory--classes-subdir.php/class/SampleInSubDir/' . $branch_name),
-        'text' => array('implements', 'A public property for testing', 'Sample class in a subdirectory', 'SampleInSubDir', 'Only implemented in children', 'A class constant in a subdirectory', 'subdirectory/', 'Classes in a subdirectory test', 'A sample group of classes.'),
-        'links' => array('SampleInterface', 'Expanded class hierarchy of SampleInSubDir', 'SampleInSubDir::$property_in_sub_dir', 'SampleInSubDir::baz', 'SampleInSubDir::constant', 'classes-subdir.php', 'Class Samples'),
+        'text' => array(
+          'implements',
+          'A public property for testing',
+          'Sample class in a subdirectory',
+          'SampleInSubDir',
+          'Only implemented in children',
+          'A class constant in a subdirectory',
+          'subdirectory/',
+          'Classes in a subdirectory test',
+          'A sample group of classes.',
+        ),
+        'links' => array(
+          'SampleInterface',
+          'Expanded class hierarchy of SampleInSubDir',
+          'SampleInSubDir::$property_in_sub_dir',
+          'SampleInSubDir::baz',
+          'SampleInSubDir::constant',
+          'classes-subdir.php',
+          'Class Samples',
+        ),
       ),
       array(
         'url' => 'api/' . $project_name . '/subdirectory!classes-subdir.php/class/hierarchy/SampleInSubDir/' . $branch_name,
         'aliases' => array(),
         'text' => array('implements', 'Expanded class hierarchy of SampleInSubDir'),
-        'links' => array('SampleInSubDir', 'SampleInterface', 'SubInSubDirSample', 'SampleInterfaceTwo'),
+        'links' => array(
+          'SampleInSubDir',
+          'SampleInterface',
+          'SubInSubDirSample',
+          'SampleInterfaceTwo',
+        ),
       ),
       array(
         'url' => 'api/' . $project_name . '/subdirectory!sample-subdir.php/constant/SAMPLE_CONSTANT_IN_SUB_DIR/' . $branch_name,
@@ -144,7 +179,13 @@ class ApiURLPatternsTest extends ApiTestCase {
           'api/constant/SAMPLE_CONSTANT_IN_SUB_DIR',
           'api/' . $project_name . '/subdirectory--sample-subdir.php/constant/SAMPLE_CONSTANT_IN_SUB_DIR/' . $branch_name,
         ),
-        'text' => array('SAMPLE_CONSTANT_IN_SUB_DIR', 'A sample constant', 'subdirectory/', 'A sample file in a subdirectory', 'A sample group'),
+        'text' => array(
+          'SAMPLE_CONSTANT_IN_SUB_DIR',
+          'A sample constant',
+          'subdirectory/',
+          'A sample file in a subdirectory',
+          'A sample group',
+        ),
         'links' => array('sample-subdir.php', 'Samples'),
       ),
       array(
@@ -152,7 +193,11 @@ class ApiURLPatternsTest extends ApiTestCase {
         'aliases' => array(
           'api/' . $project_name . '/subdirectory--sample-subdir.php/' . $branch_name,
         ),
-        'text' => array('A sample file in a subdirectory', 'sample-subdir.php', 'A sample global in a subdirectory'),
+        'text' => array(
+          'A sample file in a subdirectory',
+          'sample-subdir.php',
+          'A sample global in a subdirectory',
+        ),
         'links' => array('$sample_in_sub_dir_global'),
       ),
       array(
@@ -176,19 +221,37 @@ class ApiURLPatternsTest extends ApiTestCase {
           'api/global/sample_in_sub_dir_global',
           'api/' . $project_name . '/subdirectory--sample-subdir.php/global/sample_in_sub_dir_global/' . $branch_name,
         ),
-        'text' => array('$sample_in_sub_dir_global', 'A sample global in a subdirectory', 'subdirectory/', 'A sample file in a subdirectory', 'A sample group.'),
+        'text' => array(
+          '$sample_in_sub_dir_global',
+          'A sample global in a subdirectory',
+          'subdirectory/',
+          'A sample file in a subdirectory',
+          'A sample group.',
+        ),
         'links' => array('sample-subdir.php', 'Samples'),
       ),
       array(
         'url' => 'api/' . $project_name . '/subdirectory!classes-subdir.php/interface/SampleInSubDirInterface/' . $branch_name,
         'aliases' => array('api/' . $project_name . '/subdirectory--classes-subdir.php/interface/SampleInSubDirInterface/' . $branch_name),
-        'text' => array('SampleInSubDirInterface', 'Sample interface in a subdirectory', 'Implements this API'),
-        'links' => array('SampleInSubDirInterface::foo2', 'classes-subdir.php', 'Class Samples'),
+        'text' => array(
+          'SampleInSubDirInterface',
+          'Sample interface in a subdirectory',
+          'Implements this API',
+        ),
+        'links' => array(
+          'SampleInSubDirInterface::foo2',
+          'classes-subdir.php',
+          'Class Samples',
+        ),
       ),
       array(
         'url' => 'api/' . $project_name . '/subdirectory!classes-subdir.php/property/SampleInSubDir::protected_property_in_sub_dir/' . $branch_name,
         'aliases' => array('api/' . $project_name . '/subdirectory--classes-subdir.php/property/SampleInSubDir::protected_property_in_sub_dir/' . $branch_name),
-        'text' => array('SampleInSubDir::$protected_property_in_sub_dir', 'A protected property for testing', 'Classes in a subdirectory test'),
+        'text' => array(
+          'SampleInSubDir::$protected_property_in_sub_dir',
+          'A protected property for testing',
+          'Classes in a subdirectory test',
+        ),
         'links' => array('classes-subdir.php'),
       ),
       array(
@@ -205,18 +268,41 @@ class ApiURLPatternsTest extends ApiTestCase {
       array(
         'url' => 'api/' . $project_name . '/' . $branch_name . '/search/duplicate',
         'text' => array('For testing duplicate function name linking'),
-        'links' => array('DUPLICATE_CONSTANT', 'duplicates.php', 'duplicate_function'),
+        'links' => array(
+          'DUPLICATE_CONSTANT',
+          'duplicates.php',
+          'duplicate_function',
+        ),
         'aliases' => array('api/search/' . $branch_name . '/duplicate'),
       ),
       array(
         'url' => 'api/' . $project_name . '/' . $branch_name . '/search/foo',
-        'text' => array('Implements', 'Metasyntatic member function', 'Implements this API', 'Implements foo2.', 'A property that matches', 'Overrides parent function'),
-        'links' => array('foo_sample_name', 'sample.php', 'Sample::foo', 'SampleInterface::foo', 'classes.php', 'SampleInSubDir::$foo', 'SampleInSubDir::foo', 'SampleInSubDirInterface::foo2', 'SubInSubDirSample::foo', 'Sample2InSubDir::foo2', 'classes-subdir.php'),
+        'text' => array(
+          'Implements',
+          'Metasyntatic member function',
+          'Implements this API',
+          'Implements foo2.',
+          'A property that matches',
+          'Overrides parent function',
+        ),
+        'links' => array(
+          'foo_sample_name',
+          'sample.php',
+          'Sample::foo',
+          'SampleInterface::foo',
+          'classes.php',
+          'SampleInSubDir::$foo',
+          'SampleInSubDir::foo',
+          'SampleInSubDirInterface::foo2',
+          'SubInSubDirSample::foo',
+          'Sample2InSubDir::foo2',
+          'classes-subdir.php',
+        ),
         'aliases' => array('api/search/' . $branch_name . '/foo'),
       ),
       array(
         'url' => 'api/' . $project_name . '/' . $branch_name . '/search',
-        'text' => array($branch_title, 'Function, file, or topic'),
+        'text' => array($branch_title),
         'aliases' => array('api/search'),
       ),
 
@@ -227,7 +313,12 @@ class ApiURLPatternsTest extends ApiTestCase {
       ),
       array(
         'url' => 'api/suggest/duplicate',
-        'text' => array('duplicate', 'duplicates.php', 'duplicate_function', 'DUPLICATE_CONSTANT'),
+        'text' => array(
+          'duplicate',
+          'duplicates.php',
+          'duplicate_function',
+          'DUPLICATE_CONSTANT',
+        ),
       ),
       array(
         'url' => 'api/function_dump/' . $branch_name,
@@ -236,7 +327,12 @@ class ApiURLPatternsTest extends ApiTestCase {
       // Check the full list dump, with and without paging and limits.
       array(
         'url' => 'api/' . $project_name . '/full_list/' . $branch_name,
-        'text' => array('"object_name":"sample_function"', '"summary":"A sample function."', '"object_name":"another_sample","namespaced_name"', '"summary":"Returns HTML for another sample."'),
+        'text' => array(
+          '"object_name":"sample_function"',
+          '"summary":"A sample function."',
+          '"object_name":"another_sample","namespaced_name"',
+          '"summary":"Returns HTML for another sample."',
+        ),
       ),
       array(
         'url' => 'api/' . $project_name . '/full_list/' . $branch_name,
@@ -339,4 +435,5 @@ class ApiURLPatternsTest extends ApiTestCase {
       }
     }
   }
+
 }

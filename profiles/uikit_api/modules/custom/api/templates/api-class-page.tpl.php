@@ -85,6 +85,10 @@ foreach ($call_links as $link) {
   <?php print $namespace; ?>
 <?php endif; ?>
 
-<?php print theme('ctools_collapsible', array('handle' => t('View source'), 'content' => $code, 'collapsed' => TRUE)); ?>
+<?php print theme('ctools_collapsible', array(
+  'handle' => t('View source'),
+  'content' => $code,
+  'collapsed' => TRUE,
+)); ?>
 
 <?php print $objects; ?>
