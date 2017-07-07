@@ -17,7 +17,7 @@ class api_views_handler_field_api_namespace extends views_handler_field {
    *
    * Adds additional database fields that we need for formatting.
    */
-  public function init(&$view, &$options) {
+  function init(&$view, &$options) {
     parent::init($view, $options);
     // Make sure we have the information we need.
     if (!empty($this->options['link_to_namespace']) && $this->options['link_to_namespace'] != 'none') {
@@ -29,7 +29,7 @@ class api_views_handler_field_api_namespace extends views_handler_field {
   /**
    * Overrides views_handler_field::option_definition().
    */
-  public function option_definition() {
+  function option_definition() {
     $options = parent::option_definition();
     $options['link_to_namespace'] = array(
       'default' => 'none',
@@ -40,7 +40,7 @@ class api_views_handler_field_api_namespace extends views_handler_field {
   /**
    * Provides the option to make the text into a link.
    */
-  public function options_form(&$form, &$form_state) {
+  function options_form(&$form, &$form_state) {
     $form['link_to_namespace'] = array(
       '#title' => t('Make this a link'),
       '#type' => 'radios',
@@ -59,7 +59,7 @@ class api_views_handler_field_api_namespace extends views_handler_field {
    *
    * Data should be made XSS safe prior to calling this function.
    */
-  protected function render_link($data, $values) {
+  function render_link($data, $values) {
     if (!empty($this->options['link_to_namespace']) && $this->options['link_to_namespace'] != 'none' && !empty($this->additional_fields['branch_id'])) {
       if ($data !== NULL && $data !== '') {
         $branch_id = $this->get_value($values, 'branch_id');
@@ -72,7 +72,6 @@ class api_views_handler_field_api_namespace extends views_handler_field {
       }
     }
 
-    module_load_include('inc', 'api', 'api.utilities');
     $data = api_add_breaks($data);
     return $data;
   }
@@ -80,9 +79,8 @@ class api_views_handler_field_api_namespace extends views_handler_field {
   /**
    * Overrides views_handler_field::render().
    */
-  public function render($values) {
+  function render($values) {
     $value = $this->get_value($values);
     return $this->render_link($this->sanitize_value($value), $values);
   }
-
 }

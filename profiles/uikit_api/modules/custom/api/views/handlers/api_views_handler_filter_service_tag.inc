@@ -10,10 +10,7 @@
  */
 class api_views_handler_filter_service_tag extends views_handler_filter_string {
 
-  /**
-   * {@inheritdoc}
-   */
-  public function query() {
+  function query() {
     $this->ensure_my_table();
 
     // Join to api_reference_storage.
@@ -32,5 +29,5 @@ class api_views_handler_filter_service_tag extends views_handler_filter_string {
 
     parent::query();
   }
-
 }
+

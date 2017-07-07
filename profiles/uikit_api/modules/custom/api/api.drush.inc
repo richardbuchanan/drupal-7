@@ -50,14 +50,13 @@ function api_drush_command() {
 /**
  * Flags a branch, or all branches, to be reparsed on the next cron run.
  *
- * @param string|null $branch_or_file
+ * @param $branch_or_file
  *   (optional) Identifier of the branch to reparse, or name of a single file to
  *   reparse. If omitted all branches will be reparsed. File name must include
  *   the path relative to the common path to the directories indexed by this
  *   branch.
  */
 function drush_api_reparse($branch_or_file = NULL) {
-  module_load_include('inc', 'api', 'api.db');
   $num = api_mark_for_reparse($branch_or_file);
 
   drush_log(dt('Marked @number files for reparsing.', array('@number' => $num)), 'ok');
@@ -67,7 +66,6 @@ function drush_api_reparse($branch_or_file = NULL) {
  * Resets the parsing queue.
  */
 function drush_api_reset_queue() {
-  module_load_include('inc', 'api', 'api.db');
   api_reset_parse_queue();
 
   drush_log(dt('API parse queue reset. Necessary jobs will be added in the next cron run'), 'ok');
@@ -115,14 +113,9 @@ function drush_api_list_branches() {
  * Adds or updates an API branch, and project if it doesn't already exist.
  */
 function drush_api_ensure_branch($project, $project_title, $project_type, $branch_name, $branch_title, $directory, $core_compatibility, $update_frequency) {
-  module_load_include('inc', 'api', 'api.db');
 
   // Update the project.
-  api_save_project((object) array(
-    'project_name' => $project,
-    'project_title' => $project_title,
-    'project_type' => $project_type,
-  ));
+  api_save_project((object) array('project_name' => $project, 'project_title' => $project_title, 'project_type' => $project_type));
 
   // Try to load the branch if possible.
   $branch = api_get_branch_by_name($project, $branch_name);

@@ -16,5 +16,5 @@ interface InterfaceD {
    * @param \api\test2\InterfaceC $foo
    *   Something to test making links to a class.
    */
-  function dMethod($foo);
+  function dMethod($foo) {}
 }

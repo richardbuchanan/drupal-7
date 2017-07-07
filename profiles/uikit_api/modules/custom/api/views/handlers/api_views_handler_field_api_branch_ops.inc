@@ -17,7 +17,7 @@ class api_views_handler_field_api_branch_ops extends views_handler_field {
    *
    * Adds additional database fields that we need.
    */
-  public function init(&$view, &$options) {
+  function init(&$view, &$options) {
     parent::init($view, $options);
     $this->additional_fields['branch_id'] = array('table' => 'api_branch', 'field' => 'branch_id');
   }
@@ -27,7 +27,7 @@ class api_views_handler_field_api_branch_ops extends views_handler_field {
    *
    * This is a fake field, so don't add it to the query.
    */
-  public function query() {
+  function query() {
     $this->ensure_my_table();
     $this->add_additional_fields();
   }
@@ -35,7 +35,7 @@ class api_views_handler_field_api_branch_ops extends views_handler_field {
   /**
    * Overrides views_handler_field::render().
    */
-  public function render($values) {
+  function render($values) {
     $branch_id = (int) $this->get_value($values, 'branch_id');
 
     $ops = array();
@@ -46,5 +46,4 @@ class api_views_handler_field_api_branch_ops extends views_handler_field {
 
     return implode(' ', $ops);
   }
-
 }

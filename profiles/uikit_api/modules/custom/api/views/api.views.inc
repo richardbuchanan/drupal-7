@@ -1,11 +1,6 @@
 <?php
-
 /**
- * @file
  * Views integration for the API module.
- *
- * Functions whose names start with _ in this file are only intended to be
- * called by other functions in this file.
  */
 
 /**
@@ -85,19 +80,6 @@ function api_views_data() {
       ),
     ),
 
-    'overridden_did' => array(
-      'title' => t('Overriden dummy field'),
-      'relationship' => array(
-        'base' => 'api_overrides',
-        'base field' => 'overrides_did',
-        'field' => 'did',
-        'handler' => 'views_handler_relationship',
-        'label' => t('Overriden by information'),
-        'title' => t('Overridden by information'),
-        'help' => t('Information about whether this class member is overridden by or implemented by a class member'),
-      ),
-    ),
-
     'references_did' => array(
       'title' => t('References dummy field'),
       'relationship' => array(
@@ -107,132 +89,7 @@ function api_views_data() {
         'handler' => 'views_handler_relationship',
         'label' => t('All references this item has'),
         'title' => t('All references this item has'),
-        'help' => t('All items that this item references, such as other function calls. This will create duplicate records, unless you filter.'),
-      ),
-    ),
-
-    'references_name' => array(
-      'title' => t('References dummy field for name'),
-      'relationship' => array(
-        'base' => 'api_reference_storage',
-        'base field' => 'object_name',
-        'field' => 'object_name',
-        'handler' => 'views_handler_relationship',
-        'join_handler' => 'api_views_join_extras',
-        'extra' => array(
-          array('field' => 'branch_id = %alias.branch_id', 'prepend_left' => TRUE),
-        ),
-        'label' => t('All references to this item name in this branch'),
-        'title' => t('All references to this item name in this branch'),
-        'help' => t('All references, such as function calls and class extends, that match this item name. This will create duplicate records, unless you filter.'),
-      ),
-    ),
-
-    'references_count_call' => array(
-      'title' => t('Reference count dummy field for calls and other direct references'),
-      'relationship' => array(
-        'base' => 'api_reference_counts',
-        'base field' => 'object_name',
-        'field' => 'object_name',
-        'handler' => 'views_handler_relationship',
-        'join_handler' => 'api_views_join_extras',
-        'extra' => array(
-          array('field' => 'reference_type', 'value' => 'call'),
-          array('field' => 'branch_id = %alias.branch_id', 'prepend_left' => TRUE),
-        ),
-        'label' => t('Reference counts: direct'),
-        'title' => t('Reference counts: direct'),
-        'help' => t('Reference count information for direct calls and uses'),
-      ),
-    ),
-
-    'references_count_call_namespaced' => array(
-      'title' => t('Reference count dummy field for calls and other direct references, with namespaces'),
-      'relationship' => array(
-        'base' => 'api_reference_counts',
-        'base field' => 'object_name',
-        'field' => 'namespaced_name',
-        'handler' => 'views_handler_relationship',
-        'join_handler' => 'api_views_join_extras',
-        'extra' => array(
-          array('field' => 'reference_type', 'value' => 'call'),
-          array('field' => 'branch_id = %alias.branch_id', 'prepend_left' => TRUE),
-        ),
-        'label' => t('Reference counts: direct, namespaced'),
-        'title' => t('Reference counts: direct, namespaced'),
-        'help' => t('Reference count information for direct calls and uses, found by namespaced name'),
-      ),
-    ),
-
-    'references_count_string' => array(
-      'title' => t('Reference count dummy field for strings'),
-      'relationship' => array(
-        'base' => 'api_reference_counts',
-        'base field' => 'object_name',
-        'field' => 'object_name',
-        'handler' => 'views_handler_relationship',
-        'join_handler' => 'api_views_join_extras',
-        'extra' => array(
-          array('field' => 'reference_type', 'value' => 'string'),
-          array('field' => 'branch_id = %alias.branch_id', 'prepend_left' => TRUE),
-        ),
-        'label' => t('Reference count: strings'),
-        'title' => t('Reference count: strings'),
-        'help' => t('Reference count information for strings'),
-      ),
-    ),
-
-    'references_count_string_namespaced' => array(
-      'title' => t('Reference count dummy field for strings with namespaces'),
-      'relationship' => array(
-        'base' => 'api_reference_counts',
-        'base field' => 'object_name',
-        'field' => 'namespaced_name',
-        'handler' => 'views_handler_relationship',
-        'join_handler' => 'api_views_join_extras',
-        'extra' => array(
-          array('field' => 'reference_type', 'value' => 'string'),
-          array('field' => 'branch_id = %alias.branch_id', 'prepend_left' => TRUE),
-        ),
-        'label' => t('Reference count: strings, namespaced'),
-        'title' => t('Reference count: strings, namespaced'),
-        'help' => t('Reference count information for strings, matching on namespaced name'),
-      ),
-    ),
-
-    'references_count_override' => array(
-      'title' => t('Reference count dummy field for overrides'),
-      'relationship' => array(
-        'base' => 'api_reference_counts',
-        'base field' => 'object_name',
-        'field' => 'namespaced_name',
-        'handler' => 'views_handler_relationship',
-        'join_handler' => 'api_views_join_extras',
-        'extra' => array(
-          array('field' => 'reference_type', 'value' => 'override'),
-          array('field' => 'branch_id = %alias.branch_id', 'prepend_left' => TRUE),
-        ),
-        'label' => t('Reference count: overrides'),
-        'title' => t('Reference count: overrides'),
-        'help' => t('Reference count information for class member overrides'),
-      ),
-    ),
-
-    'references_count_use' => array(
-      'title' => t('Reference count dummy field for uses'),
-      'relationship' => array(
-        'base' => 'api_reference_counts',
-        'base field' => 'object_name',
-        'field' => 'namespaced_name',
-        'handler' => 'views_handler_relationship',
-        'join_handler' => 'api_views_join_extras',
-        'extra' => array(
-          array('field' => 'reference_type', 'value' => 'use'),
-          array('field' => 'branch_id = %alias.branch_id', 'prepend_left' => TRUE),
-        ),
-        'label' => t('Reference counts: use statements'),
-        'title' => t('Reference counts: use statements'),
-        'help' => t('Reference count information for use statements'),
+        'help' => t('All references that were found in the code for this item. This will create duplicate records, unless you filter.'),
       ),
     ),
 
@@ -648,7 +505,7 @@ function api_views_data() {
       ),
       'filter' => array(
         'handler' => 'views_handler_filter_in_operator',
-        'options callback' => '_api_list_project_type_options',
+        'options callback' => 'api_list_project_type_options',
       ),
       'argument' => array(
         'handler' => 'views_handler_argument_string',
@@ -829,18 +686,15 @@ function api_views_data() {
     ),
 
     'did' => array(
-      'title' => t('Documentation ID of overriding member'),
-      'help' => t('Numeric ID of the overriding member'),
+      'title' => t('Documentation ID of member for overrides'),
+      'help' => t('Numeric ID of the member for overrides'),
       'relationship' => array(
         'base' => 'api_documentation',
         'base field' => 'did',
         'handler' => 'views_handler_relationship',
-        'label' => t('Documentation object of overriding member'),
-        'title' => t('Documentation object of overriding member'),
-        'help' => t('Documentation information of the overriding member'),
-      ),
-      'field' => array(
-        'handler' => 'views_handler_field_numeric',
+        'label' => t('Documentation object of member for overrides'),
+        'title' => t('Documentation object of member for overrides'),
+        'help' => t('Documentation information of the member'),
       ),
       'filter' => array(
         'handler' => 'views_handler_filter_numeric',
@@ -852,7 +706,7 @@ function api_views_data() {
 
     'overrides_did' => array(
       'title' => t('Documentation ID of overridden member'),
-      'help' => t('Numeric ID of the overridden member item'),
+      'help' => t('Numeric ID of the member item being overridden'),
       'relationship' => array(
         'base' => 'api_documentation',
         'base field' => 'did',
@@ -860,9 +714,6 @@ function api_views_data() {
         'label' => t('Documentation object of member being overridden'),
         'title' => t('Documentation object of member being overridden'),
         'help' => t('Documentation information of member being overridden'),
-      ),
-      'field' => array(
-        'handler' => 'views_handler_field_numeric',
       ),
       'filter' => array(
         'handler' => 'views_handler_filter_numeric',
@@ -894,9 +745,6 @@ function api_views_data() {
         'label' => t('Documentation object where reference was found'),
         'title' => t('Documentation object where reference was found'),
         'help' => t('Documentation information of the item where reference was found'),
-      ),
-      'field' => array(
-        'handler' => 'views_handler_field_numeric',
       ),
       'filter' => array(
         'handler' => 'views_handler_filter_numeric',
@@ -980,93 +828,6 @@ function api_views_data() {
     ),
   );
 
-  $data['api_reference_counts'] = array(
-    'table' => array(
-      'group' => t('API reference counts'),
-      'base' => array(
-        'field' => 'object_name',
-        'title' => t('API reference counts'),
-        'help' => t('Counts of references in API documentation'),
-        'weight' => 80,
-      ),
-    ),
-
-    'branch_id' => array(
-      'title' => t('Branch for references'),
-      'help' => t('Numeric ID of the branch for references'),
-      'relationship' => array(
-        'base' => 'api_branch',
-        'handler' => 'views_handler_relationship',
-        'label' => t('Branch on reference'),
-        'title' => t('Branch on reference'),
-        'help' => t('The branch this reference count is in'),
-      ),
-      'filter' => array(
-        'handler' => 'views_handler_filter_numeric',
-      ),
-      'argument' => array(
-        'handler' => 'views_handler_argument_numeric',
-      ),
-    ),
-
-    'reference_type' => array(
-      'title' => t('Reference type'),
-      'help' => t('Reference type: call, string, use, override'),
-      'field' => array(
-        'handler' => 'views_handler_field',
-        'click sortable' => TRUE,
-      ),
-      'sort' => array(
-        'handler' => 'views_handler_sort',
-      ),
-      'filter' => array(
-        'handler' => 'views_handler_filter_string',
-      ),
-      'argument' => array(
-        'handler' => 'views_handler_argument_string',
-      ),
-    ),
-
-    'object_name' => array(
-      'title' => t('Reference name'),
-      'help' => t('Function name, text found, etc. for a reference'),
-      'field' => array(
-        'handler' => 'views_handler_field',
-        'click sortable' => TRUE,
-      ),
-      'sort' => array(
-        'handler' => 'views_handler_sort',
-        'click sortable' => TRUE,
-      ),
-      'filter' => array(
-        'handler' => 'views_handler_filter_string',
-      ),
-      'argument' => array(
-        'handler' => 'api_views_handler_argument_partial_match',
-      ),
-    ),
-
-    'reference_count' => array(
-      'title' => t('Reference count'),
-      'help' => t('Count of references in this branch, of this type, of this item'),
-      'field' => array(
-        'handler' => 'views_handler_field_numeric',
-        'click sortable' => TRUE,
-      ),
-      'sort' => array(
-        'handler' => 'views_handler_sort',
-        'click sortable' => TRUE,
-      ),
-      'filter' => array(
-        'handler' => 'views_handler_filter_numeric',
-      ),
-      'argument' => array(
-        'handler' => 'views_handler_argument_numeric',
-      ),
-    ),
-
-  );
-
   return $data;
 }
 
@@ -1125,7 +886,7 @@ function api_views_plugins() {
  *
  * Options callback for filtering by project type.
  */
-function _api_list_project_type_options() {
+function api_list_project_type_options() {
   return drupal_map_assoc(db_select('api_project', 'p')
     ->fields('p', array('project_type'))
     ->groupBy('p.project_type')
@@ -1151,7 +912,7 @@ class api_views_join_extras extends views_join {
    * This is exactly the same as the base class, except where indicated
    * with an API comment.
    */
-  public function build_join($select_query, $table, $view_query) {
+  function build_join($select_query, $table, $view_query) {
     if (empty($this->definition['table formula'])) {
       $right_table = $this->table;
     }
@@ -1164,8 +925,7 @@ class api_views_join_extras extends views_join {
       $left_field = "$left[alias].$this->left_field";
     }
     else {
-      // This can be used if left_field is a formula or something. It should be
-      // used only *very* rarely.
+      // This can be used if left_field is a formula or something. It should be used only *very* rarely.
       $left_field = $this->left_field;
     }
 
@@ -1177,6 +937,7 @@ class api_views_join_extras extends views_join {
       if (is_array($this->extra)) {
         $extras = array();
         foreach ($this->extra as $info) {
+          $extra = '';
           // Figure out the table name. Remember, only use aliases provided
           // if at all possible.
           $join_table = '';
@@ -1195,7 +956,8 @@ class api_views_join_extras extends views_join {
           }
 
           // Convert a single-valued array of values to the single-value case,
-          // and transform from IN() notation to = notation.
+          // and transform from IN() notation to = notation
+
           // API: Allow value to be omitted.
           if (!isset($info['value'])) {
             if (isset($info['prepend_left']) && $info['prepend_left']) {

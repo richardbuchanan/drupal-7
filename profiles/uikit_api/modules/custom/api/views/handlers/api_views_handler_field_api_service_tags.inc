@@ -12,25 +12,16 @@
  */
 class api_views_handler_field_api_service_tags extends views_handler_field_prerender_list {
 
-  /**
-   * {@inheritdoc}
-   */
-  public function init(&$view, &$options) {
+  function init(&$view, &$options) {
     parent::init($view, $options);
     $this->additional_fields['did'] = array('table' => 'api_documentation', 'field' => 'did');
   }
 
-  /**
-   * {@inheritdoc}
-   */
-  public function query() {
+  function query() {
     $this->add_additional_fields();
   }
 
-  /**
-   * {@inheritdoc}
-   */
-  public function pre_render(&$values) {
+  function pre_render(&$values) {
     // This is mostly borrowed from the taxonomy handler.
     $this->field_alias = $this->aliases['did'];
     $dids = array();
@@ -53,11 +44,7 @@ class api_views_handler_field_api_service_tags extends views_handler_field_prere
     }
   }
 
-  /**
-   * Renders one item from the list.
-   */
-  public function render_item($count, $item) {
+  function render_item($count, $item) {
     return $item['name'];
   }
-
 }

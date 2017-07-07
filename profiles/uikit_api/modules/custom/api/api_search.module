@@ -70,17 +70,7 @@ function api_search_node_view($node, $view_mode, $langcode) {
   $node->title = $title;
 
   // Add extra fields of information.
-  $fields = array(
-    'namespaced_name',
-    'modifiers',
-    'object_type',
-    'summary',
-    'documentation',
-    'var',
-    'parameters',
-    'return_value',
-    'throws',
-  );
+  $fields = array('namespaced_name', 'modifiers', 'object_type', 'summary', 'documentation', 'var', 'parameters', 'return_value', 'throws');
 
   foreach ($fields as $field) {
     if (isset($doc->$field) && trim($doc->$field)) {
@@ -174,7 +164,7 @@ function api_search_form_apachesolr_index_config_form_alter(&$form, &$form_state
 }
 
 /**
- * Implements hook_apachesolr_index_document_build_ENTITY_TYPE() for node.
+ * Implements hook_apachesolr_index_document_build_ENTITY_TYPE() (node).
  *
  * Node title is set in the Solr indexing document earlier than the call to
  * node_view(), so we have to fix it after the fact. Also, we add custom
@@ -189,7 +179,7 @@ function api_search_apachesolr_index_document_build_node(ApacheSolrDocument $doc
   // PHP notices in the apachesolr.index.inc function entity_bundle_label()
   // because the API "content type" is not a real bundle. So, get around this.
   // First, trigger generating the list of labels.
-  entity_bundle_label('node', 'api');
+  $label = entity_bundle_label('node', 'api');
   // Then, fix it up so next time we don't get more PHP notices.
   $labels = &drupal_static('entity_bundle_label', array());
   if (!empty($labels) && !isset($labels['node']['api'])) {
@@ -258,7 +248,7 @@ function api_search_facetapi_facet_info(array $searcher_info) {
 /**
  * Makes a "node" title for an API documentation item.
  *
- * @param object $doc
+ * @param $doc
  *   Loaded documentation object.
  *
  * @return string
@@ -404,12 +394,12 @@ function api_search_check_compatibility($obj) {
 /**
  * Removes API nodes from Solr and core Search indexes using Batch API.
  *
- * @param int[] $dids
+ * @param $dids
  *   IDs of the documentation items to remove.
- * @param array $context
+ * @param $context
  *   Batch context.
  */
-function api_search_remove_nodes(array $dids, array &$context) {
+function api_search_remove_nodes($dids, &$context) {
   if (!isset($context['sandbox']['progress'])) {
     $context['sandbox']['progress'] = 0;
     $context['sandbox']['max'] = count($dids);

@@ -12,7 +12,7 @@ interface BaseInterface {
   /**
    * Defines a function that all classes really need.
    */
-  function base_function();
+  function base_function() {}
 }
 
 /**
@@ -22,7 +22,7 @@ interface AnotherBaseInterface {
   /**
    * Defines another function that all classes really need.
    */
-  function another_base_function();
+  function another_base_function() {}
 }
 
 /**
@@ -32,7 +32,7 @@ interface SecondInterface extends BaseInterface {
   /**
    * Defines another function.
    */
-  function second_function();
+  function second_function() {}
 }
 
 /**
@@ -42,7 +42,7 @@ interface ThirdInterface extends BaseInterface, SomeExternalInterface {
   /**
    * Defines a third function.
    */
-  function third_function();
+  function third_function() {}
 }
 
 /**
@@ -52,7 +52,7 @@ interface FourthInterface extends BaseInterface, AnotherBaseInterface {
   /**
    * Defines a fourth function.
    */
-  function fourth_function();
+  function fourth_function() {}
 }
 
 /**

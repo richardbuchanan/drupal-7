@@ -1,5 +1,3 @@
-<?php
-
 /**
  * @file
  * Class inheritance loop.
@@ -8,8 +6,8 @@
 class A extends B {
 }
 
-class B extends C {
+Class B extends C {
 }
 
-class C extends A {
+Class C extends A {
 }

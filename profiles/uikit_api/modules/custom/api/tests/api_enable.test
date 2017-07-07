@@ -10,21 +10,11 @@ module_load_include('php', 'api', 'tests/api_test_case');
 /**
  * Tests module enable and cron functionality.
  */
-class ApiTestEnable extends ApiWebPagesBaseTest {
+class ApiEnableTestCase extends ApiWebPagesBaseTest {
+  // Log messages to look for.
+  public $php_message = 'Updated PHP branch PHP functions';
+  public $cron_message = 'Cron run completed';
 
-  /**
-   * Log message when the PHP branch is updated.
-   */
-  const PHP_MESSAGE = 'Updated PHP branch PHP functions';
-
-  /**
-   * Log message when cron is complete.
-   */
-  const CRON_MESSAGE = 'Cron run completed';
-
-  /**
-   * {@inheritdoc}
-   */
   public static function getInfo() {
     return array(
       'name' => 'Module enable and cron',
@@ -33,12 +23,9 @@ class ApiTestEnable extends ApiWebPagesBaseTest {
     );
   }
 
-  /**
-   * {@inheritdoc}
-   */
-  public function setUp() {
+  function setUp() {
     // Start with only the support modules enabled.
-    DrupalWebTestCase::setUp('ctools', 'node', 'dblog', 'views', 'comment', 'composer_manager');
+    DrupalWebTestCase::setUp('ctools', 'gplib', 'node', 'dblog', 'views', 'comment');
 
     variable_set('api_breaks_tag', '');
 
@@ -50,13 +37,13 @@ class ApiTestEnable extends ApiWebPagesBaseTest {
     $this->drupalLogin($this->super_user);
 
     $this->cronRun();
-    $this->checkAndClearLog(array(ApiTestEnable::CRON_MESSAGE));
+    $this->checkAndClearLog(array($this->cron_message));
   }
 
   /**
    * Tests module enabling and cron for the API module.
    */
-  public function testEnable() {
+  function testEnable() {
     // Disable the comment module, if it is enabled.
     if (module_exists('comment')) {
       module_disable(array('comment'), FALSE);
@@ -69,16 +56,11 @@ class ApiTestEnable extends ApiWebPagesBaseTest {
     $this->assertFalse(module_exists('api'), 'API module is not enabled');
     $modules = system_rebuild_module_data();
     $this->assertTrue(isset($modules['api']), 'System knows about API module');
-
     module_enable(array('api'), FALSE);
-    // At this point, the Composer Manager module should be enabled, and we
-    // need to set up the auto-loader.
-    $this->ensureAutoLoader();
-
     $this->resetAll();
     $this->assertTrue(module_exists('api'), 'API module is enabled');
     $this->cronRun();
-    $this->checkAndClearLog(array(ApiTestEnable::CRON_MESSAGE), array(ApiTestEnable::PHP_MESSAGE));
+    $this->checkAndClearLog(array($this->cron_message), array($this->php_message));
 
     // Update user for API module functionality.
     $this->super_user = $this->drupalCreateUser(array(
@@ -94,22 +76,25 @@ class ApiTestEnable extends ApiWebPagesBaseTest {
     // verify that it does the API cron function this time.
     $this->drupalGet('admin/config/development/api');
     $this->cronRun();
-    $this->checkAndClearLog(array(ApiTestEnable::CRON_MESSAGE, ApiTestEnable::PHP_MESSAGE));
+    $this->checkAndClearLog(array($this->cron_message, $this->php_message));
 
     // Set the cron time for the PHP branch to weekly, so it doesn't get parsed
     // again. Set up a new branch. Run cron and verify that the PHP branch is
     // not parsed again, but the new branch is parsed (at least partially).
     $this->drupalGet('admin/config/development/api/php_branches');
     $this->clickLink('edit');
-    $this->drupalPost(NULL, array('update_frequency' => 604800), t('Save branch'));
-    $this->branchInfo = $this->setUpBranchUi();
+    $this->drupalPost(NULL, array(
+        'update_frequency' => 604800,
+      ),
+      t('Save branch'));
+    $this->branch_info = $this->setUpBranchUI();
     $this->resetBranchesAndCache();
     $this->cronRun();
     $this->checkAndClearLog(array(
-      ApiTestEnable::CRON_MESSAGE,
-      'Updated ' . $this->branchInfo['project'] . ' branch ' . $this->branchInfo['branch_name'],
-      'API parse ' . $this->branchInfo['project'] . ' branch ' . $this->branchInfo['branch_name'],
-    ), array(ApiTestEnable::PHP_MESSAGE));
+        $this->cron_message,
+        'Updated ' . $this->branch_info['project'] . ' branch ' . $this->branch_info['branch_name'],
+        'API parse ' . $this->branch_info['project'] . ' branch ' . $this->branch_info['branch_name'],
+      ), array($this->php_message));
 
     // Run cron a few times more, which should be enough to parse the rest of
     // the sample branch. If the next test is failing, try adding more cron
@@ -123,10 +108,10 @@ class ApiTestEnable extends ApiWebPagesBaseTest {
     // Spot check to verify that the shutdown function has run and all files are
     // parsed: check a class page and see if methods are there, and check a
     // function page and verify that calls are there.
-    $this->drupalGet('api/' . $this->branchInfo['project'] . '/classes.php/class/SubSample');
+    $this->drupalGet('api/' . $this->branch_info['project'] . '/classes.php/class/SubSample');
     $this->assertLink('Sample::baz', 0, 'Inherited method is shown');
     $this->assertLink('SubSample::bar', 0, 'Direct method is shown');
-    $this->drupalGet('api/' . $this->branchInfo['project'] . '/sample.php/function/sample_function');
+    $this->drupalGet('api/' . $this->branch_info['project'] . '/sample.php/function/sample_function');
     $this->assertRaw('10 calls to sample_function()', 'Calling text is shown');
     $this->assertRaw("1 string reference to 'sample_function'", 'String reference link is shown');
 
@@ -151,16 +136,12 @@ class ApiTestEnable extends ApiWebPagesBaseTest {
     ));
     $this->drupalLogin($this->super_user);
 
-    $this->drupalPost(
-      'admin/config/development/api/comments',
-      array(
+    $this->drupalPost('admin/config/development/api/comments', array(
         'comment' => 2,
       ), t('Save comment settings'));
     $this->clickLink(t('Apply current default comment settings to existing API pages'));
-    $this->drupalGet('api/' . $this->branchInfo['project'] . '/classes.php/class/Sample');
-    $this->drupalPost(
-      NULL,
-      array(
+    $this->drupalGet('api/' . $this->branch_info['project'] . '/classes.php/class/Sample');
+    $this->drupalPost(NULL, array(
         'subject' => 'Subject 1',
         'comment_body[und][0][value]' => 'Comment 1 body',
       ), t('Save'));
@@ -173,19 +154,16 @@ class ApiTestEnable extends ApiWebPagesBaseTest {
     // at next cron run.
     $this->drupalGet('admin/config/development/api/php_branches');
     $this->clickLink('edit', 0);
-    $this->drupalPost(
-      NULL,
-      array(
+    $this->drupalPost(NULL, array(
         'update_frequency' => 1,
       ),
       t('Save branch'));
     $this->resetBranchesAndCache();
     $this->cronRun();
     $this->checkAndClearLog(array(
-      ApiTestEnable::CRON_MESSAGE,
-      'Updated ' . $this->branchInfo['project'] . ' branch ' . $this->branchInfo['branch_name'],
-      ApiTestEnable::PHP_MESSAGE,
-    ));
+        $this->cron_message,
+        'Updated ' . $this->branch_info['project'] . ' branch ' . $this->branch_info['branch_name'],
+        $this->php_message,
+      ));
   }
-
 }

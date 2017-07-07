@@ -17,7 +17,7 @@ class api_views_handler_field_api_project_ops extends views_handler_field {
    *
    * Adds additional database fields that we need.
    */
-  public function init(&$view, &$options) {
+  function init(&$view, &$options) {
     parent::init($view, $options);
     $this->additional_fields['project_name'] = array('table' => 'api_project', 'field' => 'project_name');
   }
@@ -27,7 +27,7 @@ class api_views_handler_field_api_project_ops extends views_handler_field {
    *
    * This is a fake field, so don't add it to the query.
    */
-  public function query() {
+  function query() {
     $this->ensure_my_table();
     $this->add_additional_fields();
   }
@@ -35,12 +35,11 @@ class api_views_handler_field_api_project_ops extends views_handler_field {
   /**
    * Overrides views_handler_field::render().
    */
-  public function render($values) {
+  function render($values) {
     $project_name = check_plain($this->get_value($values, 'project_name'));
     $ops = array();
     $ops[] = l(t('edit'), 'admin/config/development/api/projects/' . $project_name);
     $ops[] = l(t('delete'), 'admin/config/development/api/projects/' . $project_name . '/delete');
     return implode(' ', $ops);
   }
-
 }

@@ -66,12 +66,7 @@ function api_preprocess_api_object_page(&$variables) {
   // the title instead of the object_name. Limit these to the same project.
   if ($object->object_type == 'file') {
     $query = db_select('api_documentation', 'ad')
-      ->fields('ad', array(
-        'branch_id',
-        'file_name',
-        'object_type',
-        'object_name',
-      ))
+      ->fields('ad', array('branch_id', 'file_name', 'object_type', 'object_name'))
       ->condition('ad.object_type', $variables['object']->object_type)
       ->condition('ad.title', $variables['object']->title);
     $query->leftJoin('api_branch', 'b', 'ad.branch_id = b.branch_id');
@@ -80,12 +75,7 @@ function api_preprocess_api_object_page(&$variables) {
   }
   else {
     $query = db_select('api_documentation', 'ad')
-      ->fields('ad', array(
-        'branch_id',
-        'file_name',
-        'object_type',
-        'object_name',
-      ))
+      ->fields('ad', array('branch_id', 'file_name', 'object_type', 'object_name'))
       ->condition('ad.object_type', $variables['object']->object_type)
       ->condition('ad.object_name', $variables['object']->object_name);
     $query->leftJoin('api_branch', 'b', 'ad.branch_id = b.branch_id');
@@ -116,11 +106,7 @@ function api_preprocess_api_object_page(&$variables) {
   // See if this is an override of another method/etc.
   $variables['override'] = '';
   if (!empty($object->overrides_did)) {
-    $overrides = api_object_load((int) $object->overrides_did, $branches[$object->branch_id], array(
-      'function',
-      'property',
-      'constant',
-    ));
+    $overrides = api_object_load((int) $object->overrides_did, $branches[$object->branch_id], array('function', 'property', 'constant'));
     if (isset($overrides)) {
       $variables['override'] = '<p class="api-override">' . t('Overrides !link', array('!link' => l($overrides->title, api_url($overrides)))) . '</p>';
     }
@@ -133,7 +119,7 @@ function api_preprocess_api_object_page(&$variables) {
  * This theme hook is used for the "N functions call function()" and "N
  * functions implement hook()" links on function pages.
  *
- * @param array $variables
+ * @param $variables
  *   Associative array of variables to use, with the following elements:
  *   - type: The type of reference link. See api_find_references() for list.
  *   - count: The number of referenced items.
@@ -142,7 +128,7 @@ function api_preprocess_api_object_page(&$variables) {
  *
  * @ingroup themeable
  */
-function theme_api_function_reference_link(array $variables) {
+function theme_api_function_reference_link($variables) {
   module_load_include('inc', 'api', 'api.pages');
   $type = $variables['type'];
   $count = $variables['count'];
@@ -172,7 +158,7 @@ function theme_api_function_reference_link(array $variables) {
   elseif ($function->object_type == 'service') {
     $link_path = 'api/' . $branch->project . '/' . $processed_file_name . '/service/' . $type . '/' . $function->object_name . '/' . $branch->branch_name;
   }
-  elseif ($function->object_type == 'constant') {
+  elseif ($function->object_type == 'constant' ) {
     $link_path = 'api/' . $branch->project . '/' . $processed_file_name . '/constant/' . $type . '/' . $function->object_name . '/' . $branch->branch_name;
   }
   else {
@@ -186,7 +172,9 @@ function theme_api_function_reference_link(array $variables) {
  * Preprocesses variables for api-views-view-dl-list.tpl.php.
  */
 function api_preprocess_views_view_dl_list(&$variables) {
-  $handler = $variables['view']->style_plugin;
+  module_load_include('inc', 'views', 'theme');
+
+  $handler  = $variables['view']->style_plugin;
 
   $class = explode(' ', $handler->options['class']);
   $class = array_map('views_clean_css_identifier', $class);

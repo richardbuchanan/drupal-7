@@ -10,18 +10,12 @@ module_load_include('php', 'api', 'tests/api_test_case');
 /**
  * Tests search integration for the API module.
  */
-class ApiTestSearchIntegration extends ApiWebPagesBaseTest {
-
+class ApiSearchIntegrationTestCase extends ApiWebPagesBaseTest {
   /**
    * User with permission to search but not see API stuff.
-   *
-   * @var object
    */
-  protected $restrictedUser;
+  protected $restricted_user;
 
-  /**
-   * {@inheritdoc}
-   */
   public static function getInfo() {
     return array(
       'name' => 'Search integration',
@@ -30,12 +24,8 @@ class ApiTestSearchIntegration extends ApiWebPagesBaseTest {
     );
   }
 
-  /**
-   * {@inheritdoc}
-   */
-  public function setUp() {
-    DrupalWebTestCase::setUp('api', 'ctools', 'views', 'composer_manager', 'node', 'search', 'dblog', 'api_search');
-    $this->ensureAutoLoader();
+  function setUp() {
+    DrupalWebTestCase::setUp('api', 'ctools', 'gplib', 'views', 'node', 'search', 'dblog', 'api_search');
 
     // Set up a new super-user.
     $this->super_user = $this->drupalCreateUser(array(
@@ -48,7 +38,7 @@ class ApiTestSearchIntegration extends ApiWebPagesBaseTest {
     ));
 
     // Set up a restricted user.
-    $this->restrictedUser = $this->drupalCreateUser(array(
+    $this->restricted_user = $this->drupalCreateUser(array(
       'access content',
       'search content',
     ));
@@ -56,10 +46,10 @@ class ApiTestSearchIntegration extends ApiWebPagesBaseTest {
     $this->drupalLogin($this->super_user);
 
     // Set up a regular files branch.
-    $this->branchInfo = $this->setUpBranchUi();
+    $this->branch_info = $this->setUpBranchUI();
 
     // We don't need the PHP branch for this test, so for speed, remove it.
-    $this->removePhpBranch();
+    $this->removePHPBranch();
 
     // Run cron a few times to make sure the code is indexed by the API
     // module and search is also indexed.
@@ -75,7 +65,7 @@ class ApiTestSearchIntegration extends ApiWebPagesBaseTest {
   /**
    * Tests that API documentation can be searched.
    */
-  public function testSearch() {
+  function testSearch() {
     $terms = array(
       // Direct name of the function.
       'sample_function',
@@ -85,22 +75,21 @@ class ApiTestSearchIntegration extends ApiWebPagesBaseTest {
       'sample-related',
       // Text in parameter.
       'generic parameter',
-      // Text in the return value.
+      // Text in the return value
       'about return',
     );
 
-    foreach ($terms as $term) {
+    foreach($terms as $term) {
       $this->drupalPost('search/node', array('keys' => $term), t('Search'));
-      $this->assertLinkUrlSubstring('sample_function | function | sample.php | ' . $this->branchInfo['title'], 'sample.php/function/sample_function', 'sample_function page title is in search results for ' . $term, 'sample_function link is in search results for ' . $term);
+      $this->assertLinkUrlSubstring('sample_function | function | sample.php | ' . $this->branch_info['title'], 'sample.php/function/sample_function', 'sample_function page title is in search results for ' . $term, 'sample_function link is in search results for ' . $term);
     }
 
     // Now log in as the restricted user and verify that the searches do
     // not give the API results.
-    $this->drupalLogin($this->restrictedUser);
-    foreach ($terms as $term) {
+    $this->drupalLogin($this->restricted_user);
+    foreach($terms as $term) {
       $this->drupalPost('search/node', array('keys' => $term), t('Search'));
       $this->assertText('Your search yielded no results', 'No search results with restricted user who cannot see API documentation');
     }
   }
-
 }

@@ -11,11 +11,7 @@ module_load_include('inc', 'api', 'legacy');
 /**
  * Tests that legacy redirects are correct.
  */
-class ApiTestLegacy extends ApiTestCase {
-
-  /**
-   * {@inheritdoc}
-   */
+class ApiLegacyTest extends ApiTestCase {
   public static function getInfo() {
     return array(
       'name' => 'Legacy redirects',
@@ -27,9 +23,9 @@ class ApiTestLegacy extends ApiTestCase {
   /**
    * Tests that legacy URL redirects are correct.
    */
-  public function testApiLegacy() {
+  function testApiLegacy() {
     $tests = array(
-      // Tests for functions.
+      // Function
       array(
         'function' => 'api_legacy_1_2_object_load',
         'arguments' => array('sample_function', 'function', ''),
@@ -40,7 +36,7 @@ class ApiTestLegacy extends ApiTestCase {
         'arguments' => array('sample_function', 'function', '6'),
         'redirect' => 'api/test/sample.php/function/sample_function/6',
       ),
-      // Tests for constants.
+      // Constant
       array(
         'function' => 'api_legacy_1_2_object_load',
         'arguments' => array('SAMPLE_CONSTANT', 'constant', ''),
@@ -51,7 +47,7 @@ class ApiTestLegacy extends ApiTestCase {
         'arguments' => array('SAMPLE_CONSTANT', 'constant', '6'),
         'redirect' => 'api/test/sample.php/constant/SAMPLE_CONSTANT/6',
       ),
-      // Tests for globals.
+      // Global
       array(
         'function' => 'api_legacy_1_2_object_load',
         'arguments' => array('sample_global', 'global', ''),
@@ -62,7 +58,7 @@ class ApiTestLegacy extends ApiTestCase {
         'arguments' => array('sample_global', 'global', '6'),
         'redirect' => 'api/test/sample.php/global/sample_global/6',
       ),
-      // Tests for topics.
+      // Topic
       array(
         'function' => 'api_legacy_1_2_object_load',
         'arguments' => array('samp_GRP-6.x', 'group', ''),
@@ -80,5 +76,4 @@ class ApiTestLegacy extends ApiTestCase {
       $this->assertEqual($result, $test['redirect'], $test['function'] . ': ' . implode(', ', $test['arguments']) . ' Got: <code>' . check_plain($result) . '</code>');
     }
   }
-
 }

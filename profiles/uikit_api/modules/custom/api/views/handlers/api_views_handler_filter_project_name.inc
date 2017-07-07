@@ -9,11 +9,7 @@
  * Filter handler for project names.
  */
 class api_views_handler_filter_project_name extends views_handler_filter_string {
-
-  /**
-   * {@inheritdoc}
-   */
-  public function value_form(&$form, &$form_state) {
+  function value_form(&$form, &$form_state) {
     $default_value = $this->value;
 
     $form['value'] = array(
@@ -23,5 +19,5 @@ class api_views_handler_filter_project_name extends views_handler_filter_string 
       '#autocomplete_path' => 'api-project-autocomplete',
     );
   }
-
 }
+

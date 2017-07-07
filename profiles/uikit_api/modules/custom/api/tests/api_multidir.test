@@ -10,11 +10,7 @@ module_load_include('php', 'api', 'tests/api_test_case');
 /**
  * Tests that a multi-directory setup works.
  */
-class ApiTestMultiDirectory extends ApiTestCase {
-
-  /**
-   * {@inheritdoc}
-   */
+class ApiMultiDirectoryTestCase extends ApiTestCase {
   public static function getInfo() {
     return array(
       'name' => 'Multiple directories',
@@ -23,10 +19,7 @@ class ApiTestMultiDirectory extends ApiTestCase {
     );
   }
 
-  /**
-   * {@inheritdoc}
-   */
-  public function setUp() {
+  function setUp() {
     $this->baseSetUp();
 
     // Make a branch for both sets of sample code, using a .. in the path.
@@ -35,11 +28,11 @@ class ApiTestMultiDirectory extends ApiTestCase {
     $last = array_pop($parts);
     $prefix = '../' . $last . '/';
 
-    $this->setUpBranchApiCall('', TRUE, array(
+    $this->setUpBranchAPICall('', TRUE, array(
       'directory' => $prefix . drupal_get_path('module', 'api') . '/tests/sample' . "\n" . $prefix . drupal_get_path('module', 'api') . '/tests/sample2',
       'excluded' => $prefix . drupal_get_path('module', 'api') . '/tests/sample/to_exclude' . "\n" . $prefix . drupal_get_path('module', 'api') . '/tests/sample2/maybe_exclude',
     ));
-    $this->removePhpBranch();
+    $this->removePHPBranch();
 
     $this->resetBranchesAndCache();
     $this->updateBranches();
@@ -51,7 +44,7 @@ class ApiTestMultiDirectory extends ApiTestCase {
   /**
    * Tests that all the files were parsed.
    */
-  public function testParsing() {
+  function testParsing() {
     // Make sure we have the right number of doc objects.
     $branch = $this->getBranch();
     $this->assertObjectCount($branch, 91);
@@ -78,18 +71,14 @@ class ApiTestMultiDirectory extends ApiTestCase {
 
     $object = api_object_load('Sample2InSubDir', $branch, 'class');
     $this->assertTrue(isset($object) && $object, 'Class in excluded subdirectory was loaded');
-  }
 
+  }
 }
 
 /**
  * Tests that a multi-directory setup with excluded regular expression works.
  */
-class ApiTestRegularExpressionExclusion extends ApiTestCase {
-
-  /**
-   * {@inheritdoc}
-   */
+class ApiRegularExpressionExclusionTestCase extends ApiTestCase {
   public static function getInfo() {
     return array(
       'name' => 'Regular expression exclusion',
@@ -98,10 +87,7 @@ class ApiTestRegularExpressionExclusion extends ApiTestCase {
     );
   }
 
-  /**
-   * {@inheritdoc}
-   */
-  public function setUp() {
+  function setUp() {
     $this->baseSetUp();
 
     // Make a branch for both sets of sample code, using a .. in the path.
@@ -110,12 +96,12 @@ class ApiTestRegularExpressionExclusion extends ApiTestCase {
     $last = array_pop($parts);
     $prefix = '../' . $last . '/';
 
-    $this->setUpBranchApiCall('', TRUE, array(
+    $this->setUpBranchAPICall('', TRUE, array(
       'directory' => $prefix . drupal_get_path('module', 'api') . '/tests/sample' . "\n" . $prefix . drupal_get_path('module', 'api') . '/tests/sample2',
       'excluded' => $prefix . drupal_get_path('module', 'api') . '/tests/sample/to_exclude' . "\n" . $prefix . drupal_get_path('module', 'api') . '/tests/sample2/maybe_exclude',
       'regexps' => "|subdirectory|\n|inheritance|",
     ));
-    $this->removePhpBranch();
+    $this->removePHPBranch();
 
     $this->resetBranchesAndCache();
     $this->updateBranches();
@@ -127,7 +113,7 @@ class ApiTestRegularExpressionExclusion extends ApiTestCase {
   /**
    * Tests that all the files were parsed.
    */
-  public function testParsing() {
+  function testParsing() {
     // Make sure we have the right number of doc objects.
     $branch = $this->getBranch();
     $this->assertObjectCount($branch, 45);
@@ -154,6 +140,7 @@ class ApiTestRegularExpressionExclusion extends ApiTestCase {
 
     $object = api_object_load('Sample2InSubDir', $branch, 'class');
     $this->assertFalse(isset($object) && $object, 'Class in excluded subdirectory was not loaded');
-  }
 
+  }
 }
+

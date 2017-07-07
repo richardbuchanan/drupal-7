@@ -18,7 +18,7 @@
  * @param int[] $dids
  *   Array of the documentation IDs of documentation that has been updated.
  */
-function hook_api_updated(array $dids) {
+function hook_api_updated($dids) {
   foreach ($dids as $did) {
     mymodule_mark_api_as_updated($did);
   }
@@ -30,7 +30,7 @@ function hook_api_updated(array $dids) {
  * Normally, the API module modifies all node listing queries to exclude API
  * nodes. You can use this hook to turn off that exclusion for a query.
  *
- * @param object $query
+ * @param $query
  *   The query that is being altered.
  *
  * @return bool
