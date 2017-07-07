@@ -19,12 +19,8 @@ sites/*/logs
 *~
 .eslintrc
 .idea/
-profiles/drupalapi/.sources/*
 sites/*/modules/*/devel*
 sites/*/modules/*/simplehtmldom
 sites/default/files
 sites/localhost.*
-
-# Add back any profiles/drupalapi/.sources make files.
-!profiles/drupalapi/.sources/drupal_source.make
-!profiles/drupalapi/.sources/sources.make
+profiles/uikit_api/sources
