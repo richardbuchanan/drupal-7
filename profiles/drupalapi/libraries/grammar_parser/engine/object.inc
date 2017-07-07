@@ -115,7 +115,7 @@ class PGPBase {
         $strings[] = '';
       }
       elseif (is_array($element)) {
-//        $strings[] = '<_________ data is a Array ________>'; // This is encountered!!!
+        //        $strings[] = '<_________ data is a Array ________>'; // This is encountered!!!
         if (!empty($element)) {
           $strings[] = $indent0 . "[$key] => Array";
           $strings[] = $indent1 . '(';
@@ -188,7 +188,7 @@ class PGPBase {
    *   (optional) The PGPBase object to clear.
    */
   public function clear_r(&$elements = NULL) {
-//    $this->debugPrint(__METHOD__);
+    //    $this->debugPrint(__METHOD__);
     $elements = is_null($elements) ? $this : $elements;
 
     foreach ($elements as $key => &$element) {
@@ -203,21 +203,21 @@ class PGPBase {
         }
       }
       elseif ($element instanceof PGPBase) {
-//        $this->debugPrint("element is PGPBase {$element->type}");
+        //        $this->debugPrint("element is PGPBase {$element->type}");
         $element->clear_r();
       }
       elseif ($element instanceof PGPList) {
-//        $this->debugPrint("element is PGPList");
+        //        $this->debugPrint("element is PGPList");
         $element->clear_r();
       }
       elseif ($element instanceof PGPNode) { // @todo This handles the parent node, but we need to print expression nodes.
-//        $this->debugPrint("element is PGPNode {$element->type}");
+        //        $this->debugPrint("element is PGPNode {$element->type}");
         $data = &$element->data;
 
         if (is_object($data)) {
-//          $data->clear_r();
+          //          $data->clear_r();
           if (!in_array($key, array('parent', 'parentExpression')) && method_exists($data, 'clear_r')) {
-//            $this->debugPrint("clear_r routine exists on PGPNode type of {$element->type}");
+            //            $this->debugPrint("clear_r routine exists on PGPNode type of {$element->type}");
             $data->clear_r();
           }
           unset($data);
@@ -225,7 +225,7 @@ class PGPBase {
         elseif (is_array($data)) {
           // Is this the case that hits references to parents and causes an infinite loop???
           if (!empty($data)) {
-//            $this->clear_r($data);
+            //            $this->clear_r($data);
           }
           unset($data);
         }
@@ -234,7 +234,7 @@ class PGPBase {
         }
       }
       else {
-//        $this->debugPrint("element is string '$element'");
+        //        $this->debugPrint("element is string '$element'");
       }
       unset($element);
       if (is_array($elements)) {
@@ -262,7 +262,7 @@ class PGPBase {
    *   (optional) Direction in which to traverse the list.
    */
   public function searchCallback($callback, $class, $member, $key, $value, $direction = 'forward') {
-//    $this->debugPrint(__METHOD__);
+    //    $this->debugPrint(__METHOD__);
     foreach ($this as $key2 => $element) {
       if (!isset($element)) {
         continue;
@@ -271,10 +271,10 @@ class PGPBase {
 
       }
       elseif (is_array($element)) {
-//        $this->debugPrint('<_________ element is a Array ________>');
+        //        $this->debugPrint('<_________ element is a Array ________>');
       }
       elseif ($element instanceof PGPBase) {
-//        $this->debugPrint('<_________ element is a PGPBase ________>');
+        //        $this->debugPrint('<_________ element is a PGPBase ________>');
         if (get_class($element) == $class) {
           if (method_exists($data, 'matches')) {
             if ($element->matches($member, $key, $value)) {
@@ -290,7 +290,7 @@ class PGPBase {
         }
       }
       elseif ($element instanceof PGPList) {
-//        $this->debugPrint('<_________ element is a PGPList ________>');
+        //        $this->debugPrint('<_________ element is a PGPList ________>');
         // Recurse on this element's members.
         $element->searchCallback($callback, $class, $member, $key, $value, $direction);
       }
@@ -332,9 +332,9 @@ class PGPBase {
    *   The object meeting the search criteria, its node, or FALSE.
    */
   public function &search($class, $member, $key, $value, $return_node = FALSE, $direction = 'forward') {
-//    $this->debugPrint(__METHOD__);
+    //    $this->debugPrint(__METHOD__);
     foreach ($this as $key2 => $element) {
-//      $this->debugPrint("key = $key");
+      //      $this->debugPrint("key = $key");
       if (!isset($element)) {
         continue;
       }
@@ -342,10 +342,10 @@ class PGPBase {
 
       }
       elseif (is_array($element)) {
-//        $this->debugPrint('<_________ element is a Array ________>');
+        //        $this->debugPrint('<_________ element is a Array ________>');
       }
       elseif ($element instanceof PGPBase) {
-//        $this->debugPrint('<_________ element is a PGPBase ________>');
+        //        $this->debugPrint('<_________ element is a PGPBase ________>');
         if (get_class($element) == $class) {
           if (method_exists($data, 'matches')) {
             if ($element->matches($member, $key, $value)) {
@@ -364,7 +364,7 @@ class PGPBase {
         }
       }
       elseif ($element instanceof PGPList) {
-//        $this->debugPrint('<_________ element is a PGPList ________>');
+        //        $this->debugPrint('<_________ element is a PGPList ________>');
         // Recurse on this element's members.
         $result = $element->search($class, $member, $key, $value, $return_node, $direction);
         if ($result !== FALSE) {
@@ -401,12 +401,12 @@ class PGPBase {
    *   The list of elements meeting the search criteria.
    */
   public function searchAll($class, $member, $key, $value, $return_node = FALSE, $direction = 'forward') {
-//    $this->debugPrint(__METHOD__);
+    //    $this->debugPrint(__METHOD__);
     // Initialize.
     $items = array();
 
     foreach ($this as $key2 => $element) {
-//      $this->debugPrint("key = $key");
+      //      $this->debugPrint("key = $key");
       if (!isset($element)) {
         continue;
       }
@@ -414,10 +414,10 @@ class PGPBase {
 
       }
       elseif (is_array($element)) {
-//        $this->debugPrint('<_________ element is a Array ________>');
+        //        $this->debugPrint('<_________ element is a Array ________>');
       }
       elseif ($element instanceof PGPBase) {
-//        $this->debugPrint('<_________ element is a PGPBase ________>');
+        //        $this->debugPrint('<_________ element is a PGPBase ________>');
         if (get_class($element) == $class) {
           if (method_exists($data, 'matches')) {
             if ($element->matches($member, $key, $value)) {
@@ -434,7 +434,7 @@ class PGPBase {
         }
       }
       elseif ($element instanceof PGPList) {
-//        $this->debugPrint('<_________ element is a PGPList ________>');
+        //        $this->debugPrint('<_________ element is a PGPList ________>');
         // Recurse on this element's members.
         $temp = $element->searchAll($class, $member, $key, $value, $return_node, $direction);
         $items = array_merge($items, $temp);
@@ -465,12 +465,12 @@ class PGPBase {
    *   The list of elements meeting the search criteria.
    */
   public function searchAny($value, $return_item = GP_RETURN_DATA, $direction = 'forward') {
-//    $this->debugPrint(__METHOD__);
+    //    $this->debugPrint(__METHOD__);
     // Initialize.
     $items = array();
 
     foreach ($this as $key2 => $element) {
-//      $this->debugPrint("key = $key");
+      //      $this->debugPrint("key = $key");
       if (!isset($element)) {
         continue;
       }
@@ -478,20 +478,20 @@ class PGPBase {
 
       }
       elseif (is_array($element)) {
-//        $this->debugPrint('<_________ element is a Array ________>');
+        //        $this->debugPrint('<_________ element is a Array ________>');
         $key = 'value';
         if (isset($element[$key]) && $element[$key] == $value) {
           $items[] = $element;
         }
       }
       elseif ($element instanceof PGPBase) {
-//        $this->debugPrint('<_________ element is a PGPBase ________>');
+        //        $this->debugPrint('<_________ element is a PGPBase ________>');
         // Recurse on this element's members.
         $temp = $element->searchAny(/*$class, $member, $key,*/ $value, $return_item, $direction);
         $items = array_merge($items, $temp);
       }
       elseif ($element instanceof PGPList) {
-//        $this->debugPrint('<_________ element is a PGPList ________>');
+        //        $this->debugPrint('<_________ element is a PGPList ________>');
         // Recurse on this element's members.
         $temp = $element->searchAny(/*$class, $member, $key,*/ $value, $return_item, $direction);
         $items = array_merge($items, $temp);
@@ -542,7 +542,7 @@ class PGPBase {
    *   TRUE if type matches.
    */
   public function isType($type) {
-//    $this->debugPrint(__METHOD__);
+    //    $this->debugPrint(__METHOD__);
     if (!$type) {
       return FALSE;
     }
@@ -582,11 +582,11 @@ class PGPBase {
   }
 
   protected function settings() {
-//     static $settings;
-//     if (!isset($settings)) {
-//       $settings = array($this->preserveWhitespace, $this->preserveNewline, $this->preserveWhitespaceLikeOriginal);
-//     }
-//     return $settings;
+    //     static $settings;
+    //     if (!isset($settings)) {
+    //       $settings = array($this->preserveWhitespace, $this->preserveNewline, $this->preserveWhitespaceLikeOriginal);
+    //     }
+    //     return $settings;
     return array($this->preserveWhitespace, $this->preserveNewline, $this->preserveWhitespaceLikeOriginal);
   }
 
@@ -773,13 +773,13 @@ class PGPArray extends PGPBase {
     $keys = 0;
     $values = 0;
     $last = '';
-//    $add_comma = 0;
+    //    $add_comma = 0;
 
     $add_space = 0;
     $space = ''; // Never used; it is calculated on each while iteration
     $add_indent = FALSE;
     $increase_indent = FALSE;
-    $string = 'array';
+    $string = !$this->short_syntax ? 'array' : '';
 
     $current = $expression->values->first();
     while ($current->next != NULL) {
@@ -874,11 +874,12 @@ class PGPArray extends PGPBase {
 
         case 'rparens':
           // @todo Suppress this here and do at end. OR do here now since only have one rparens.
-//           $rparens++;
-//           $string .= $element;
+          //           $rparens++;
+          //           $string .= $element;
+          $rparens_element = $element;
           break;
 
-          // @todo The following cases are not deprecated, but operand above is.
+        // @todo The following cases are not deprecated, but operand above is.
         case 'whitespace':
           if ($this->preserveWhitespace || $this->preserveNewline) {
             if (is_array($element) && isset($element['lines'])) {
@@ -945,7 +946,7 @@ class PGPArray extends PGPBase {
     }
     $this->debugPrint("$string");
     if ($lparens > $rparens) {
-      $string .= ')';
+      $string .= $rparens_element;
     }
     $this->debugPrint("$string");
 
@@ -1332,7 +1333,7 @@ class PGPArray extends PGPBase {
         $type = $current->type;
         if ($type == 'key') {
           $key_is_string = FALSE;
-//           $key = NULL;
+          //           $key = NULL;
           $key_expression = $current->data->stripComments();
           if ($key_expression->countType('operand') == 1) {
             $operand = $key_expression->getElement();
@@ -1507,6 +1508,13 @@ class PGPFunctionCall extends PGPBase {
   public $noparens;
 
   /**
+   * Text before parameters.
+   *
+   * @var PGPExpression
+   */
+  public $pre;
+
+  /**
    * Statement parameters.
    *
    * @var PGPList
@@ -1517,7 +1525,7 @@ class PGPFunctionCall extends PGPBase {
     parent::__construct();
 
     $this->type = 0;
-//    $this->noparens = 0;
+    //    $this->noparens = 0;
   }
 
   /**
@@ -1579,6 +1587,12 @@ class PGPFunctionCall extends PGPBase {
 
         case 'noparens':
           $noparens = $element;
+          break;
+
+        case 'pre':
+          if (is_object($element)) {
+            $string .= $space . $element->toString();
+          }
           break;
 
         case 'parameters':
@@ -1766,7 +1780,7 @@ class PGPFunctionCall extends PGPBase {
    *   The parameter variable object.
    */
   public function getParameterVariable($index = 0) {
-//    $this->debugPrint(__METHOD__);
+    //    $this->debugPrint(__METHOD__);
 
     if ($this->parameters instanceof PGPList) {
       if ($this->parameters->count() > $index) {
@@ -1867,7 +1881,7 @@ class PGPFunctionCall extends PGPBase {
    *   The inserted statement object (or array).
    */
   public function &insertStatementBefore($statement) {
-//    $this->debugPrint(__METHOD__);
+    //    $this->debugPrint(__METHOD__);
     // Check type to be PGPBase or array.
     if (!($statement instanceof PGPBase) && !is_array($statement)) {
       $node = NULL;
@@ -1894,7 +1908,7 @@ class PGPFunctionCall extends PGPBase {
    *   The inserted statement object (or array).
    */
   public function &insertStatementAfter($statement) {
-//    $this->debugPrint(__METHOD__);
+    //    $this->debugPrint(__METHOD__);
     // Check type to be PGPBase or array.
     if (!($statement instanceof PGPBase) && !is_array($statement)) {
       $node = NULL;
@@ -2101,7 +2115,7 @@ class PGPAssignment extends PGPBase {
       }
       if (isset($expression->post)) {
         $string .= $expression->post->toString();
-//         $add_space = 1;
+        //         $add_space = 1;
       }
       $string .= $expression->semicolon ? ';' : '';
       return $string;
@@ -2113,7 +2127,7 @@ class PGPAssignment extends PGPBase {
       if (($temp = $expression->value->toString()) !== '') {
         $string .= $space . $temp;
       }
-//      $string .= $temp ? $space . $temp : ''; // This works too.
+      //      $string .= $temp ? $space . $temp : ''; // This works too.
       return $string;
     }
   }
@@ -2363,7 +2377,7 @@ class PGPAssignment extends PGPBase {
 }
 
 /**
- * Grammar Parser interface, class or function statement block class.
+ * Grammar Parser interface, class, trait or function statement block class.
  *
  * The order of the members is important so as to be able to use a foreach
  * statement to print the object.
@@ -2496,7 +2510,7 @@ class PGPClass extends PGPBase {
   }
 
   /**
-   * Returns the text of an interface, class or function statement block.
+   * Returns the text of an interface, class, trait or function statement block.
    *
    * @param string $indent
    *   (optional) Line indent string.
@@ -2807,7 +2821,7 @@ class PGPClass extends PGPBase {
    *   The parameter variable object.
    */
   public function getParameterVariable($index = 0) {
-//    $this->debugPrint(__METHOD__);
+    //    $this->debugPrint(__METHOD__);
 
     if ($this->parameters instanceof PGPList) {
       if ($this->parameters->count() > $index) {
@@ -2916,21 +2930,21 @@ class PGPConditional extends PGPBase {
    *
    * @var PGPExpression
    */
-//   public $pre;
+  //   public $pre;
 
   /**
    * List of conditions to be satisfied before executing body statements.
    *
    * @var PGPList
    */
-//   public $conditions;
+  //   public $conditions;
 
   /**
    * Text after conditions.
    *
    * @var PGPExpression
    */
-//   public $post;
+  //   public $post;
 
   /**
    * Indicates whether statement body is enclosed in braces.
@@ -2951,21 +2965,21 @@ class PGPConditional extends PGPBase {
    *
    * @var PGPExpression
    */
-//   public $pre2;
+  //   public $pre2;
 
   /**
    * List of body statements.
    *
    * @var PGPBody
    */
-//   public $body;
+  //   public $body;
 
   /**
    * Text after body.
    *
    * @var PGPExpression
    */
-//   public $post2;
+  //   public $post2;
 
   /**
    * End block token value when statement block uses alternative syntax.
@@ -2985,8 +2999,8 @@ class PGPConditional extends PGPBase {
     parent::__construct();
 
     $this->type = 0;
-//    $this->nobraces = 0; // Does this mean the variable isset()?
-//    $this->colon = 0;
+    //    $this->nobraces = 0; // Does this mean the variable isset()?
+    //    $this->colon = 0;
   }
 
   /**
@@ -3090,7 +3104,7 @@ class PGPConditional extends PGPBase {
             $string .= $element->toString();
           }
           $string .= $close_brace;
-//           $add_space = ($expression->type == T_DO) ? -1 : $add_space;
+          //           $add_space = ($expression->type == T_DO) ? -1 : $add_space;
           break;
 
         case 'whitespace':
@@ -3167,21 +3181,21 @@ class PGPFor extends PGPBase {
    *
    * @var PGPList
    */
-//   public $initial;
+  //   public $initial;
 
   /**
    * Condition expression(s) to be satisfied before executing body statements.
    *
    * @var PGPList
    */
-//   public $condition;
+  //   public $condition;
 
   /**
    * Final value expression(s) for condition.
    *
    * @var PGPList
    */
-//   public $increment;
+  //   public $increment;
 
   /**
    * Indicates whether statement body is enclosed in braces.
@@ -3202,7 +3216,7 @@ class PGPFor extends PGPBase {
    *
    * @var PGPBody
    */
-//   public $body;
+  //   public $body;
 
   /**
    * End block token value when statement block uses alternative syntax.
@@ -3222,8 +3236,8 @@ class PGPFor extends PGPBase {
     parent::__construct();
 
     $this->type = 0;
-//    $this->nobraces = 0; // Does this mean the variable isset()?
-//    $this->colon = 0;
+    //    $this->nobraces = 0; // Does this mean the variable isset()?
+    //    $this->colon = 0;
   }
 
   /**
@@ -3325,21 +3339,21 @@ class PGPForeach extends PGPBase {
    *
    * @var PGPExpression
    */
-//   public $initial;
+  //   public $initial;
 
   /**
    * Name of key to reference each loop item.
    *
    * @var PGPExpression
    */
-//   public $key;
+  //   public $key;
 
   /**
    * Name of value to reference each loop item.
    *
    * @var PGPExpression
    */
-//   public $value;
+  //   public $value;
 
   /**
    * Indicates whether statement body is enclosed in braces.
@@ -3360,7 +3374,7 @@ class PGPForeach extends PGPBase {
    *
    * @var PGPBody
    */
-//   public $body;
+  //   public $body;
 
   /**
    * End block token value when statement block uses alternative syntax.
@@ -3380,8 +3394,8 @@ class PGPForeach extends PGPBase {
     parent::__construct();
 
     $this->type = 0;
-//    $this->nobraces = 0; // Does this mean the variable isset()?
-//    $this->colon = 0;
+    //    $this->nobraces = 0; // Does this mean the variable isset()?
+    //    $this->colon = 0;
   }
 
   /**
@@ -3410,7 +3424,7 @@ class PGPForeach extends PGPBase {
       $space = PGPWriter::getWhitespace($this->settings(), $add_space);
       switch ($key) {
         case 'type':
-//           $add_space = -1;
+          //           $add_space = -1;
           break;
 
         case 'pre':
@@ -3446,7 +3460,7 @@ class PGPForeach extends PGPBase {
           $string .= $close_brace;
           break;
 
-//        case T_COMMENT:
+        //        case T_COMMENT:
         case 'whitespace':
           $string .= $element;
           // Set space to zero for next item.
@@ -3607,7 +3621,7 @@ class PGPDeclare extends PGPBase {
    *
    * @var PGPList
    */
-//   public $parameters;
+  //   public $parameters;
 
   /**
    * Indicates whether statement block uses alternative syntax.
@@ -3621,7 +3635,7 @@ class PGPDeclare extends PGPBase {
    *
    * @var PGPBody
    */
-//   public $body;
+  //   public $body;
 
   /**
    * End block token value when statement block uses alternative syntax.
@@ -3634,7 +3648,7 @@ class PGPDeclare extends PGPBase {
     parent::__construct();
 
     $this->type = 0;
-//    $this->colon = 0;
+    //    $this->colon = 0;
   }
 
   /**
@@ -3663,7 +3677,7 @@ class PGPDeclare extends PGPBase {
       $space = PGPWriter::getWhitespace($this->settings(), $add_space);
       switch ($key) {
         case 'type':
-//           $add_space = -1;
+          //           $add_space = -1;
           break;
 
         case 'pre':
@@ -3689,7 +3703,7 @@ class PGPDeclare extends PGPBase {
           $string .= $close_brace;
           break;
 
-//        case T_COMMENT:
+        //        case T_COMMENT:
         case 'whitespace':
           $string .= $element;
           // Set space to zero for next item.
@@ -3702,29 +3716,29 @@ class PGPDeclare extends PGPBase {
     }
     $string .= !isset($expression->body) && isset($expression->semicolon) && $expression->semicolon ? ';' : '';
     return $string;
-/*
-    $open_brace = isset($expression->colon) ? ':' : '{';
-    $close_brace = isset($expression->end) ? $expression->end . ';' : '}';
+    /*
+        $open_brace = isset($expression->colon) ? ':' : '{';
+        $close_brace = isset($expression->end) ? $expression->end . ';' : '}';
 
-    $strings = array();
-    // Test isset here or in the respective declares?
-    if (isset($expression->comment) && !empty($expression->comment)) {
-      $strings[] = PGPWriter::printComment($expression->comment, $indent);
-    }
-    $header = $indent . $prepend . 'declare ';
-    $header .= '(' . $expression->parameters->toString() . ')';
-    if (!isset($expression->body)) {
-      $header .= ';';
-      $strings[] = $header;
-    }
-    else {
-      $header .= ' ' . $open_brace; // @todo Preserve whitespace.
-      $strings[] = $header;
-      $strings[] = $expression->body->toString();
-      $strings[] = $indent . $close_brace;
-    }
-    return implode("\n", $strings);
-*/
+        $strings = array();
+        // Test isset here or in the respective declares?
+        if (isset($expression->comment) && !empty($expression->comment)) {
+          $strings[] = PGPWriter::printComment($expression->comment, $indent);
+        }
+        $header = $indent . $prepend . 'declare ';
+        $header .= '(' . $expression->parameters->toString() . ')';
+        if (!isset($expression->body)) {
+          $header .= ';';
+          $strings[] = $header;
+        }
+        else {
+          $header .= ' ' . $open_brace; // @todo Preserve whitespace.
+          $strings[] = $header;
+          $strings[] = $expression->body->toString();
+          $strings[] = $indent . $close_brace;
+        }
+        return implode("\n", $strings);
+    */
   }
 }
 
@@ -3755,14 +3769,14 @@ class PGPTryCatch extends PGPBase {
    *
    * @var PGPExpression
    */
-//   public $exception;
+  //   public $exception;
 
   /**
    * List of body statements.
    *
    * @var PGPBody
    */
-//   public $body;
+  //   public $body;
 
   public function __construct() {
     parent::__construct();
@@ -3889,20 +3903,20 @@ class PGPListStatement extends PGPBase {
    *
    * @var PGPList
    */
-//   public $parameters;
+  //   public $parameters;
 
   /**
    * Assignment expression.
    *
    * @var PGPExpression
    */
-//   public $assignment;
+  //   public $assignment;
 
   public function __construct() {
     parent::__construct();
 
     $this->type = 0;
-//    $this->noparens = 0;
+    //    $this->noparens = 0;
   }
 
   /**
@@ -4087,7 +4101,7 @@ class PGPNamespace extends PGPBase {
       $strings[] = $header;
     }
     else {
-//      $header .= ' {';
+      //      $header .= ' {';
       // Add body comment (i.e. a comment following the block beginning token).
       $header .= $expression->bodyComment ? $space . '{' . $space . $expression->bodyComment : $space . '{';
       $strings[] = $header;
@@ -4152,39 +4166,58 @@ class PGPUse extends PGPBase {
 
     $expression = $this; // @todo Why use this variable name now?
 
-    $add_space = 1;
-    $string = $indent . $prepend . 'use';
-
-    $current = $expression->values->first();
-    while ($current->next != NULL) {
-      $key = $current->type;
-      $element = $current->data;
-
-      $this->debugPrint(__METHOD__ . " key = $key");
+    $add_space = 0;
+    $string = $indent . $prepend;
+    foreach ($expression as $key => $element) {
+      $this->debugPrint("inside $key");
       $space = PGPWriter::getWhitespace($this->settings(), $add_space);
       switch ($key) {
-        case 'name':
-          $string .= $space . $element->toString();
+        case 'type':
+          if (!$expression->nouse) {
+            $type = PGPWriter::statementTypeToString($element);
+            $string .= /*$space .*/ $type;
+            $add_space = -1;
+          }
           break;
 
-        case 'alias':
-          $string .= $space . $element->toString();
+        case 'values':
+          // Add list of use items.
+          if (is_object($element)) {
+            // @todo Enhance PGPList::toString() to be able to use next line.
+            //             $string .= $space . $element->toString();
+            $string .= $space . $expression->valuesToString();
+          }
           break;
 
-        case 'as':
-          $string .= $space . $element;
-          break;
+        case 'body':
+          // @todo Copied from PGPClass; all may not apply.
+          if ($this->preserveWhitespace && $expression->nobraces) {
+            // This case should not occur on interface, class, or function.
+            // Allow for no braces with an empty body.
+            $open_brace = $close_brace = '';
+          }
+          else {
+            // Include body comment following the block beginning token.
+            $space2 = PGPWriter::getWhitespace($this->settings());
+            $open_brace = isset($expression->bodyComment) && $expression->bodyComment ? '{' . $space2 . $expression->bodyComment : '{';
+            if (TRUE || !is_object($expression->name)) {
+              // Indent closing brace on anonymous function.
+              $indent = PGPWriter::getIndent($this->settings());
+            }
+            $close_brace = $this->preserveWhitespace ? '}' : "\n" . $indent . '}';
+          }
 
-        case 'comma':
-          $separator = '';
-          $string .= $separator . $element;
+          $string .= $space . $open_brace;
+          if (isset($element) && !$element->isEmpty()) {
+            $string .= PGPWriter::getDelimiter($this->settings());
+            $string .= $element->toString();
+          }
+          $string .= $close_brace;
           break;
       }
       if ($add_space <= 0) {
         $add_space++;
       }
-
-      $current = $current->next;
     }
     $string .= isset($expression->semicolon) && $expression->semicolon ? ';' : '';
     return $string;
@@ -4330,52 +4363,5 @@ class PGPUse extends PGPBase {
     }
 
     return isset($return[$group]) ? $return[$group] : $return;
-  }
-
-  /**
-   * Returns an associative array of classes keyed by alias.
-   *
-   * @return array
-   *   An array of the classes keyed by alias.
-   */
-  public function aliasesToArray() {
-    $this->debugPrint(__METHOD__);
-
-    $return = array();
-    if ($this->values instanceof PGPList) {
-      $last_is_name = FALSE;
-      $current = $this->values->first();
-      while ($current->next != NULL) {
-        $type = $current->type;
-        if ($type == 'name') {
-          if ($last_is_name) {
-            // Use class name as the alias.
-            $alias = $name_expression->findNode('operand', 'backward')->toString();
-            $name = $name_expression->toString();
-            $return[$alias] = $name;
-          }
-          $name_expression = $current->data->stripComments();
-          $last_is_name = TRUE;
-        }
-        elseif ($type == 'alias') {
-          $alias = $current->data->stripComments()->toString();
-          $last_is_name = FALSE;
-          if (isset($name_expression)) {
-            $name = $name_expression->toString();
-            $return[$alias] = $name;
-            $name_expression = NULL;
-          }
-        }
-        $current = &$current->next;
-      }
-      if ($last_is_name) {
-        // Use class name as the alias.
-        $alias = $name_expression->findNode('operand', 'backward')->toString();
-        $name = $name_expression->toString();
-        $return[$alias] = $name;
-      }
-    }
-
-    return $return;
   }
 }
