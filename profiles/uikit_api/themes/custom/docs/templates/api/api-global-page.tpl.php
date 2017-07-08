@@ -53,7 +53,7 @@
   <?php endif; ?>
 
   <?php if (!empty($deprecated)): ?>
-    <div class="docs-api-deprecated">
+    <div class="docs-api-deprecated" class="uk-alert uk-alert-warning">
       <a href="#deprecated" class="uk-link-muted docs-link-anchor">
         <h3 id="deprecated"><?php print t('Deprecated') ?><i class="uk-icon uk-icon-link uk-text-muted"></i></h3>
       </a>
