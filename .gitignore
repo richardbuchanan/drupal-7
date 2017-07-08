@@ -16,7 +16,6 @@ sites/*/files/xmlsitemap
 sites/*/logs
 
 # Ignore local development files and directories.
-*~
 .eslintrc
 .idea/
 sites/*/modules/*/devel*
