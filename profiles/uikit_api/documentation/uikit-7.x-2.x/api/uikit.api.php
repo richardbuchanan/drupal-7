@@ -33,7 +33,7 @@
  * @link https://drupal.org/project/uikit drupal.org @endlink or use one of the
  * links below to download the project directly from drupal.org.
  *
- * @button_large https://ftp.drupal.org/files/projects/uikit-7.x-2.0-beta1.tar.gz UIkit 7.x-2.0-beta1.tar.gz @endbutton_large @button_large https://ftp.drupal.org/files/projects/uikit-7.x-2.0-beta1.zip UIkit 7.x-2.0-beta1.zip @endbutton_large
+ * @button_large https://ftp.drupal.org/files/projects/uikit-7.x-2.6.tar.gz UIkit 7.x-2.6.tar.gz @endbutton_large @button_large https://ftp.drupal.org/files/projects/uikit-7.x-2.6.zip UIkit 7.x-2.6.zip @endbutton_large
  *
  * @subtitle via Drush (recommended for site administrators comfortable with Drush)
  * Drush is a command line and shell scripting interface for Drupal. Use the
@@ -91,6 +91,89 @@
  * theme. The only difference with creating a UIkit sub-theme is your custom
  * theme will automatically inherit all UIkit offers without having to reinvent
  * the wheel.
+ *
+ * @subtitle Jump to a section
+ * - @ref manually
+ * - @ref drush
+ *
+ * @section manually Creating a sub-theme manually
+ * UIkit for Drupal ships with a @inlinecode STARTERKIT @endinlinecode to get
+ * you going quickly when creating a UIkit sub-theme. If you're comfortable
+ * using the command line, we recommend @ref drush instead.
+ *
+ * To get started you can copy the @inlinecode STARTERKIT @endinlinecode folder
+ * in the root directory of UIkit and paste it where you place your themes in
+ * your Drupal installation. See
+ * @link https://www.drupal.org/docs/7/extending-drupal/directory-precedence-and-multi-site-considerations Directory precedence and multi-site considerations @endlink
+ * to learn where to place your themes in Drupal 7.
+ *
+ * The folder structure of the @inlinecode STARTERKIT @endinlinecode looks like:
+ * @code
+ * |-css
+ * |  |-STARTERKIT.css
+ * |
+ * |-js
+ * |  |-STARTERKIT.js
+ * |
+ * |-favicon.ico
+ * |-logo.png
+ * |-screenshot.png
+ * |-STARTERKIT.info.text
+ * |-template.php
+ * |-theme-settings.php
+ * @endcode
+ *
+ * Next you will need to replace all instances of
+ * @inlinecode STARTERKIT @endinlinecode in the file names and contents with
+ * your theme name. Remember to use the machine name for file names and
+ * functions, i.e. @inlinecode theme_name @endinlinecode and a human-readable
+ * name elsewhere, i.e. @inlinecode Theme name @endinlinecode.
+ *
+ * Finally, one last change is needed in order for Drupal to recognize your new
+ * sub-theme. Remove the .text extension from the theme info file, i.e.
+ * @inlinecode theme_name.info @endinlinecode. We included the .text
+ * extension in @inlinecode STARTERKIT @endinlinecode so Drupal would not
+ * display @inlinecode STARTERKIT @endinlinecode on the Appearance page.
+ *
+ * That's it! You are now ready to start making changes to your new sub-theme.
+ * More information on customizing UIkit themes can be found in the
+ * @link theme_settings UIkit theme settings @endlink topic.
+ *
+ * @section drush Creating a sub-theme using Drush
+ * UIkit for Drupal comes equipped with an easy-to-use
+ * @link http://www.drush.org/en/master/ Drush @endlink command to create a
+ * sub-theme from the command line. This provides rapid development of your
+ * UIkit sub-theme, creating the files necessary for you with one simple
+ * command.
+ *
+ * The Drush command @inlinecode uikit-starterkit @endinlinecode (alias
+ * @inlinecode uikit-sk @endinlinecode) uses the STARTERKIT now included with
+ * the project.
+ *
+ * @heading h4 Use example @endheading
+ * @code
+ * drush uikit-sk machine_name "Theme name" --path=sites/default/themes --description="Awesome theme description."
+ * @endcode
+ *
+ * @inlinecode machine_name @endinlinecode, @inlinecode --path @endinlinecode
+ * and @inlinecode --description @endinlinecode are all optional; only the
+ * theme name (wrapped in double-quotes) is required. Use
+ * @inlinecode drush uikit-sk --help @endinlinecode to view more detailed help
+ * information. If Drush reports it cannot find the command, be sure to run
+ * @inlinecode drush cc drush @endinlinecode to clear Drush's cache.
+ *
+ * Once the sub-theme has been created you can begin customizing the sub-theme.
+ * The file structure for the sub-theme mirrors the file structure
+ * @link https://www.drupal.org/docs/7/theming/overview-of-theme-files Drupal recommends @endlink
+ * to make it easy to find the files and functions you want to edit.
+ *
+ * @heading h3 Theme functions @endheading
+ * Theme functions are located in in @inlinecode template.php @endinlinecode.
+ * We've included commonly used functions to get you started.
+ *
+ * To learn more about what you can do with your UIkit sub-theme, read the
+ * @link https://www.drupal.org/docs/7/theming Themeing Drupal 7 @endlink
+ * documentation guide.
  * @}
  */
 

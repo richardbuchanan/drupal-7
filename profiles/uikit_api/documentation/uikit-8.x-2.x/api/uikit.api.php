@@ -101,6 +101,14 @@
  *
  * The folder structure of the @inlinecode STARTERKIT @endinlinecode looks like:
  * @code
+ * |-config
+ * |  |-install
+ * |     |-STARTERKIT.settings.yml
+ * |  |-optional
+ * |     |-block.block.STARTERKIT_*.yml
+ * |  |-schema
+ * |     |-STARTERKIT.schema.yml
+ * |
  * |-css
  * |  |-STARTERKIT.base.css
  * |  |-STARTERKIT.component.css
@@ -121,7 +129,7 @@
  * |-logo.svg
  * |-README.txt
  * |-screenshot.png
- * |-STARTERKIT.info
+ * |-STARTERKIT.info.ymltmp
  * |-STARTERKIT.libraries.yml
  * |-STARTERKIT.theme
  * |-theme-settings.php
@@ -134,8 +142,8 @@
  * name elsewhere, i.e. @inlinecode Theme name @endinlinecode.
  *
  * Finally, one last change is needed in order for Drupal to recognize your new
- * sub-theme. Add the .yml extension to the theme info file, i.e.
- * @inlinecode theme_name.info.yml @endinlinecode. We excluded the .yml
+ * sub-theme. Remove the .ymltmp extension from the theme info file, i.e.
+ * @inlinecode theme_name.info.yml @endinlinecode. We included the .ymltmp
  * extension in @inlinecode STARTERKIT @endinlinecode so Drupal would not
  * display @inlinecode STARTERKIT @endinlinecode on the Appearance page.
  *

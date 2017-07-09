@@ -83,6 +83,151 @@
  * theme. The only difference with creating a UIkit sub-theme is your custom
  * theme will automatically inherit all UIkit offers without having to reinvent
  * the wheel.
+ *
+ * @subtitle Jump to a section
+ * - @ref manually
+ * - @ref drush
+ *
+ * @section manually Creating a sub-theme manually
+ * UIkit for Drupal ships with a @inlinecode STARTERKIT @endinlinecode to get
+ * you going quickly when creating a UIkit sub-theme. If you're comfortable
+ * using the command line, we recommend @ref drush instead.
+ *
+ * To get started you can copy the @inlinecode STARTERKIT @endinlinecode folder
+ * in the root directory of UIkit and paste it where you place your themes in
+ * your Drupal installation. See
+ * @link https://www.drupal.org/docs/8/theming-drupal-8/drupal-8-theme-folder-structure Drupal 8 Theme folder structure @endlink
+ * to learn where to place your themes in Drupal 8.
+ *
+ * The folder structure of the @inlinecode STARTERKIT @endinlinecode looks like:
+ * @code
+ * |-config
+ * |  |-install
+ * |     |-STARTERKIT.settings.yml
+ * |  |-optional
+ * |     |-block.block.STARTERKIT_*.yml
+ * |  |-schema
+ * |     |-STARTERKIT.schema.yml
+ * |
+ * |-css
+ * |  |-STARTERKIT.base.css
+ * |  |-STARTERKIT.component.css
+ * |  |-STARTERKIT.layout.css
+ * |  |-STARTERKIT.theme.css
+ * |
+ * |-includes
+ * |  |-alter.inc
+ * |  |-preprocess.inc
+ * |  |-process.inc
+ * |  |-theme.inc
+ * |
+ * |-js
+ * |  |-STARTERKIT.theme.js
+ * |
+ * |-favicon.ico
+ * |-logo.png
+ * |-logo.svg
+ * |-README.txt
+ * |-screenshot.png
+ * |-STARTERKIT.info.ymltmp
+ * |-STARTERKIT.libraries.yml
+ * |-STARTERKIT.theme
+ * |-theme-settings.php
+ * @endcode
+ *
+ * Next you will need to replace all instances of
+ * @inlinecode STARTERKIT @endinlinecode in the file names and contents with
+ * your theme name. Remember to use the machine name for file names and
+ * functions, i.e. @inlinecode theme_name @endinlinecode and a human-readable
+ * name elsewhere, i.e. @inlinecode Theme name @endinlinecode.
+ *
+ * Finally, one last change is needed in order for Drupal to recognize your new
+ * sub-theme. Remove the .ymltmp extension from the theme info file, i.e.
+ * @inlinecode theme_name.info.yml @endinlinecode. We included the .ymltmp
+ * extension in @inlinecode STARTERKIT @endinlinecode so Drupal would not
+ * display @inlinecode STARTERKIT @endinlinecode on the Appearance page.
+ *
+ * That's it! You are now ready to start making changes to your new sub-theme.
+ * More information on customizing UIkit themes can be found in the
+ * @link theme_settings UIkit theme settings @endlink topic.
+ *
+ * @section drush Creating a sub-theme using Drush
+ * UIkit for Drupal comes equipped with an easy-to-use
+ * @link http://www.drush.org/en/master/ Drush @endlink command to create a
+ * sub-theme from the command line. This provides rapid development of your
+ * UIkit sub-theme, creating the files necessary for you with one simple
+ * command.
+ *
+ * The Drush command @inlinecode uikit-starterkit @endinlinecode (alias
+ * @inlinecode uikit-sk @endinlinecode) uses the STARTERKIT now included with
+ * the project.
+ *
+ * @heading h4 Use example @endheading
+ * @code
+ * drush uikit-sk machine_name "Theme name" --path=sites/default/themes --description="Awesome theme description."
+ * @endcode
+ *
+ * @inlinecode machine_name @endinlinecode, @inlinecode --path @endinlinecode
+ * and @inlinecode --description @endinlinecode are all optional; only the
+ * theme name (wrapped in double-quotes) is required. Use
+ * @inlinecode drush uikit-sk --help @endinlinecode to view more detailed help
+ * information. If Drush reports it cannot find the command, be sure to run
+ * @inlinecode drush cc drush @endinlinecode to clear Drush's cache.
+ *
+ * Once the sub-theme has been created you can begin customizing the sub-theme.
+ * The file structure for the sub-theme mirrors the file structure
+ * @link https://www.drupal.org/docs/8/theming-drupal-8/drupal-8-theme-folder-structure Drupal recommends @endlink
+ * to make it easy to find the files and functions you want to edit. The only
+ * main difference is where common theme functions are located, which is
+ * discussed in the next section.
+ *
+ * @heading h3 Theme functions @endheading
+ * Common themeing functions have been split up and placed into relative include
+ * files in order to make it easier to locate a function you wish to
+ * edit/create. All theme functions (template_preprocess_HOOK(),
+ * hook_HOOK_alter(), theme_HOOK(), etc.) can be found under the includes
+ * directory of the sub-theme.
+ *
+ * @heading h4 Sub-theme includes directory structure: @endheading
+ * @code
+ * |-includes
+ * |  |-alter.inc
+ * |  |-preprocess.inc
+ * |  |-process.inc
+ * |  |-theme.inc
+ * @endcode
+ *
+ * The filename of each include file makes it easy to understand which themeing
+ * functions are located where. Common functions you will utilize during
+ * development already exist in some of these files, although they are commented
+ * out by default.
+ *
+ * @code
+ * To enable the use of these functions, simply change:
+ * /**
+ *  * Implements hook_theme().
+ *  *
+ * /* -- Delete this line if you want to use this function
+ * function amazing_name_theme($existing, $type, $theme, $path) {
+ * }
+ * //
+ * @endcode
+ *
+ * to:
+ * @code
+ * /**
+ *  *Implements hook_theme().
+ *  /
+ * function amazing_name_theme($existing, $type, $theme, $path) {
+ * }
+ * @endcode
+ *
+ * Be sure to clear the cache in order for the function you uncommented to be
+ * recognized by Drupal.
+ *
+ * To learn more about what you can do with your UIkit sub-theme, read the
+ * @link https://www.drupal.org/docs/8/theming Themeing Drupal 8 @endlink
+ * documentation guide.
  * @}
  */
 
@@ -95,15 +240,8 @@
  * overview of these theme settings to customize the look of your website.
  *
  * @subtitle Jump to a section
- * - @ref theme_styles
  * - @ref layout
  * - @ref navigations
- *
- * @section theme_styles Theme styles
- * UIkit comes with a basic theme and two neat themes to get you started. Here
- * you can select which base style to start with.
- *
- * @divider
  *
  * @section layout Layout
  * Apply our fully responsive fluid grid system and panels, common layout parts
@@ -119,18 +257,14 @@
  * - Page Container: Add the .uk-container class to the page container to give
  *   it a max-width and wrap the main content of your website. For large screens
  *   it applies a different max-width.
- * - Page Centering: To center the page container, use the .uk-container-center
- *   class.
  * - Page Margin: Select the margin to add to the top and bottom of the page
  *   container. This is useful, for example, when using the gradient style with
  *   a centered page container and a navbar.
  *
  * @heading h3 Region Layout @endheading
  * Change region layout settings on a per region basis. You can currently apply
- * the following two components to each region (more will be added in the
- * future):
- * - Panel
- * - Block
+ * the following component to each region (more will be added in the future):
+ * - Card
  *
  * @divider
  *
