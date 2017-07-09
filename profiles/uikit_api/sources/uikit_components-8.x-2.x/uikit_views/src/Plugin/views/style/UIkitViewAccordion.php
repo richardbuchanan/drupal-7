@@ -45,7 +45,7 @@ class UIkitViewAccordion extends StylePluginBase {
     $options['collapse'] = ['default' => TRUE];
     $options['animate'] = ['default' => TRUE];
     $options['easing'] = ['default' => 'swing'];
-    $options['duration'] = ['default' => '300'];
+    $options['duration'] = ['default' => 300];
     $options['toggle'] = ['default' => '.uk-accordion-title'];
     $options['containers'] = ['default' => '.uk-accordion-content'];
     $options['clsactive'] = ['default' => 'uk-active'];
@@ -112,6 +112,7 @@ class UIkitViewAccordion extends StylePluginBase {
         '#type' => 'textfield',
         '#title' => $this->t('Css selector for toggles'),
         '#default_value' => $this->options['toggle'],
+        '#description' => $this->t('Be sure to use a class selector since a page is likely to have more than one accordion.'),
         '#fieldset' => 'accordion_options',
         '#required' => TRUE,
       ];
@@ -119,6 +120,7 @@ class UIkitViewAccordion extends StylePluginBase {
         '#type' => 'textfield',
         '#title' => $this->t('Css selector for content containers'),
         '#default_value' => $this->options['containers'],
+        '#description' => $this->t('Be sure to use a class selector since a page is likely to have more than one accordion.'),
         '#fieldset' => 'accordion_options',
         '#required' => TRUE,
       ];

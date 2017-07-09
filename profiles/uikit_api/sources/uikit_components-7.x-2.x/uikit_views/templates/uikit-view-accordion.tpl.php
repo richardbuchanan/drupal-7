@@ -21,7 +21,7 @@
 
 <div<?php print $accordion_attributes; ?>>
   <?php foreach ($items as $id => $row): ?>
-    <h3 class="uk-accordion-title"><?php print $row['title']; ?></h3>
-    <div class="uk-accordion-content"><?php print $row['content']; ?></div>
+    <h3 class="<?php print $accordion_toggle; ?>"><?php print $row['title']; ?></h3>
+    <div class="<?php print $accordion_container; ?>"><?php print $row['content']; ?></div>
   <?php endforeach; ?>
 </div>

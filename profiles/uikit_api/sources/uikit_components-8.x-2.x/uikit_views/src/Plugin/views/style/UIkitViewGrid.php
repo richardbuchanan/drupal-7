@@ -29,18 +29,8 @@ class UIkitViewGrid extends StylePluginBase {
   /**
    * {@inheritdoc}
    */
-  protected $usesRowClass = TRUE;
-
-  /**
-   * {@inheritdoc}
-   */
   protected function defineOptions() {
     $options = parent::defineOptions();
-    $options['columns'] = ['default' => '4'];
-    $options['automatic_width'] = ['default' => TRUE];
-    $options['alignment'] = ['default' => 'horizontal'];
-
-    // UIkit grid view options.
     $options['width_small'] = ['default' => 'uk-grid-width-small-1-1'];
     $options['width_medium'] = ['default' => 'uk-grid-width-medium-1-2'];
     $options['width_large'] = ['default' => 'uk-grid-width-large-1-3'];
@@ -69,11 +59,10 @@ class UIkitViewGrid extends StylePluginBase {
       'xlarge' => $this->t('Affects device widths of 1220px and higher.'),
     ];
 
-    $form['column_widths'] = [
-      '#type' => 'details',
+    $form['grid_columns'] = [
+      '#type' => 'item',
       '#title' => $this->t('Grid columns'),
       '#description' => $this->t("To create a grid whose child elements' widths are evenly split, we apply one class to the grid for each breakpoint. Each item in the grid is then automatically applied a width based on the number of columns selected for each breakpoint. See <a href='@href' target='_blank' title='@title'>Grid component</a> for more details.", $args),
-      '#open' => TRUE,
     ];
 
     foreach (['small', 'medium', 'large', 'xlarge'] as $size) {

@@ -6,6 +6,7 @@ package = UIkit
 dependencies[] = uikit_components
 dependencies[] = views
 
+files[] = plugins/UIkitViewsPluginStyleAccordion.inc
 files[] = plugins/UIkitViewsPluginStyleGrid.inc
 files[] = plugins/UIkitViewsPluginStyleList.inc
 files[] = plugins/UIkitViewsPluginStyleTable.inc

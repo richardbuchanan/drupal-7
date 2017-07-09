@@ -27,13 +27,14 @@ function uikit_views_help($route_name, \Drupal\Core\Routing\RouteMatchInterface 
     ':list' => Url::fromUri('https://getuikit.com/v2/docs/list.html')->toString(),
     ':table' => Url::fromUri('https://getuikit.com/v2/docs/table.html')->toString(),
 
-    // @todo Future plugin style components.
-    ':block' => Url::fromUri('https://getuikit.com/v2/docs/block.html')->toString(),
-    ':cover' => Url::fromUri('https://getuikit.com/v2/docs/cover.html')->toString(),
+    // @todo Future plugin style components. See https://www.drupal.org/node/2893295
     ':nav' => Url::fromUri('https://getuikit.com/v2/docs/nav.html')->toString(),
-    ':panel' => Url::fromUri('https://getuikit.com/v2/docs/panel.html')->toString(),
-    ':slideshow' => Url::fromUri('https://getuikit.com/v2/docs/slideshow.html')->toString(),
     ':subnav' => Url::fromUri('https://getuikit.com/v2/docs/subnav.html')->toString(),
+    ':slideshow' => Url::fromUri('https://getuikit.com/v2/docs/slideshow.html')->toString(),
+    ':slider' => Url::fromUri('https://getuikit.com/v2/docs/slider.html')->toString(),
+    ':slideset' => Url::fromUri('https://getuikit.com/v2/docs/slideset.html')->toString(),
+    ':switcher' => Url::fromUri('https://getuikit.com/v2/docs/switcher.html')->toString(),
+    ':lightbox' => Url::fromUri('https://getuikit.com/v2/docs/lightbox.html')->toString(),
   ];
 
   switch ($route_name) {
@@ -46,6 +47,16 @@ function uikit_views_help($route_name, \Drupal\Core\Routing\RouteMatchInterface 
       $output .= '<li>' . t('<a href=":grid" target="_blank">Grid</a>', $t_args) . '</li>';
       $output .= '<li>' . t('<a href=":list" target="_blank">List</a>', $t_args) . '</li>';
       $output .= '<li>' . t('<a href=":table" target="_blank">Table</a>', $t_args) . '</li>';
+      $output .= '</ul>';
+      $output .= '<p><strong>Styles proposed for future inclusion:</strong></p>';
+      $output .= '<ul>';
+      $output .= '<li>' . t('<a href=":nav" target="_blank">Nav</a>', $t_args) . '</li>';
+      $output .= '<li>' . t('<a href=":subnav" target="_blank">Subnav</a>', $t_args) . '</li>';
+      $output .= '<li>' . t('<a href=":slideshow" target="_blank">Slidshow</a>', $t_args) . '</li>';
+      $output .= '<li>' . t('<a href=":slider" target="_blank">Slider</a>', $t_args) . '</li>';
+      $output .= '<li>' . t('<a href=":slideset" target="_blank">Slideset</a>', $t_args) . '</li>';
+      $output .= '<li>' . t('<a href=":switcher" target="_blank">Switcher</a>', $t_args) . '</li>';
+      $output .= '<li>' . t('<a href=":lightbox" target="_blank">Lightbox</a>', $t_args) . '</li>';
       $output .= '</ul>';
       break;
   }

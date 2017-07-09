@@ -5,8 +5,7 @@
  * Preprocessors and helper functions to make theming easier.
  */
 
-include_once drupal_get_path('theme', 'uikit') . '/src/UIkit.php';
-include_once drupal_get_path('theme', 'uikit') . '/includes/get.inc';
+use Drupal\uikit_components\UIkitComponents;
 
 /**
  * Prepares variables for UIkit Accordion templates.
@@ -19,7 +18,7 @@ include_once drupal_get_path('theme', 'uikit') . '/includes/get.inc';
  *   - rows: The raw row data.
  */
 function template_preprocess_uikit_view_accordion(&$variables) {
-  uikit_views_load_uikit_assets('accordion');
+  UIkitComponents::getUIkitAsset('accordion');
   $view = $variables['view'];
   $handler = $view->style_plugin;
   $options = $handler->options;
@@ -41,7 +40,7 @@ function template_preprocess_uikit_view_accordion(&$variables) {
 
   // Create attributes for accordion.
   $accordion_data[] = 'showfirst: ' . ($options['showfirst'] ? 'true' : 'false');
-  $accordion_data[] = 'collapse: ' . ($options['collapse'] ? 'false' : 'true');
+  $accordion_data[] = 'collapse: ' . ($options['collapse'] ? 'true' : 'false');
   $accordion_data[] = 'animate: ' . ($options['animate'] ? 'true' : 'false');
   $accordion_data[] = "easing: '" . $options['easing'] . "'";
   $accordion_data[] = 'duration: ' . $options['duration'];
@@ -53,8 +52,13 @@ function template_preprocess_uikit_view_accordion(&$variables) {
   $accordion_attributes['class'][] = 'uk-accordion';
   $accordion_attributes['data-uk-accordion'] = $data_accordion;
 
-  // Set accordion attributes for twig template.
+  // Set accordion attributes for template.
   $variables['accordion_attributes_array'] = $accordion_attributes;
+
+  // Set the accordion toggle and container elements.
+  $selectors = '/[.#\[\]]/i';
+  $variables['accordion_toggle'] = preg_replace($selectors, '', $options['toggle']);
+  $variables['accordion_container'] = preg_replace($selectors, '', $options['containers']);
 }
 
 /**
@@ -82,7 +86,6 @@ function template_process_uikit_view_accordion(&$variables) {
  *   - rows: The raw row data.
  */
 function template_preprocess_uikit_view_grid(&$variables) {
-  uikit_views_load_uikit_assets();
   $view = $variables['view'];
   $options = $view->style_plugin->options;
   $grid_classes = ['uk-grid'];
@@ -138,7 +141,6 @@ function template_process_uikit_view_grid(&$variables) {
  *   - rows: The raw row data.
  */
 function template_preprocess_uikit_view_list(&$variables) {
-  uikit_views_load_uikit_assets();
   $handler = $variables['view']->style_plugin;
   $options = $handler->options;
 
@@ -175,7 +177,6 @@ function template_process_uikit_view_list(&$variables) {
  *   - rows: The raw row data.
  */
 function template_preprocess_uikit_view_table(&$variables) {
-  uikit_views_load_uikit_assets();
   $view = $variables['view'];
 
   // We need the raw data for this grouping, which is passed in as $variables['rows'].
@@ -405,6 +406,10 @@ function template_preprocess_uikit_view_table(&$variables) {
  * @return bool
  *   Returns TRUE if the admin theme is a UIkit sub-theme, otherwise returns
  *   FALSE.
+ *
+ * @deprecated in UIkit Components 7.x-2.2, will be removed before 7.x-2.5.
+ *
+ * @see https://www.drupal.org/node/2893283
  */
 function is_admin_theme_uikit_subtheme() {
   $admin_theme = variable_get('admin_theme','none');
@@ -425,6 +430,11 @@ function is_admin_theme_uikit_subtheme() {
  * @param string $component
  *   The additional component assets to load. If this is omitted, only the UIkit
  *   core assets will be loaded if the admin theme is not a UIkit sub-theme.
+ *
+ * @deprecated in UIkit Components 7.x-2.2, will be removed before 7.x-2.5.
+ *   Use \Drupal\uikit_components\UIkitComponents::getUIkitAsset();
+ *
+ * @see https://www.drupal.org/node/2893283
  */
 function uikit_views_load_uikit_assets($component = NULL) {
   if (!is_admin_theme_uikit_subtheme()) {
