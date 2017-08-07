@@ -67,8 +67,13 @@ function uikit_form_system_theme_settings_alter(&$form, \Drupal\Core\Form\FormSt
   // Set the region style options.
   $region_style_options = [
     0 => 'No style',
-    'panel' => 'Panel',
-    'block' => 'Block',
+    'card' => 'Card',
+  ];
+  $region_card_style_options = [
+    0 => 'No card style',
+    'default' => 'Default',
+    'primary' => 'Primary',
+    'secondary' => 'Secondary',
   ];
 
   // Fetch a list of regions for the current theme.
@@ -243,7 +248,7 @@ function uikit_form_system_theme_settings_alter(&$form, \Drupal\Core\Form\FormSt
   $form['layout']['region_layout'] = [
     '#type' => 'details',
     '#title' => t('Region Layout'),
-    '#description' => t('Change region layout settings.<br><br>Use the following links to see an example of each component style.<ul class="links"><li><a href="http://getuikit.com/docs/panel.html" target="_blank">Panel</a></li><li><a href="http://getuikit.com/docs/block.html" target="_blank">Block</a></li></ul>'),
+    '#description' => t('Change region layout settings.<br><br>Use the following links to see an example of each component style.<ul class="links"><li><a href="https://getuikit.com/docs/card" target="_blank">Card</a></li></ul>'),
     '#states' => [
       'visible' => [
         ':input[name="layout_advanced"]' => ['checked' => TRUE],
@@ -268,6 +273,18 @@ function uikit_form_system_theme_settings_alter(&$form, \Drupal\Core\Form\FormSt
         '#default_value' => UIkit::getThemeSetting($region_key . '_style', $theme_key),
         '#options' => $region_style_options,
       ];
+      $form['layout']['region_layout'][$region_key][$region_key . '_card_style'] = array(
+        '#type' => 'select',
+        '#title' => t('@title card style', ['@title' => $region]),
+        '#description' => t('Set the card style for the @region region.', ['@region' => $region]),
+        '#default_value' => UIkit::getThemeSetting($region_key . '_card_style', $theme_key),
+        '#options' => $region_card_style_options,
+        '#states' => [
+          'visible' => [
+            ':input[name="' . $region_key . '_style"]' => ['value' => 'card'],
+          ],
+        ],
+      );
     }
   }
 

@@ -116,6 +116,45 @@ function uikit_preprocess_region(&$variables) {
   // Provide an id attribute to help themers.
   $region = $variables['region'];
   $variables['attributes']['id'] = "region--$region";
+
+  if ($region != 'offcanvas') {
+    $region_style = UIkit::getThemeSetting($region . '_style');
+
+    if ($region_style) {
+      // Add the region style classes to the region.
+      $variables['attributes']['class'][] = $region_style;
+
+      switch ($region_style) {
+        case 'uk-block':
+          $block_style = UIkit::getThemeSetting($region . '_block_style');
+          $block_padding = UIkit::getThemeSetting($region . '_block_padding');
+          $variables['attributes']['class'][] = $block_style;
+
+          if ($block_padding) {
+            $variables['attributes']['class'][] = $block_padding;
+          }
+          break;
+
+        case 'uk-panel':
+          $panel_style = UIkit::getThemeSetting($region . '_panel_style');
+          $panel_modifiers = UIkit::getThemeSetting($region . '_panel_modifiers');
+          $variables['attributes']['class'][] = 'uk-panel-box';
+
+          if ($panel_style) {
+            $variables['attributes']['class'][] = $panel_style;
+          }
+
+          if ($panel_modifiers) {
+            foreach ($panel_modifiers as $panel_modifier => $value) {
+              if ($value) {
+                $variables['attributes']['class'][] = $panel_modifier;
+              }
+            }
+          }
+          break;
+      }
+    }
+  }
 }
 
 /**
@@ -135,7 +174,7 @@ function uikit_preprocess_block(&$variables) {
   switch ($region) {
     case 'navbar':
       // Get navbar alignment from block settings.
-      $variables['navbar_flip'] = $navbar_alignment = $block->getThirdPartySetting('uikit_components', 'uikit_navbar_alignment') ? 1 : 0;
+      $variables['navbar_flip'] = $block->getThirdPartySetting('uikit_components', 'uikit_navbar_alignment', 0);
 
       if ($system_menu_block) {
         // Define #theme variable for navbar menus.
@@ -149,6 +188,15 @@ function uikit_preprocess_block(&$variables) {
         $variables['content']['#theme'] = 'menu__offcanvas';
       }
       break;
+
+    default:
+      $region_style = UIkit::getThemeSetting($region . '_style');
+
+      if ($region_style == 'uk-block') {
+        // Add the uk-container class to provide spacing for regions styled
+        // with the block component.
+        $variables['attributes']['class'][] = 'uk-container';
+      }
   }
 }
 

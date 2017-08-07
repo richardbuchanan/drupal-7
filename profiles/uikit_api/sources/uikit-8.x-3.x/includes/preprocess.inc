@@ -86,36 +86,65 @@ function uikit_preprocess_region(&$variables) {
   $region = $variables['region'];
   $variables['attributes']['id'] = "region--$region";
 
-  if ($variables['region'] == 'navbar') {
+  if ($region == 'navbar') {
     $variables['content_left'] = [];
     $variables['content_center'] = [];
     $variables['content_right'] = [];
 
     foreach ($variables['elements'] as $id => $element) {
-      if (is_array($element) && isset($element['#id'])) {
-        $block = Block::load($element['#id']);
-        $block_navbar_alignment = $block->getThirdPartySetting('uikit_components', 'uikit_navbar_alignment');
-        $navbar_alignment = $block_navbar_alignment ? $block_navbar_alignment : 'left';
+      if (is_array($element)) {
+        $block = array();
 
-        switch ($navbar_alignment) {
-          case 'left':
-            $variables['content_left'][$id] = [
-              '#markup' => render($element),
-            ];
-            break;
-
-          case 'center':
-            $variables['content_center'][$id] = [
-              '#markup' => render($element),
-            ];
-            break;
-
-          case 'right':
-            $variables['content_right'][$id] = [
-              '#markup' => render($element),
-            ];
-            break;
+        if (isset($element['#id'])) {
+          $block = Block::load($element['#id']);
         }
+        elseif (isset($element['#markup'])) {
+          $block = Block::load($id);
+        }
+
+        if ($block) {
+          $navbar_alignment = $block->getThirdPartySetting('uikit_components', 'uikit_navbar_alignment', 'left');
+
+          switch ($navbar_alignment) {
+            case 'left':
+              $variables['content_left'][$id] = [
+                '#markup' => render($element),
+              ];
+              break;
+
+            case 'center':
+              $variables['content_center'][$id] = [
+                '#markup' => render($element),
+              ];
+              break;
+
+            case 'right':
+              $variables['content_right'][$id] = [
+                '#markup' => render($element),
+              ];
+              break;
+          }
+        }
+      }
+    }
+  }
+  elseif ($region != 'offcanvas') {
+    $region_style = UIkit::getThemeSetting($region . '_style');
+    $card_style = UIkit::getThemeSetting($region . '_card_style');
+    $region_style = $region_style ? $region_style : 0;
+    $region_card_style = $card_style ? $card_style : 0;
+
+    if ($region_style) {
+      // Add the region style classes.
+      switch ($region_style) {
+        case 'card':
+          $variables['attributes']['class'][] = 'uk-card';
+          $variables['attributes']['class'][] = 'uk-card-body';
+
+          if ($region_card_style) {
+            $variables['attributes']['class'][] = "uk-card-$region_card_style";
+          }
+          break;
       }
     }
   }

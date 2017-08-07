@@ -10,7 +10,7 @@
   Drupal.behaviors.UIkitBlogTooltips = {
     attach: function () {
 
-      if (drupalSettings.uikit_tooltips) {
+      if (drupalSettings.uikit_tooltips === 'true') {
         $.each(drupalSettings.uikit_tooltip_options, function (index, value) {
           $('[title]').each(function () {
             $(this).attr(index, value);
