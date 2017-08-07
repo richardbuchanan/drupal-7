@@ -23,7 +23,7 @@ class UIkitViewsPluginStyleAccordion extends views_plugin_style {
     $options['collapse'] = array('default' => TRUE);
     $options['animate'] = array('default' => TRUE);
     $options['easing'] = array('default' => 'swing');
-    $options['duration'] = array('default' => '300');
+    $options['duration'] = array('default' => 300);
     $options['toggle'] = array('default' => '.uk-accordion-title');
     $options['containers'] = array('default' => '.uk-accordion-content');
     $options['clsactive'] = array('default' => 'uk-active');
