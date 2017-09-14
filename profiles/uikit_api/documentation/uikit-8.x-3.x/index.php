@@ -28,7 +28,7 @@
  * This site uses the 7.x-2.x branch of UIkit as a base theme. The footer
  * contains the current version and release date of the UIkit theme being used.
  * You can try out a demonstration of any release of UIkit by visiting
- * @link https://simplytest.me/project/uikit/8.x-3.0-beta8 simplytest.me @endlink.
+ * @link https://simplytest.me/project/uikit/8.x-3.0-beta12 simplytest.me @endlink.
  *
  * @section uikit_api UIkit API Topics
  * Here are some topics to help you get started developing with UIkit 8:
