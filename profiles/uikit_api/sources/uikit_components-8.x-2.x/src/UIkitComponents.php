@@ -13,7 +13,7 @@ use Symfony\Component\Yaml\Yaml;
 class UIkitComponents {
 
   /**
-   * Loads a theme include file.
+   * Loads a project's include file.
    *
    * This function essentially does the same as Drupal core's
    * module_load_include() function, except targeting theme include files. It also
@@ -22,10 +22,11 @@ class UIkitComponents {
    *
    * Examples:
    * @code
-   *   // Load includes/uikit_subtheme.admin.inc from the node module.
-   *   uikit_theme_load_include('inc', 'uikit_subtheme', 'uikit_subtheme.admin', 'includes');
-   *   // Load preprocess.inc from the uikit_subtheme theme.
-   *   uikit_theme_load_include('inc', 'uikit_subtheme', 'preprocess');
+   *   // Load node.admin.inc from the node module.
+   *   UIkitComponents::loadIncludeFile('inc', 'node', 'module', 'node.admin');
+   *
+   *   // Load includes/alter.inc from the uikit theme.
+   *   UIkitComponents::loadIncludeFile('inc', 'uikit', 'theme', 'preprocess', 'includes');
    * @endcode
    *
    * Do not use this function in a global context since it requires Drupal to be
@@ -33,8 +34,11 @@ class UIkitComponents {
    *
    * @param string $type
    *   The include file's type (file extension).
-   * @param string $theme
-   *   The theme to which the include file belongs.
+   * @param string $project
+   *   The project to which the include file belongs.
+   * @param string $project_type
+   *   The project type to which the include file belongs, either "theme" or
+   *   "module". Defaults to "module".
    * @param string $name
    *   (optional) The base file name (without the $type extension). If omitted,
    *   $theme is used; i.e., resulting in "$theme.$type" by default.
@@ -44,7 +48,7 @@ class UIkitComponents {
    * @return string
    *   The name of the included file, if successful; FALSE otherwise.
    */
-  public static function uikit_theme_load_include($type, $theme, $name = NULL, $sub_directory = '') {
+  public static function loadIncludeFile($type, $project, $project_type = 'module', $name = NULL, $sub_directory = '') {
     static $files = [];
 
     if (isset($sub_directory)) {
@@ -52,17 +56,17 @@ class UIkitComponents {
     }
 
     if (!isset($name)) {
-      $name = $theme;
+      $name = $project;
     }
 
-    $key = $type . ':' . $theme . ':' . $name . ':' . $sub_directory;
+    $key = $type . ':' . $project . ':' . $name . ':' . $sub_directory;
 
     if (isset($files[$key])) {
       return $files[$key];
     }
 
     if (function_exists('drupal_get_path')) {
-      $file = DRUPAL_ROOT . '/' . drupal_get_path('theme', $theme) . "$sub_directory/$name.$type";
+      $file = DRUPAL_ROOT . '/' . drupal_get_path($project_type, $project) . "$sub_directory/$name.$type";
       if (is_file($file)) {
         require_once $file;
         $files[$key] = $file;
@@ -86,19 +90,92 @@ class UIkitComponents {
 
     // Translatable strings.
     $t_args = [
-      ':uikit_project' => Url::fromUri('https://www.drupal.org/project/uikit')->toString(),
+      ':clear_cache' => Url::fromRoute('system.performance_settings')->toString(),
       ':themes_page' => Url::fromRoute('system.themes_page')->toString(),
+      ':uikit_project' => Url::fromUri('https://www.drupal.org/project/uikit')->toString(),
     ];
 
     if (isset($theme_list['uikit'])) {
       $uikit_libraries = Yaml::parse(drupal_get_path('theme', 'uikit') . '/uikit.libraries.yml');
-      $uikit_version = explode('.', $uikit_libraries['uikit']['version']);
 
-      return implode('.', $uikit_version);
+      return $uikit_libraries['uikit']['version'];
     }
     else {
-      drupal_set_message(t('The UIkit base theme is either not installed or could not be found. Please <a href=":uikit_project" target="_blank">download</a> and <a href=":themes_page">install</a> UIkit.', $t_args), 'error');
+      drupal_set_message(t('The UIkit base theme is either not installed or enabled. Please <a href=":themes_page">enable</a>, or <a href=":uikit_project" target="_blank">download</a> and <a href=":themes_page">install</a> UIkit. If UIkit is installed and enabled, try <a href=":clear_cache">clearing all caches</a>.', $t_args), 'error');
       return FALSE;
     }
   }
+
+  /**
+   * Get the UIkit documentation URL for the given component.
+   *
+   * @param string $component
+   *   The component to return a URL for.
+   *
+   * @return string
+   *   Returns a URL for the given component if set, FALSE otherwise.
+   */
+  public static function getComponentURL($component) {
+    if (!$component) {
+      drupal_set_message(t('URL cannot be returned, no component was given in <em class="placeholder">UIkitComponents::getComponentURL()</em>.'), 'warning');
+      return FALSE;
+    }
+    else {
+      $uri = 'https://getuikit.com/v2/docs/' . $component . '.html';
+      return Url::fromUri($uri)->toString();
+    }
+  }
+
+  /**
+   * Returns the menu style.
+   *
+   * @param string $menu
+   *   The name of the menu.
+   *
+   * @return bool
+   *   Returns menu style, FALSE otherwise.
+   */
+  public static function getMenuStyle($menu) {
+    return \Drupal::state()->get($menu . '_menu_style') ?: 0;
+  }
+
+  /**
+   * Sets the menu style.
+   *
+   * @param string $menu
+   *   The name of the menu.
+   *
+   * @param string $value
+   *   The style value to set for the menu.
+   */
+  public static function setMenuStyle($menu, $value) {
+    \Drupal::state()->set($menu . '_menu_style', $value);
+  }
+
+  /**
+   * Returns the menu nav width classes.
+   *
+   * @param string $menu
+   *   The name of the menu.
+   *
+   * @return bool
+   *   Returns TRUE if the nav width classes are set, FALSE otherwise.
+   */
+  public static function getNavWidthClasses($menu) {
+    return \Drupal::state()->get($menu . '_menu_style_wrapper_widths') ?: 0;
+  }
+
+  /**
+   * Sets the nav center modifier.
+   *
+   * @param string $menu
+   *   The name of the menu.
+   *
+   * @param string $value
+   *   The nav center modifier value to set for the menu.
+   */
+  public static function setNavWidthClasses($menu, $value) {
+    \Drupal::state()->set($menu . '_menu_style_wrapper_widths', $value);
+  }
+
 }

@@ -5,10 +5,12 @@
  * Conditional logic and data processing for uikit_blog.
  */
 
+use Drupal\uikit\UIkit;
+
 /**
  * Load uikit_blog's include files for theme processing.
  */
-include_once 'includes/preprocess.inc';
-include_once 'includes/process.inc';
-include_once 'includes/theme.inc';
-include_once 'includes/alter.inc';
+UIkit::loadIncludeFile('inc', 'uikit_blog', 'theme', 'preprocess', 'includes');
+UIkit::loadIncludeFile('inc', 'uikit_blog', 'theme', 'process', 'includes');
+UIkit::loadIncludeFile('inc', 'uikit_blog', 'theme', 'theme', 'includes');
+UIkit::loadIncludeFile('inc', 'uikit_blog', 'theme', 'alter', 'includes');

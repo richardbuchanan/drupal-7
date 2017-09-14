@@ -80,6 +80,30 @@ function uikit_blog_form_system_theme_settings_alter(&$form, \Drupal\Core\Form\F
     ],
   ];
 
+  // UIkit Blog navigation settings.
+  $form['uikit_blog_navigation'] = [
+    '#type' => 'details',
+    '#title' => t('Navigation'),
+    '#group' => 'uikit_blog',
+    '#attributes' => [
+      'class' => [
+        'uikit-blog-navigation-settings-form',
+      ],
+    ],
+  ];
+  $form['uikit_blog_navigation']['sticky_header'] = [
+    '#type' => 'checkbox',
+    '#title' => t('Sticky header'),
+    '#description' => t('Enables the sticky component.'),
+    '#default_value' => UIkit::getThemeSetting('sticky_header', $theme),
+  ];
+  $form['uikit_blog_navigation']['sticky_header_breakpoint'] = [
+    '#type' => 'textfield',
+    '#title' => t('Sticky header breakpoint'),
+    '#description' => t('Enter the breakpoint for the active status of the sticky header. Breakpoints below this will not use the sticky header. Example: <em class="placeholder">(min-width: 960px)</em>'),
+    '#default_value' => UIkit::getThemeSetting('sticky_header_breakpoint', $theme),
+  ];
+
   // UIkit Blog users settings.
   $form['uikit_blog_users'] = [
     '#type' => 'details',

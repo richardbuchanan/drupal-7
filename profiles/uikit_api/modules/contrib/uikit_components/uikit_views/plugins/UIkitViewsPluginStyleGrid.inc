@@ -19,10 +19,10 @@ class UIkitViewsPluginStyleGrid extends views_plugin_style {
     $options = parent::option_definition();
     $options['row_class'] = array('default' => '');
 
-    $options['column_widths']['width_small'] = array('default' => 'uk-grid-width-small-1-1');
-    $options['column_widths']['width_medium'] = array('default' => 'uk-grid-width-medium-1-2');
-    $options['column_widths']['width_large'] = array('default' => 'uk-grid-width-large-1-3');
-    $options['column_widths']['width_xlarge'] = array('default' => 'uk-grid-width-xlarge-1-4');
+    $options['width_small'] = array('default' => 'uk-grid-width-small-1-1');
+    $options['width_medium'] = array('default' => 'uk-grid-width-medium-1-2');
+    $options['width_large'] = array('default' => 'uk-grid-width-large-1-3');
+    $options['width_xlarge'] = array('default' => 'uk-grid-width-xlarge-1-4');
     $options['grid_divider'] = array('default' => TRUE);
     $options['grid_gutter'] = array('default' => 'default');
 
@@ -48,17 +48,17 @@ class UIkitViewsPluginStyleGrid extends views_plugin_style {
     );
 
     $form['column_widths'] = array(
-      '#type' => 'fieldset',
+      '#type' => 'item',
       '#title' => t('Grid columns'),
       '#description' => t("To create a grid whose child elements' widths are evenly split, we apply one class to the grid for each breakpoint. Each item in the grid is then automatically applied a width based on the number of columns selected for each breakpoint. See <a href='@href' target='_blank' title='@title'>Grid component</a> for more details.", $args),
     );
 
     foreach (['small', 'medium', 'large', 'xlarge'] as $size) {
-      $form['column_widths']["width_${size}"] = array(
+      $form["width_${size}"] = array(
         '#type' => 'select',
         '#title' => t("uk-grid-width-${size}-*"),
         '#required' => TRUE,
-        '#default_value' => $this->options['column_widths']["width_${size}"],
+        '#default_value' => $this->options["width_${size}"],
         '#options' => array(
           "uk-grid-width-${size}-1-1" => 1,
           "uk-grid-width-${size}-1-2" => 2,

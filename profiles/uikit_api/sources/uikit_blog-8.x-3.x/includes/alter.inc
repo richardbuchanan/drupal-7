@@ -36,6 +36,7 @@ function uikit_blog_form_search_form_alter(&$form, \Drupal\Core\Form\FormStateIn
  * Implements hook_form_FORM_ID_alter() for search_block_form().
  */
 function uikit_blog_form_search_block_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
+  $form['actions']['#theme_wrappers'][] = 'container__search_actions';
   $form['actions']['submit']['#theme_wrappers'][] = 'input__search_button';
   $form['keys']['#attributes']['class'][] = 'uk-form-width-medium';
 }

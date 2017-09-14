@@ -20,8 +20,13 @@ use Drupal\uikit\UIkit;
  */
 function uikit_blog_preprocess_page(&$variables) {
   // Add the sticky navbar component to the header element.
-  $variables['header_attributes']['uk-sticky'] = '';
-  $variables['header_attributes']['media'] = '(min-width: 960px)';
+  if (UIkit::getThemeSetting('sticky_header')) {
+    $variables['header_attributes']['uk-sticky'] = '';
+
+    if (UIkit::getThemeSetting('sticky_header_breakpoint')) {
+      $variables['header_attributes']['media'] = '(min-width: 960px)';
+    }
+  }
 
   // Change the page attribute classes to new array.
   $variables['page_attributes']['class'] = ['uk-container'];

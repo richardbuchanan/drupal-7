@@ -17,12 +17,10 @@
 {%
   set classes = [
     'uk-button',
-    'uk-button-link',
-    'uk-position-absolute',
-    'uk-blog-search-button',
+    'uk-button-text',
   ]
 %}
 <button{{ attributes|without('class').addClass(classes) }}>
-  <a uk-icon="icon: search"></a>
+  <a class="uk-form-icon uk-form-icon-flip uk-margin-small-right" uk-icon="icon: search"></a>
 </button>
 {{ children }}
