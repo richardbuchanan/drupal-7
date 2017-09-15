@@ -230,7 +230,6 @@ function docs_preprocess_node(&$variables) {
 function docs_preprocess_comment(&$variables) {
   if (isset($variables['theme_hook_suggestion']) && $variables['theme_hook_suggestion'] == 'advanced_forum_post') {
     $account = $variables['account'];
-    dpm($account);
 
     $comment = $variables['elements']['#comment'];
     $id = $variables['id'] + 1;
