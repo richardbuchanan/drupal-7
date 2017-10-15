@@ -11,6 +11,8 @@
  * @see process.inc
  */
 
+use Drupal\comment\CommentManagerInterface;
+use Drupal\Core\Link;
 use Drupal\Core\Url;
 use Drupal\file\Entity\File;
 use Drupal\uikit\UIkit;
@@ -77,6 +79,30 @@ function uikit_blog_preprocess_node(&$variables) {
 }
 
 /**
+ * Implements template_preprocess_comment().
+ */
+function uikit_blog_preprocess_comment(&$variables) {
+  $comment = $variables['comment'];
+
+  // Change the submitted variable to a timeago date.
+  $granularity = \Drupal::time()->getRequestTime() - $comment->getCreatedTime() < 86400 ? 2 : 1;
+  $created = \Drupal::service('date.formatter')->formatTimeDiffSince($comment->getCreatedTime(), ['granularity' => $granularity]);
+  $variables['submitted'] = t('@datetime ago', array('@datetime' => $created));
+
+  if (isset($comment->in_preview)) {
+    // If previewing a comment, set permalink text to "#".
+    $variables['permalink'] = Link::fromTextAndUrl(t('#'), new Url('<front>'));
+  }
+  else {
+    // Otherwise get the ordinality of the comment in the thread and set
+    // permalink text to "#{ordinality}".
+    $default_mode = CommentManagerInterface::COMMENT_MODE_THREADED;
+    $ordinal = \Drupal::entityTypeManager()->getStorage('comment')->getDisplayOrdinal($comment, $default_mode) + 1;
+    $variables['permalink'] = Link::fromTextAndUrl(t('#@ordinal', ['@ordinal' => $ordinal]), $comment->permalink());
+  }
+}
+
+/**
  * Implements template_preprocess_form().
  */
 function uikit_blog_preprocess_form(&$variables) {
@@ -131,7 +157,6 @@ function uikit_blog_preprocess_links__node(&$variables) {
         // Not all modules set the classes as an array, so convert the class
         // string to an array.
         $classes = explode(' ' , $attributes['class']);
-        $variables['links'][$key]['link']['#options']['attributes']['class'] = $classes;
 
         foreach ($classes as $class_key => $class) {
           if ($class == 'hidden') {
@@ -140,6 +165,10 @@ function uikit_blog_preprocess_links__node(&$variables) {
           }
         }
       }
+
+      $classes[] = 'uk-button';
+      $classes[] = 'uk-button-text';
+      $variables['links'][$key]['link']['#options']['attributes']['class'] = $classes;
     }
   }
 }

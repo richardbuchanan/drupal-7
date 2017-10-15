@@ -16,13 +16,13 @@
  * @see \Drupal\Core\Render\Renderer
  */
 
-use Drupal\block\Entity\Block;
+use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 
 /**
  * Implements hook_form_FORM_ID_alter() for search_form().
  */
-function uikit_blog_form_search_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
+function uikit_blog_form_search_form_alter(&$form, FormStateInterface $form_state, $form_id) {
   $form['help_link']['#options']['attributes']['class'] = [
     'uk-display-block',
     'uk-margin-top',
@@ -35,7 +35,7 @@ function uikit_blog_form_search_form_alter(&$form, \Drupal\Core\Form\FormStateIn
 /**
  * Implements hook_form_FORM_ID_alter() for search_block_form().
  */
-function uikit_blog_form_search_block_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
+function uikit_blog_form_search_block_form_alter(&$form, FormStateInterface $form_state, $form_id) {
   $form['actions']['#theme_wrappers'][] = 'container__search_actions';
   $form['actions']['submit']['#theme_wrappers'][] = 'input__search_button';
   $form['keys']['#attributes']['class'][] = 'uk-form-width-medium';
@@ -44,7 +44,7 @@ function uikit_blog_form_search_block_form_alter(&$form, \Drupal\Core\Form\FormS
 /**
  * Implements hook_form_FORM_ID_alter() for user_login_form().
  */
-function uikit_blog_form_user_login_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
+function uikit_blog_form_user_login_form_alter(&$form, FormStateInterface $form_state, $form_id) {
   $name_placeholder = t($form['name']['#title']->getUntranslatedString());
   unset($form['name']['#title']);
   unset($form['name']['#description']);
