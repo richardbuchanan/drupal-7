@@ -484,8 +484,8 @@ function docs_companion_release_cycle_overview() {
  * Page callback for the screenshots page.
  */
 function docs_companion_screenshots() {
-  uikit_get_cdn_asset('lightbox');
-  uikit_get_cdn_asset('slidenav');
+  //uikit_get_cdn_asset('lightbox');
+  //uikit_get_cdn_asset('slidenav');
   $module = drupal_get_path('module', 'docs_companion');
   $filename = $module . '/includes/screenshots.inc';
   $handle = fopen($filename, "r");

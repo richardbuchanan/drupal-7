@@ -1,0 +1,220 @@
+body.front #page {
+  margin: 0 !important;
+  padding: 0;
+  max-width: none;
+}
+.uk-navbar .uk-logo img {
+  height: 28px;
+  width: 24px;
+}
+.uk-navbar .uk-navbar-toggle {
+  color: #fff;
+}
+.tm-navbar-container:not(.uk-navbar-transparent) {
+  background: #1e87f0;
+}
+.uk-button-primary {
+  background: #1e87f0;
+}
+.uk-button-primary:focus,
+.uk-button-primary:hover {
+  background: #28a5f5;
+}
+.docs-section {
+   padding: 50px 0;
+ }
+@media (min-width: 768px) {
+  .docs-section {
+    padding:90px 0;
+  }
+}
+@media (min-width: 1220px) {
+  .docs-section {
+    padding:120px;
+  }
+}
+.docs-section-text-small {
+  font-size: 13px;
+}
+.docs-section-color-1 {
+  background: #1e87f0 url(/profiles/uikit_api/themes/custom/docs_api/images/bg_teaser.svg) 50% 50% no-repeat;
+}
+.docs-section-color-2 {
+  background: #28a5f5;
+}
+.docs-section-color-white {
+  background: #fff;
+}
+.docs-section-colored,.docs-section-colored h1,
+.docs-section-colored h2,
+.docs-section-colored blockquote,
+.docs-section-colored sup,
+.docs-section-colored a:not([class]),
+.docs-section-colored a.drupal-api {
+  color: #fff !important;
+}
+.docs-section-colored h1.docs-section-text-color-1 {
+  color: #777 !important;
+}
+.docs-section-colored a.docs-button-download {
+  box-shadow: 1px 1px 1px rgba(0,0,0,0.1);
+  background: #fff;
+  border: none;
+  color: #1e87f0 !important;
+  min-height: 50px;
+  padding: 0 30px;
+  line-height: 50px;
+  font-size: 18px;
+}
+.docs-blockquote-top {
+  position: relative;
+  top: 20px;
+}
+.docs-icon {
+  position: relative;
+  width: 80px;
+  margin: -60px auto 0 auto;
+  border-radius: 5px;
+  background: #1e87f0;
+  line-height: 80px;
+  color: #fff;
+}
+.docs-icon:after {
+  content: "";
+  display: block;
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  width: 0;
+  height: 0;
+  margin-left: -10px;
+  border: 10px solid #1e87f0;
+  border-right-color: transparent;
+  border-left-color: transparent;
+  border-bottom: none;
+}
+.docs-panel-link,
+.docs-panel-link:after,
+.docs-panel-link * {
+  transition: all 0.3s ease-out;
+  -webkit-transition: all 0.3s ease-out;
+}
+.docs-panel-link,
+.docs-panel-link:hover {
+  text-decoration: none;
+  color: #444;
+}
+.docs-panel-link {
+  margin-bottom: 15px !important;
+  padding: 30px 30px 60px 30px;
+  border: 1px solid #e5e5e5;
+  -webkit-backface-visibility: hidden;
+}
+.docs-panel-link .uk-card:after {
+  content: "";
+  display: none;
+  position: absolute;
+  height: 5px;
+  right: -1px;
+  left: -1px;
+  bottom: -1px;
+  background: #1e87f0;
+}
+.docs-panel-link .uk-card:hover:after {
+  display: block;
+}
+.docs-panel-link:hover .docs-icon {
+  transform: translateY(5px);
+  -webkit-transform: translateY(5px);
+}
+.docs-panel-link:hover h2 {
+  color: #1e87f0;
+}
+.docs-sup {
+  color: red;
+  font-family: Consolas,monospace,serif;
+  padding: 0 2px;
+}
+.docs-ordered-list {
+  counter-reset: item;
+  padding-left: 0;
+}
+.docs-ordered-list li {
+  display: block;
+  padding-left: 28px;
+}
+.docs-ordered-list li:before {
+  display: inline-block;
+  content: '[' counter(item) '] ';
+  counter-increment: item;
+  color: red;
+  font-family: Consolas,monospace,serif;
+  margin-left: -28px;
+  width: 28px;
+}
+@media (max-width: 640px) {
+  .docs-section-colored a.docs-button-download {
+    display:block;
+    margin: 0 auto !important;
+    width: 255px;
+  }
+  .docs-section-colored a.docs-button-download + a.docs-button-download {
+    margin-top: 15px !important;
+  }
+  .docs-blockquote i {
+    font-size: 150%;
+  }
+  .docs-blockquote span {
+    font-size: 16px;
+  }
+  .docs-blockquote-top {
+    top: 8px;
+  }
+}
+@media (max-width: 460px) {
+  .docs-subnav-blockquote {
+    display:block;
+  }
+}
+#footer {
+  background: #1e87f0;
+  padding: 50px 25px;
+}
+#footer,
+#footer a {
+  color: #eee !important;
+}
+#footer .uk-subnav>li>a {
+  position: relative;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  padding: 0 15px;
+}
+#footer .uk-subnav>li>a::after {
+  content: '';
+  display: block;
+  position: absolute;
+  left: 15px;
+  right: calc(102% - 15px);
+  bottom: -6px;
+  height: 1px;
+  background-color: currentColor;
+  -webkit-transition: .3s ease-in-out;
+  transition: .3s ease-in-out;
+  -webkit-transition-property: right;
+  transition-property: right;
+}
+#footer .uk-subnav>li>a:hover::after {
+  right: 15px;
+}
+@media (min-width: 768px) {
+  #footer {
+    padding: 90px 0;
+  }
+}
+@media (min-width: 1220px) {
+  #footer {
+    padding: 120px 0;
+  }
+}

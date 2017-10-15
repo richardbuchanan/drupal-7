@@ -16,7 +16,7 @@
  * @see theme()
  */
 
-use \Drupal\uikit\UIkit;
+use Drupal\uikit\UIkit;
 
 /**
  * Implements hook_css_alter().
@@ -39,12 +39,6 @@ function uikit_css_alter(&$css) {
   $field_css = drupal_get_path('module', 'field') . '/theme/field.css';
   if (isset($css[$field_css])) {
     $css[$field_css]['data'] = $theme . '/css/field.css';
-  }
-
-  // Replace the user module's user.css with a custom version.
-  $user_css = drupal_get_path('module', 'user') . '/user.css';
-  if (isset($css[$user_css])) {
-    $css[$user_css]['data'] = $theme . '/css/user.css';
   }
 }
 
@@ -70,38 +64,11 @@ function uikit_html_head_alter(&$head_elements) {
 }
 
 /**
- * Implements hook_form_FORM_ID_alter().
- */
-function uikit_form_user_login_block_alter(&$form, &$form_state, $form_id) {
-  // Add utility classes to the login block links.
-  $form['links']['#prefix'] = '<div class="uk-form-row form-item-list">';
-  $form['links']['#suffix'] = '</div>';
-}
-
-/**
- * Implements hook_js_alter().
- */
-function uikit_js_alter(&$javascript) {
-  $theme = drupal_get_path('theme', 'uikit');
-
-  // Replace the Drupal core's tableheader.js with a custom version.
-  if (isset($javascript['misc/tableheader.js'])) {
-    $javascript['misc/tableheader.js']['data'] = $theme . '/js/tableheader.js';
-  }
-
-  // Replace the Drupal core's progress.js with a custom version.
-  if (isset($javascript['misc/progress.js'])) {
-    $javascript['misc/progress.js']['data'] = $theme . '/js/progress.js';
-    UIkit::getCdnAsset('progress');
-  }
-}
-
-/**
  * Implements hook_menu_local_tasks_alter().
  */
 function uikit_menu_local_tasks_alter(&$data, $router_item, $root_path) {
   // Define various icons.
-  $plus = '<i class="uk-icon-plus"></i> ';
+  $plus = '<i uk-icon="icon:plus"></i> ';
 
   foreach ($data['actions']['output'] as $key => $action) {
     // Add icon based on link path.

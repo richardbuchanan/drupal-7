@@ -45,22 +45,16 @@ function uikit_process_maintenance_page(&$variables) {
  */
 function uikit_process_region(&$variables) {
   // Convert attribute arrays to an attribute string.
-  $attributes = $variables['wrapper_attributes_array'];
-  $variables['wrapper_attributes'] = drupal_attributes($attributes);
+  $wrapper_attributes = $variables['wrapper_attributes_array'];
+  $attributes = $variables['attributes_array'];
+  $variables['wrapper_attributes'] = drupal_attributes($wrapper_attributes);
+  $variables['attributes'] = drupal_attributes($attributes);
 }
 
-/**
- * Implements template_process_HOOK() for theme_html_tag().
- */
-function uikit_process_html_tag(&$variables) {
-  $element = &$variables['element'];
-
-  // Remove type="..." and CDATA prefix/suffix.
-  unset($element['#attributes']['type'], $element['#value_prefix'], $element['#value_suffix']);
-
-  // Remove media="all" but leave others unaffected.
-  if (isset($element['#attributes']['media']) && $element['#attributes']['media'] === 'all') {
-    unset($element['#attributes']['media']);
+function uikit_process_field(&$variables) {
+  if ($variables['element']['#field_name'] == 'field_tags') {
+    $attributes['class'] = $variables['classes_array'];
+    $variables['attributes'] = drupal_attributes($attributes);
   }
 }
 

@@ -48,13 +48,13 @@ function uikit_preprocess_html(&$variables) {
   }
 
   // Add an http-equiv tag, if set.
-  if (UIkit::getThemeSetting('x_ua_compatible', UIkit::getActiveTheme())) {
+  if (UIkit::getThemeSetting('x_ua_compatible')) {
     $meta_x_ua_compatible = array(
       '#type' => 'html_tag',
       '#tag' => 'meta',
       '#attributes' => array(
         'http-equiv' => 'x-ua-compatible',
-        'content' => 'IE=' . UIkit::getThemeSetting('x_ua_compatible', UIkit::getActiveTheme()),
+        'content' => 'IE=' . UIkit::getThemeSetting('x_ua_compatible'),
       ),
       '#weight' => -9998,
     );
@@ -63,14 +63,14 @@ function uikit_preprocess_html(&$variables) {
   }
 
   // Get viewport metadata settings for mobile devices.
-  $device_width_ratio = UIkit::getThemeSetting('viewport_device_width_ratio', UIkit::getActiveTheme());
-  $custom_device_width = UIkit::getThemeSetting('viewport_custom_width', UIkit::getActiveTheme());
-  $device_height_ratio = UIkit::getThemeSetting('viewport_device_height_ratio', UIkit::getActiveTheme());
-  $custom_device_height = UIkit::getThemeSetting('viewport_custom_height', UIkit::getActiveTheme());
-  $initial_scale = UIkit::getThemeSetting('viewport_initial_scale', UIkit::getActiveTheme());
-  $maximum_scale = UIkit::getThemeSetting('viewport_maximum_scale', UIkit::getActiveTheme());
-  $minimum_scale = UIkit::getThemeSetting('viewport_minimum_scale', UIkit::getActiveTheme());
-  $user_scalable = UIkit::getThemeSetting('viewport_user_scalable', UIkit::getActiveTheme());
+  $device_width_ratio = UIkit::getThemeSetting('viewport_device_width_ratio');
+  $custom_device_width = UIkit::getThemeSetting('viewport_custom_width');
+  $device_height_ratio = UIkit::getThemeSetting('viewport_device_height_ratio');
+  $custom_device_height = UIkit::getThemeSetting('viewport_custom_height');
+  $initial_scale = UIkit::getThemeSetting('viewport_initial_scale');
+  $maximum_scale = UIkit::getThemeSetting('viewport_maximum_scale');
+  $minimum_scale = UIkit::getThemeSetting('viewport_minimum_scale');
+  $user_scalable = UIkit::getThemeSetting('viewport_user_scalable');
   $viewport_array = array();
 
   // Add each, if set, to the viewport array.
@@ -121,9 +121,9 @@ function uikit_preprocess_page(&$variables) {
   // Get various theme settings to add the correct attributes.
   $sidebar_first = isset($variables['page']['sidebar_first']) ? $variables['page']['sidebar_first'] : '';
   $sidebar_second = isset($variables['page']['sidebar_second']) ? $variables['page']['sidebar_second'] : '';
-  $standard_layout = UIkit::getThemeSetting('standard_sidebar_positions', UIkit::getActiveTheme());
-  $tablet_layout = UIkit::getThemeSetting('tablet_sidebar_positions', UIkit::getActiveTheme());
-  $mobile_layout = UIkit::getThemeSetting('mobile_sidebar_positions', UIkit::getActiveTheme());
+  $standard_layout = UIkit::getThemeSetting('standard_sidebar_positions');
+  $tablet_layout = UIkit::getThemeSetting('tablet_sidebar_positions');
+  $mobile_layout = UIkit::getThemeSetting('mobile_sidebar_positions');
 
   // Determine the standard layout.
   $standard_grail = $standard_layout === 'holy-grail';
@@ -143,14 +143,11 @@ function uikit_preprocess_page(&$variables) {
 
   // Assign page container attributes.
   $page_container_attributes['id'] = 'page';
-  if (UIkit::getThemeSetting('page_container', UIkit::getActiveTheme())) {
+  if (UIkit::getThemeSetting('page_container')) {
     $page_container_attributes['class'][] = 'uk-container';
   }
-  if (UIkit::getThemeSetting('page_centering', UIkit::getActiveTheme())) {
-    $page_container_attributes['class'][] = 'uk-container-center';
-  }
-  if (UIkit::getThemeSetting('page_margin', UIkit::getActiveTheme())) {
-    $page_container_attributes['class'][] = UIkit::getThemeSetting('page_margin', UIkit::getActiveTheme());
+  if (UIkit::getThemeSetting('page_margin')) {
+    $page_container_attributes['class'][] = UIkit::getThemeSetting('page_margin');
   }
   $variables['page_container_attributes_array'] = $page_container_attributes;
 
@@ -160,157 +157,157 @@ function uikit_preprocess_page(&$variables) {
   // Assign sidebar_first attributes.
   $variables['sidebar_first_attributes_array'] = array(
     'id' => 'sidebar-first',
-    'class' => array('uk-width-large-1-4'),
+    'class' => array('uk-width-1-4@l'),
   );
 
   // Assign sidebar_second attributes.
   $variables['sidebar_second_attributes_array'] = array(
     'id' => 'sidebar-second',
-    'class' => array('uk-width-large-1-4'),
+    'class' => array('uk-width-1-4@l'),
   );
 
   // Assign additional content attributes if either sidebar is not empty.
   if (!empty($sidebar_first) && !empty($sidebar_second)) {
-    $variables['content_attributes_array']['class'][] = 'uk-width-large-1-2';
-    $variables['sidebar_first_attributes_array']['class'][] = 'uk-width-large-1-4';
-    $variables['sidebar_second_attributes_array']['class'][] = 'uk-width-large-1-4';
+    $variables['content_attributes_array']['class'][] = 'uk-width-1-2@l';
+    $variables['sidebar_first_attributes_array']['class'][] = 'uk-width-1-4@l';
+    $variables['sidebar_second_attributes_array']['class'][] = 'uk-width-1-4@l';
 
     if ($standard_grail) {
-      $variables['content_attributes_array']['class'][] = 'uk-push-large-1-4';
-      $variables['sidebar_first_attributes_array']['class'][] = 'uk-pull-large-1-2';
-      $variables['sidebar_second_attributes_array']['class'][] = 'uk-push-pull-large';
+      $variables['content_attributes_array']['class'][] = 'uk-push-1-4@l';
+      $variables['sidebar_first_attributes_array']['class'][] = 'uk-pull-1-2@l';
+      $variables['sidebar_second_attributes_array']['class'][] = 'uk-push-pull-@l';
     }
     elseif ($standard_left) {
-      $variables['content_attributes_array']['class'][] = 'uk-push-large-1-2';
-      $variables['sidebar_first_attributes_array']['class'][] = 'uk-pull-large-1-2';
-      $variables['sidebar_second_attributes_array']['class'][] = 'uk-pull-large-1-2';
+      $variables['content_attributes_array']['class'][] = 'uk-push-1-2@l';
+      $variables['sidebar_first_attributes_array']['class'][] = 'uk-pull-1-2@l';
+      $variables['sidebar_second_attributes_array']['class'][] = 'uk-pull-1-2@l';
     }
     elseif ($standard_right) {
-      $variables['content_attributes_array']['class'][] = 'uk-push-pull-large';
-      $variables['sidebar_first_attributes_array']['class'][] = 'uk-push-pull-large';
-      $variables['sidebar_second_attributes_array']['class'][] = 'uk-push-pull-large';
+      $variables['content_attributes_array']['class'][] = 'uk-push-pull-@l';
+      $variables['sidebar_first_attributes_array']['class'][] = 'uk-push-pull-@l';
+      $variables['sidebar_second_attributes_array']['class'][] = 'uk-push-pull-@l';
     }
 
     if ($tablet_grail || $tablet_left || $tablet_right) {
-      $variables['content_attributes_array']['class'][] = 'uk-width-medium-1-2';
-      $variables['sidebar_first_attributes_array']['class'][] = 'uk-width-medium-1-4';
-      $variables['sidebar_second_attributes_array']['class'][] = 'uk-width-medium-1-4';
+      $variables['content_attributes_array']['class'][] = 'uk-width-1-2@m';
+      $variables['sidebar_first_attributes_array']['class'][] = 'uk-width-1-4@m';
+      $variables['sidebar_second_attributes_array']['class'][] = 'uk-width-1-4@m';
     }
     elseif ($tablet_left_stacked || $tablet_right_stacked) {
-      $variables['content_attributes_array']['class'][] = 'uk-width-medium-3-4';
-      $variables['sidebar_first_attributes_array']['class'][] = 'uk-width-medium-1-4';
-      $variables['sidebar_second_attributes_array']['class'][] = 'uk-width-medium-1-1';
+      $variables['content_attributes_array']['class'][] = 'uk-width-3-4@m';
+      $variables['sidebar_first_attributes_array']['class'][] = 'uk-width-1-4@m';
+      $variables['sidebar_second_attributes_array']['class'][] = 'uk-width-1-1@m';
     }
 
     if ($tablet_grail) {
-      $variables['content_attributes_array']['class'][] = 'uk-push-medium-1-4';
-      $variables['sidebar_first_attributes_array']['class'][] = 'uk-pull-medium-1-2';
-      $variables['sidebar_second_attributes_array']['class'][] = 'uk-push-pull-medium';
+      $variables['content_attributes_array']['class'][] = 'uk-push-1-4@m';
+      $variables['sidebar_first_attributes_array']['class'][] = 'uk-pull-1-2@m';
+      $variables['sidebar_second_attributes_array']['class'][] = 'uk-push-pull-@m';
     }
     elseif ($tablet_left) {
-      $variables['content_attributes_array']['class'][] = 'uk-push-medium-1-2';
-      $variables['sidebar_first_attributes_array']['class'][] = 'uk-pull-medium-1-2';
-      $variables['sidebar_second_attributes_array']['class'][] = 'uk-pull-medium-1-2';
+      $variables['content_attributes_array']['class'][] = 'uk-push-1-2@m';
+      $variables['sidebar_first_attributes_array']['class'][] = 'uk-pull-1-2@m';
+      $variables['sidebar_second_attributes_array']['class'][] = 'uk-pull-1-2@m';
     }
     elseif ($tablet_right) {
-      $variables['content_attributes_array']['class'][] = 'uk-push-pull-medium';
-      $variables['sidebar_first_attributes_array']['class'][] = 'uk-push-pull-medium';
-      $variables['sidebar_second_attributes_array']['class'][] = 'uk-push-pull-medium';
+      $variables['content_attributes_array']['class'][] = 'uk-push-pull-@m';
+      $variables['sidebar_first_attributes_array']['class'][] = 'uk-push-pull-@m';
+      $variables['sidebar_second_attributes_array']['class'][] = 'uk-push-pull-@m';
     }
     elseif ($tablet_left_stacked) {
-      $variables['content_attributes_array']['class'][] = 'uk-push-medium-1-4';
-      $variables['sidebar_first_attributes_array']['class'][] = 'uk-pull-medium-3-4';
-      $variables['sidebar_second_attributes_array']['class'][] = 'uk-push-pull-medium';
+      $variables['content_attributes_array']['class'][] = 'uk-push-1-4@m';
+      $variables['sidebar_first_attributes_array']['class'][] = 'uk-pull-3-4@m';
+      $variables['sidebar_second_attributes_array']['class'][] = 'uk-push-pull-@m';
     }
     elseif ($tablet_right_stacked) {
-      $variables['content_attributes_array']['class'][] = 'uk-push-pull-medium';
-      $variables['sidebar_first_attributes_array']['class'][] = 'uk-push-pull-medium';
-      $variables['sidebar_second_attributes_array']['class'][] = 'uk-push-pull-medium';
+      $variables['content_attributes_array']['class'][] = 'uk-push-pull-@m';
+      $variables['sidebar_first_attributes_array']['class'][] = 'uk-push-pull-@m';
+      $variables['sidebar_second_attributes_array']['class'][] = 'uk-push-pull-@m';
     }
 
     if ($mobile_stacked || $mobile_vertical) {
-      $variables['content_attributes_array']['class'][] = 'uk-width-small-1-1';
+      $variables['content_attributes_array']['class'][] = 'uk-width-1-1@s';
       $variables['content_attributes_array']['class'][] = 'uk-width-1-1';
-      $variables['content_attributes_array']['class'][] = 'uk-push-pull-small';
+      $variables['content_attributes_array']['class'][] = 'uk-push-pull-@s';
     }
 
     if ($mobile_stacked) {
-      $variables['sidebar_first_attributes_array']['class'][] = 'uk-width-small-1-1';
+      $variables['sidebar_first_attributes_array']['class'][] = 'uk-width-1-1@s';
       $variables['sidebar_first_attributes_array']['class'][] = 'uk-width-1-1';
-      $variables['sidebar_first_attributes_array']['class'][] = 'uk-push-pull-small';
-      $variables['sidebar_second_attributes_array']['class'][] = 'uk-width-small-1-1';
+      $variables['sidebar_first_attributes_array']['class'][] = 'uk-push-pull-@s';
+      $variables['sidebar_second_attributes_array']['class'][] = 'uk-width-1-1@s';
       $variables['sidebar_second_attributes_array']['class'][] = 'uk-width-1-1';
-      $variables['sidebar_second_attributes_array']['class'][] = 'uk-push-pull-small';
+      $variables['sidebar_second_attributes_array']['class'][] = 'uk-push-pull-@s';
     }
     elseif ($mobile_vertical) {
-      $variables['sidebar_first_attributes_array']['class'][] = 'uk-width-small-1-2';
+      $variables['sidebar_first_attributes_array']['class'][] = 'uk-width-1-2@s';
       $variables['sidebar_first_attributes_array']['class'][] = 'uk-width-1-2';
-      $variables['sidebar_first_attributes_array']['class'][] = 'uk-push-pull-small';
-      $variables['sidebar_second_attributes_array']['class'][] = 'uk-width-small-1-2';
+      $variables['sidebar_first_attributes_array']['class'][] = 'uk-push-pull-@s';
+      $variables['sidebar_second_attributes_array']['class'][] = 'uk-width-1-2@s';
       $variables['sidebar_second_attributes_array']['class'][] = 'uk-width-1-2';
-      $variables['sidebar_second_attributes_array']['class'][] = 'uk-push-pull-small';
+      $variables['sidebar_second_attributes_array']['class'][] = 'uk-push-pull-@s';
     }
   }
   elseif (!empty($sidebar_first)) {
-    $variables['content_attributes_array']['class'][] = 'uk-width-large-3-4';
-    $variables['sidebar_first_attributes_array']['class'][] = 'uk-width-large-1-4';
+    $variables['content_attributes_array']['class'][] = 'uk-width-3-4@l';
+    $variables['sidebar_first_attributes_array']['class'][] = 'uk-width-1-4@l';
 
     if ($standard_grail || $standard_left) {
-      $variables['content_attributes_array']['class'][] = 'uk-push-large-1-4';
-      $variables['sidebar_first_attributes_array']['class'][] = 'uk-pull-large-3-4';
+      $variables['content_attributes_array']['class'][] = 'uk-push-1-4@l';
+      $variables['sidebar_first_attributes_array']['class'][] = 'uk-pull-3-4@l';
     }
     elseif ($standard_right) {
-      $variables['content_attributes_array']['class'][] = 'uk-push-pull-large';
-      $variables['sidebar_first_attributes_array']['class'][] = 'uk-push-pull-large';
+      $variables['content_attributes_array']['class'][] = 'uk-push-pull-@l';
+      $variables['sidebar_first_attributes_array']['class'][] = 'uk-push-pull-@l';
     }
 
     if ($tablet_layout) {
-      $variables['content_attributes_array']['class'][] = 'uk-width-medium-3-4';
-      $variables['sidebar_first_attributes_array']['class'][] = 'uk-width-medium-1-4';
+      $variables['content_attributes_array']['class'][] = 'uk-width-3-4@m';
+      $variables['sidebar_first_attributes_array']['class'][] = 'uk-width-1-4@m';
     }
 
     if ($tablet_grail || $tablet_left || $tablet_left_stacked) {
-      $variables['content_attributes_array']['class'][] = 'uk-push-medium-1-4';
-      $variables['sidebar_first_attributes_array']['class'][] = 'uk-pull-medium-3-4';
+      $variables['content_attributes_array']['class'][] = 'uk-push-1-4@m';
+      $variables['sidebar_first_attributes_array']['class'][] = 'uk-pull-3-4@m';
     }
     elseif ($tablet_right || $tablet_right_stacked) {
-      $variables['content_attributes_array']['class'][] = 'uk-push-pull-medium';
-      $variables['sidebar_first_attributes_array']['class'][] = 'uk-push-pull-medium';
+      $variables['content_attributes_array']['class'][] = 'uk-push-pull-@m';
+      $variables['sidebar_first_attributes_array']['class'][] = 'uk-push-pull-@m';
     }
   }
   elseif (!empty($sidebar_second)) {
-    $variables['content_attributes_array']['class'][] = 'uk-width-large-3-4';
-    $variables['sidebar_second_attributes_array']['class'][] = 'uk-width-large-1-4';
+    $variables['content_attributes_array']['class'][] = 'uk-width-3-4@l';
+    $variables['sidebar_second_attributes_array']['class'][] = 'uk-width-1-4@l';
 
     if ($standard_grail || $standard_right) {
-      $variables['content_attributes_array']['class'][] = 'uk-push-pull-large';
-      $variables['sidebar_second_attributes_array']['class'][] = 'uk-push-pull-large';
+      $variables['content_attributes_array']['class'][] = 'uk-push-pull-@l';
+      $variables['sidebar_second_attributes_array']['class'][] = 'uk-push-pull-@l';
     }
     elseif ($standard_left) {
-      $variables['content_attributes_array']['class'][] = 'uk-push-large-1-4';
-      $variables['sidebar_second_attributes_array']['class'][] = 'uk-pull-large-3-4';
+      $variables['content_attributes_array']['class'][] = 'uk-push-1-4@l';
+      $variables['sidebar_second_attributes_array']['class'][] = 'uk-pull-3-4@l';
     }
 
     if ($tablet_grail || $tablet_right || $tablet_left) {
-      $variables['content_attributes_array']['class'][] = 'uk-width-medium-3-4';
-      $variables['sidebar_second_attributes_array']['class'][] = 'uk-width-medium-1-4';
+      $variables['content_attributes_array']['class'][] = 'uk-width-3-4@m';
+      $variables['sidebar_second_attributes_array']['class'][] = 'uk-width-1-4@m';
     }
     elseif ($tablet_left_stacked || $tablet_right_stacked) {
-      $variables['content_attributes_array']['class'][] = 'uk-width-medium-1-1';
-      $variables['sidebar_second_attributes_array']['class'][] = 'uk-width-medium-1-1';
+      $variables['content_attributes_array']['class'][] = 'uk-width-1-1@m';
+      $variables['sidebar_second_attributes_array']['class'][] = 'uk-width-1-1@m';
     }
 
     if ($tablet_grail || $tablet_right) {
-      $variables['content_attributes_array']['class'][] = 'uk-push-pull-medium';
-      $variables['sidebar_first_attributes_array']['class'][] = 'uk-push-pull-medium';
+      $variables['content_attributes_array']['class'][] = 'uk-push-pull-@m';
+      $variables['sidebar_first_attributes_array']['class'][] = 'uk-push-pull-@m';
     }
     elseif ($tablet_left) {
-      $variables['content_attributes_array']['class'][] = 'uk-push-medium-1-4';
-      $variables['sidebar_second_attributes_array']['class'][] = 'uk-pull-medium-3-4';
+      $variables['content_attributes_array']['class'][] = 'uk-push-1-4@m';
+      $variables['sidebar_second_attributes_array']['class'][] = 'uk-pull-3-4@m';
     }
     elseif ($tablet_left_stacked || $tablet_right_stacked) {
-      $variables['content_attributes_array']['class'][] = 'uk-push-pull-medium';
-      $variables['sidebar_second_attributes_array']['class'][] = 'uk-push-pull-medium';
+      $variables['content_attributes_array']['class'][] = 'uk-push-pull-@m';
+      $variables['sidebar_second_attributes_array']['class'][] = 'uk-push-pull-@m';
     }
   }
   elseif (empty($sidebar_first) && empty($sidebar_second)) {
@@ -321,54 +318,13 @@ function uikit_preprocess_page(&$variables) {
   $variables['header_attributes_array'] = array(
     'id' => 'page-header',
   );
-  if (UIkit::getThemeSetting('navbar_container', UIkit::getActiveTheme())) {
-    $variables['header_attributes_array']['class'][] = 'uk-container';
-  }
-  if (UIkit::getThemeSetting('navbar_centering', UIkit::getActiveTheme())) {
-    $variables['header_attributes_array']['class'][] = 'uk-container-center';
-  }
 
   // Define navbar attributes.
   $variables['navbar_attributes_array'] = array(
     'id' => 'page-navbar',
-    'class' => array('uk-navbar'),
+    'class' => array('uk-navbar-container'),
+    'uk-navbar' => '',
   );
-
-  if (UIkit::getThemeSetting('navbar_attached', UIkit::getActiveTheme())) {
-    $variables['navbar_attributes_array']['class'][] = 'uk-navbar-attached';
-  }
-
-  if (UIkit::getThemeSetting('navbar_margin_top', UIkit::getActiveTheme())) {
-    switch (UIkit::getThemeSetting('navbar_margin_top', UIkit::getActiveTheme())) {
-      case 1:
-        $variables['navbar_attributes_array']['class'][] = 'uk-margin-top';
-        break;
-
-      case 2:
-        $variables['navbar_attributes_array']['class'][] = 'uk-margin-large-top';
-        break;
-
-      case 3:
-        $variables['navbar_attributes_array']['class'][] = 'uk-margin-small-top';
-        break;
-    }
-  }
-
-  if (UIkit::getThemeSetting('navbar_margin_bottom', UIkit::getActiveTheme())) {
-    switch (UIkit::getThemeSetting('navbar_margin_bottom', UIkit::getActiveTheme())) {
-      case 1:
-        $variables['navbar_attributes_array']['class'][] = 'uk-margin-bottom';
-        break;
-
-      case 2:
-        $variables['navbar_attributes_array']['class'][] = 'uk-margin-large-bottom';
-        break;
-
-      case 3:
-        $variables['navbar_attributes_array']['class'][] = 'uk-margin-small-bottom';
-        break;
-    }
-  }
 
   // Move the main and secondary menus into variables to set the attributes
   // accordingly.
@@ -383,62 +339,40 @@ function uikit_preprocess_page(&$variables) {
     $variables['navbar_primary'] = menu_tree(variable_get('menu_main_links_source', 'main-menu'));
     $variables['navbar_primary']['#theme_wrappers'] = array('menu_tree__navbar');
 
-    foreach ($variables['navbar_primary'] as $key => $value) {
-      // Define a theme wrapper for navbar menu links.
-      if (is_array($value) && isset($value['#original_link'])) {
-        $variables['navbar_primary'][$key]['#theme'] = 'menu_link__navbar';
-      }
-    }
-
     // Primary offcanvas menu.
     $variables['offcanvas_primary'] = menu_tree(variable_get('menu_main_links_source', 'main-menu'));
     $variables['offcanvas_primary']['#theme_wrappers'] = array('menu_tree__offcanvas');
 
+    // Primary offcanvas below menus.
     foreach ($variables['offcanvas_primary'] as $key => $value) {
-      // Define a theme wrapper for offcanvas below menu trees.
       if (is_array($value) && isset($value['#below']) && !empty($value['#below'])) {
         $variables['offcanvas_primary'][$key]['#below']['#theme_wrappers'] = array('menu_tree__offcanvas__below');
-      }
-      // Define a theme wrapper for offcanvas menu links.
-      if (is_array($value) && isset($value['#original_link'])) {
-        $variables['offcanvas_primary'][$key]['#theme'] = 'menu_link__offcanvas';
       }
     }
   }
   if ($variables['secondary_menu']) {
     // Secondary navbar menu.
     $variables['navbar_secondary'] = menu_tree(variable_get('menu_secondary_links_source', 'user-menu'));
-    $variables['navbar_secondary']['#theme_wrappers'] = array('menu_tree__navbar_flip');
-
-    foreach ($variables['navbar_secondary'] as $key => $value) {
-      // Define a theme wrapper for navbar menu links.
-      if (is_array($value) && isset($value['#original_link'])) {
-        $variables['navbar_secondary'][$key]['#theme'] = 'menu_link__navbar';
-      }
-    }
+    $variables['navbar_secondary']['#theme_wrappers'] = array('menu_tree__navbar');
 
     // Secondary offcanvas menu.
     $variables['offcanvas_secondary'] = menu_tree(variable_get('menu_secondary_links_source', 'user-menu'));
     $variables['offcanvas_secondary']['#theme_wrappers'] = array('menu_tree__offcanvas');
 
+    // Primary offcanvas below menus.
     foreach ($variables['offcanvas_secondary'] as $key => $value) {
-      // Define a theme wrapper for offcanvas below menu trees.
       if (is_array($value) && isset($value['#below']) && !empty($value['#below'])) {
         $variables['offcanvas_secondary'][$key]['#below']['#theme_wrappers'] = array('menu_tree__offcanvas__below');
-      }
-      // Define a theme wrapper for offcanvas menu links.
-      if (is_array($value) && isset($value['#original_link'])) {
-        $variables['offcanvas_secondary'][$key]['#theme'] = 'menu_link__offcanvas';
       }
     }
   }
 
   // Create variable for breadcrumb display setting.
-  $variables['display_breadcrumb'] = UIkit::getThemeSetting('display_breadcrumbs', UIkit::getActiveTheme());
+  $variables['display_breadcrumb'] = UIkit::getThemeSetting('display_breadcrumbs');
 }
 
 /**
- * Implements template_preprocess_maintenance().
+ * Implements template_preprocess_maintenance_page().
  */
 function uikit_preprocess_maintenance_page(&$variables) {
   // Load UIkit assets, i.e. stylesheets and scripts.
@@ -513,45 +447,43 @@ function uikit_preprocess_maintenance_page(&$variables) {
   // Assign content attributes.
   $content_attributes = array(
     'id' => 'page-content',
-    'class' => array('uk-width-small-1-1'),
+    'class' => array('uk-width-1-1@s'),
   );
 
   // Assign sidebar_first attributes.
   $sidebar_first_attributes = array(
     'id' => 'sidebar-first',
-    'class' => array('uk-width-small-1-1'),
+    'class' => array('uk-width-1-1@s'),
   );
 
   // Assign sidebar_second attributes.
   $sidebar_second_attributes = array(
     'id' => 'sidebar-second',
-    'class' => array('uk-width-small-1-1'),
+    'class' => array('uk-width-1-1@s'),
   );
 
-  // Prepare attributes.
-  $sidebar_first = !empty($variables['sidebar_first']);
-  $sidebar_second = !empty($variables['sidebar_second']);
-
   // Assign additional content attributes if either sidebar is not empty.
+  $sidebar_first = $variables['sidebar_first'];
+  $sidebar_second = $variables['sidebar_second'];
   if (!empty($sidebar_first) && !empty($sidebar_second)) {
-    $content_attributes['class'][] = 'uk-width-medium-1-2';
-    $content_attributes['class'][] = 'uk-push-medium-1-4';
-    $sidebar_first_attributes['class'][] = 'uk-width-medium-1-4';
-    $sidebar_first_attributes['class'][] = 'uk-pull-medium-1-2';
-    $sidebar_second_attributes['class'][] = 'uk-width-medium-1-4';
-    $sidebar_second_attributes['class'][] = 'uk-push-pull-medium';
+    $content_attributes['class'][] = 'uk-width-1-2@m';
+    $content_attributes['class'][] = 'uk-push-1-4@m';
+    $sidebar_first_attributes['class'][] = 'uk-width-1-4@m';
+    $sidebar_first_attributes['class'][] = 'uk-pull-1-2@m';
+    $sidebar_second_attributes['class'][] = 'uk-width-1-4@m';
+    $sidebar_second_attributes['class'][] = 'uk-push-pull-@m';
   }
   elseif (!empty($sidebar_first)) {
-    $content_attributes['class'][] = 'uk-width-medium-3-4';
-    $content_attributes['class'][] = 'uk-push-medium-1-4';
-    $sidebar_first_attributes['class'][] = 'uk-width-medium-1-4';
-    $sidebar_first_attributes['class'][] = 'uk-pull-medium-3-4';
+    $content_attributes['class'][] = 'uk-width-3-4@m';
+    $content_attributes['class'][] = 'uk-push-1-4@m';
+    $sidebar_first_attributes['class'][] = 'uk-width-1-4@m';
+    $sidebar_first_attributes['class'][] = 'uk-pull-3-4@m';
   }
   elseif (!empty($sidebar_second)) {
-    $content_attributes['class'][] = 'uk-width-medium-3-4';
-    $content_attributes['class'][] = 'uk-push-pull-medium';
-    $sidebar_second_attributes['class'][] = 'uk-width-medium-1-4';
-    $sidebar_second_attributes['class'][] = 'uk-push-pull-medium';
+    $content_attributes['class'][] = 'uk-width-3-4@m';
+    $content_attributes['class'][] = 'uk-push-pull-@m';
+    $sidebar_second_attributes['class'][] = 'uk-width-1-4@m';
+    $sidebar_second_attributes['class'][] = 'uk-push-pull-@m';
   }
 
   // Add attributes.
@@ -567,8 +499,8 @@ function uikit_preprocess_maintenance_page(&$variables) {
 function uikit_preprocess_node(&$variables) {
   $node = $variables['node'];
 
-  // Add the uk-article-title class to all node titles.
-  $variables['title_attributes_array']['class'][] = 'uk-article-title';
+  // Add the uk-text-lead class to all node titles.
+  $variables['title_attributes_array']['class'][] = 'uk-text-lead';
 
   // Theme the submitted meta data.
   $datetime = date('F j, Y', $node->created);
@@ -581,6 +513,7 @@ function uikit_preprocess_node(&$variables) {
  * Implements template_preprocess_region().
  */
 function uikit_preprocess_region(&$variables) {
+  global $theme_key;
   $region = $variables['region'];
   $wrapper_id = str_replace('_', '-', $region);
 
@@ -590,40 +523,46 @@ function uikit_preprocess_region(&$variables) {
     'class' => array('region-wrapper'),
   );
 
-  $region_style = UIkit::getThemeSetting($region . '_style');
+  // Add an attributes id.
+  $variables['attributes_array'] = array(
+    'id' => 'region-' . $wrapper_id,
+  );
 
-  if ($region_style) {
-    // Add the region style classes.
-    $variables['wrapper_attributes_array']['class'][] = "$region_style";
+  // Get all regions for the theme.
+  $regions = system_region_list($theme_key);
 
-    switch ($region_style) {
-      case 'uk-block':
-        $block_style = UIkit::getThemeSetting($region . '_block_style');
-        $block_padding = UIkit::getThemeSetting($region . '_block_padding');
-        $variables['wrapper_attributes_array']['class'][] = $block_style;
+  foreach ($regions as $key => $value) {
+    // Get the settings for each region being used.
+    if ($region == $key) {
+      $style_setting = UIkit::getThemeSetting($key . '_style');
+      $card_style = UIkit::getThemeSetting($key . '_card_style');
+      $region_style = $style_setting ? $style_setting : 0;
+      $region_card_style = $card_style ? $card_style : 0;
 
-        if ($block_padding) {
-          $variables['wrapper_attributes_array']['class'][] = $block_padding;
+      if ($region_style) {
+        switch ($region_style) {
+          case 'card':
+            $variables['attributes_array']['class'][] = 'uk-card';
+            $variables['attributes_array']['class'][] = 'uk-card-body';
+            break;
         }
-        break;
+      }
 
-      case 'uk-panel':
-        $panel_style = UIkit::getThemeSetting($region . '_panel_style');
-        $panel_modifiers = UIkit::getThemeSetting($region . '_panel_modifiers');
-        $variables['wrapper_attributes_array']['class'][] = 'uk-panel-box';
+      if ($region_card_style) {
+        switch ($region_card_style) {
+          case 'default':
+            $variables['attributes_array']['class'][] = 'uk-card-default';
+            break;
 
-        if ($panel_style) {
-          $variables['wrapper_attributes_array']['class'][] = $panel_style;
+          case 'primary':
+            $variables['attributes_array']['class'][] = 'uk-card-primary';
+            break;
+
+          case 'secondary':
+            $variables['attributes_array']['class'][] = 'uk-card-secondary';
+            break;
         }
-
-        if ($panel_modifiers) {
-          foreach ($panel_modifiers as $panel_modifier => $value) {
-            if ($value) {
-              $variables['wrapper_attributes_array']['class'][] = $panel_modifier;
-            }
-          }
-        }
-        break;
+      }
     }
   }
 }
@@ -635,15 +574,7 @@ function uikit_preprocess_block(&$variables) {
   $region = $variables['block']->region;
 
   if ($region == 'sidebar_first' || $region == 'sidebar_second') {
-    $variables['classes_array'][] = 'uk-margin';
-  }
-
-  $region_style = UIkit::getThemeSetting($region . '_style');
-
-  if ($region_style == 'uk-block') {
-    // Add the uk-container class to provide spacing for regions styled with the
-    // block component.
-    $variables['classes_array'][] = 'uk-container';
+    $variables['classes_array'][] = 'uk-margin-bottom';
   }
 }
 
@@ -652,7 +583,7 @@ function uikit_preprocess_block(&$variables) {
  */
 function uikit_preprocess_breadcrumb(&$variables) {
   // Remove home link from breadcrumb if disabled in theme settings.
-  if (!UIkit::getThemeSetting('breakcrumbs_home_link', UIkit::getActiveTheme())) {
+  if (!UIkit::getThemeSetting('breakcrumbs_home_link')) {
     array_shift($variables['breadcrumb']);
   }
 
@@ -668,53 +599,9 @@ function uikit_preprocess_breadcrumb(&$variables) {
  * Implements hook_preprocess_HOOK() for theme_button().
  */
 function uikit_preprocess_button(&$variables) {
-  $value = $variables['element']['#value'];
-
-  // Add the uk-button class to all buttons.
+  // Add the uk-button-default class to all buttons.
   $variables['element']['#attributes']['class'][] = 'uk-button';
-
-  // Add uk-button-STYLE class based on the button value.
-  switch ($value) {
-    case 'Add':
-    case 'Continue':
-    case 'Create new account':
-    case 'Create new set':
-    case 'Create new style':
-    case 'Download these updates':
-    case 'Install':
-    case 'Revert':
-    case 'Save':
-    case 'Save block':
-    case 'Save blocks':
-    case 'Save configuration':
-    case 'Save content type':
-    case 'Save permissions':
-    case 'Save role':
-    case 'Save settings':
-    case 'Save field settings':
-    case 'Upload':
-    case 'Update effect':
-    case 'Update preview':
-    case 'Update style':
-      $variables['element']['#attributes']['class'][] = 'uk-button-primary';
-      break;
-
-    case 'Override defaults':
-    case 'Preview':
-      $variables['element']['#attributes']['class'][] = 'uk-button-warning';
-      break;
-
-    case 'Cancel':
-    case 'Delete':
-    case 'Delete content type':
-    case 'Delete role':
-    case 'Remove':
-      $variables['element']['#attributes']['class'][] = 'uk-button-danger';
-      break;
-  }
-
-  // Add small right margin so button groups have proper spacing.
-  $variables['element']['#attributes']['class'][] = 'uk-margin-small-right';
+  $variables['element']['#attributes']['class'][] = 'uk-button-default';
 }
 
 /**
@@ -725,10 +612,13 @@ function uikit_preprocess_comment(&$variables) {
   $node = $variables['elements']['#node'];
 
   // Check if user picture in comments is enabled.
-  $comment_picture = UIkit::getThemeSetting('toggle_comment_user_picture', UIkit::getActiveTheme()) ? 1 : 0;
+  $comment_picture = UIkit::getThemeSetting('toggle_comment_user_picture') ? 1 : 0;
 
   // Check if user pictures are enabled.
   $user_pictures = variable_get('user_pictures') ? 1 : 0;
+
+  // Chech if a default picture has been set.
+  $user_picture_default = !empty(variable_get('user_picture_default')) ? 1 : 0;
 
   // Add comment classes.
   $variables['classes_array'][] = 'uk-comment';
@@ -736,6 +626,7 @@ function uikit_preprocess_comment(&$variables) {
     $variables['classes_array'][] = 'uk-comment-primary';
   }
   $variables['title_attributes_array']['class'][] = 'uk-comment-title';
+  $variables['title_attributes_array']['class'][] = 'uk-margin-remove';
   $variables['content_attributes_array']['class'][] = 'uk-comment-body';
 
   // Use the comment id as the permalink text in the comment title.
@@ -746,6 +637,7 @@ function uikit_preprocess_comment(&$variables) {
     'attributes' => array(
       'class' => array(
         'permalink',
+        'uk-link-reset',
       ),
       'rel' => 'bookmark',
     ),
@@ -754,43 +646,18 @@ function uikit_preprocess_comment(&$variables) {
   $variables['permalink'] = l(t('#@id', array('@id' => $id)), $uri['path'], $uri['options']);
 
   // Use the same uri for the title permalink.
-  $title['options'] = array(
-    'attributes' => array(
-      'class' => array(
-        'uk-link-reset',
-      ),
-      'rel' => 'bookmark',
-    ),
-    'fragment' => "comment-$cid",
-  );
-  $variables['title'] = l(t('@subject', array('@subject' => $comment->subject)), $uri['path'], $title['options']);
+  $variables['title'] = l(t('@subject', array('@subject' => $comment->subject)), $uri['path'], $uri['options']);
 
   // Use separate submitted by and date variables.
   $variables['submitted_user'] = t('!username', array('!username' => $variables['author']));
   $variables['submitted_date'] = t('!datetime', array('!datetime' => $variables['created']));
 
-  $uid = $variables['comment']->uid;
-  $user = user_load($uid);
-  if ($comment_picture && $user_pictures && !isset($user->picture)) {
+  if ($comment_picture && $user_pictures && $user_picture_default && empty($variables['picture'])) {
     // Provide a default image when the user does not have a picture uploaded.
-    $default = ' data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjwhLS0gR2VuZXJhdG9yOiBBZG9iZSBJbGx1c3RyYXRvciAxNi4wLjQsIFNWRyBFeHBvcnQgUGx1Zy1JbiAuIFNWRyBWZXJzaW9uOiA2LjAwIEJ1aWxkIDApICAtLT4NCjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+DQo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkViZW5lXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4Ig0KCSB3aWR0aD0iNTBweCIgaGVpZ2h0PSI1MHB4IiB2aWV3Qm94PSIwIDAgNTAgNTAiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDUwIDUwIiB4bWw6c3BhY2U9InByZXNlcnZlIj4NCjxyZWN0IGZpbGw9IiNGRkZGRkYiIHdpZHRoPSI1MCIgaGVpZ2h0PSI1MCIvPg0KPGc+DQoJPHBhdGggZmlsbD0iI0UwRTBFMCIgZD0iTTQ1LjQ1LDQxLjM0NWMtMC4yMDktMS4xNjYtMC40NzMtMi4yNDYtMC43OTEtMy4yNDJjLTAuMzE5LTAuOTk2LTAuNzQ3LTEuOTY3LTEuMjg2LTIuOTE0DQoJCWMtMC41MzgtMC45NDYtMS4xNTUtMS43NTMtMS44NTItMi40MmMtMC42OTktMC42NjctMS41NS0xLjItMi41NTYtMS41OThzLTIuMTE3LTAuNTk4LTMuMzMyLTAuNTk4DQoJCWMtMC4xNzksMC0wLjU5NywwLjIxNC0xLjI1NSwwLjY0MmMtMC42NTcsMC40MjktMS4zOTksMC45MDctMi4yMjYsMS40MzRjLTAuODI3LDAuNTI4LTEuOTAzLDEuMDA2LTMuMjI3LDEuNDM0DQoJCWMtMS4zMjUsMC40MjktMi42NTUsMC42NDMtMy45ODksMC42NDNjLTEuMzM0LDAtMi42NjQtMC4yMTQtMy45ODktMC42NDNjLTEuMzI1LTAuNDI4LTIuNDAxLTAuOTA2LTMuMjI3LTEuNDM0DQoJCWMtMC44MjgtMC41MjctMS41NjktMS4wMDUtMi4yMjYtMS40MzRjLTAuNjU4LTAuNDI4LTEuMDc2LTAuNjQyLTEuMjU1LTAuNjQyYy0xLjIxNiwwLTIuMzI2LDAuMTk5LTMuMzMyLDAuNTk4DQoJCWMtMS4wMDYsMC4zOTgtMS44NTgsMC45MzEtMi41NTQsMS41OThjLTAuNjk5LDAuNjY3LTEuMzE1LDEuNDc0LTEuODUzLDIuNDJjLTAuNTM4LDAuOTQ3LTAuOTY3LDEuOTE3LTEuMjg1LDIuOTE0DQoJCXMtMC41ODMsMi4wNzYtMC43OTIsMy4yNDJjLTAuMjA5LDEuMTY1LTAuMzQ5LDIuMjUxLTAuNDE4LDMuMjU2Yy0wLjA3LDEuMDA2LTAuMTA0LDIuMS0wLjEwNCwzLjE1NUMzLjkwMSw0OC41NCwzLjk4Nyw0OSw0LjE0Myw1MA0KCQloNDEuNTg5YzAuMTU2LTEsMC4yNDItMS40NiwwLjI0Mi0yLjI0M2MwLTEuMDU1LTAuMDM1LTIuMTE4LTAuMTA1LTMuMTI0QzQ1Ljc5OSw0My42MjcsNDUuNjYsNDIuNTEsNDUuNDUsNDEuMzQ1eiIvPg0KCTxwYXRoIGZpbGw9IiNFMEUwRTAiIGQ9Ik0yNC45MzgsMzIuNDg1YzMuMTY3LDAsNS44NzEtMS4xMjEsOC4xMTMtMy4zNjFjMi4yNDEtMi4yNDIsMy4zNjEtNC45NDUsMy4zNjEtOC4xMTMNCgkJcy0xLjEyMS01Ljg3Mi0zLjM2MS04LjExMmMtMi4yNDItMi4yNDEtNC45NDYtMy4zNjItOC4xMTMtMy4zNjJzLTUuODcyLDEuMTIxLTguMTEyLDMuMzYyYy0yLjI0MiwyLjI0MS0zLjM2Miw0Ljk0NS0zLjM2Miw4LjExMg0KCQlzMS4xMiw1Ljg3MSwzLjM2Miw4LjExM0MxOS4wNjUsMzEuMzY1LDIxLjc3MSwzMi40ODUsMjQuOTM4LDMyLjQ4NXoiLz4NCjwvZz4NCjwvc3ZnPg0K';
-    $variables['picture'] = '<img class="uk-comment-avatar" width="50" height="50" src="' . $default . '">';
-  }
-  else {
-    $picture = theme('image_style', array(
-      'style_name' => 'thumbnail',
-      'path' => $user->picture->uri,
-      'attributes' => array(
-        'class' => 'uk-comment-avatar'
-      ),
-    ));
-    $options = array(
-      'attributes' => array(
-        'title' => t('View user profile.'),
-      ),
-      'html' => TRUE,
-    );
-    $variables['picture'] = l($picture, "user/$uid", $options);
+    if (empty($variables['picture'])) {
+      $default = ' data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjwhLS0gR2VuZXJhdG9yOiBBZG9iZSBJbGx1c3RyYXRvciAxNi4wLjQsIFNWRyBFeHBvcnQgUGx1Zy1JbiAuIFNWRyBWZXJzaW9uOiA2LjAwIEJ1aWxkIDApICAtLT4NCjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+DQo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkViZW5lXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4Ig0KCSB3aWR0aD0iNTBweCIgaGVpZ2h0PSI1MHB4IiB2aWV3Qm94PSIwIDAgNTAgNTAiIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDUwIDUwIiB4bWw6c3BhY2U9InByZXNlcnZlIj4NCjxyZWN0IGZpbGw9IiNGRkZGRkYiIHdpZHRoPSI1MCIgaGVpZ2h0PSI1MCIvPg0KPGc+DQoJPHBhdGggZmlsbD0iI0UwRTBFMCIgZD0iTTQ1LjQ1LDQxLjM0NWMtMC4yMDktMS4xNjYtMC40NzMtMi4yNDYtMC43OTEtMy4yNDJjLTAuMzE5LTAuOTk2LTAuNzQ3LTEuOTY3LTEuMjg2LTIuOTE0DQoJCWMtMC41MzgtMC45NDYtMS4xNTUtMS43NTMtMS44NTItMi40MmMtMC42OTktMC42NjctMS41NS0xLjItMi41NTYtMS41OThzLTIuMTE3LTAuNTk4LTMuMzMyLTAuNTk4DQoJCWMtMC4xNzksMC0wLjU5NywwLjIxNC0xLjI1NSwwLjY0MmMtMC42NTcsMC40MjktMS4zOTksMC45MDctMi4yMjYsMS40MzRjLTAuODI3LDAuNTI4LTEuOTAzLDEuMDA2LTMuMjI3LDEuNDM0DQoJCWMtMS4zMjUsMC40MjktMi42NTUsMC42NDMtMy45ODksMC42NDNjLTEuMzM0LDAtMi42NjQtMC4yMTQtMy45ODktMC42NDNjLTEuMzI1LTAuNDI4LTIuNDAxLTAuOTA2LTMuMjI3LTEuNDM0DQoJCWMtMC44MjgtMC41MjctMS41NjktMS4wMDUtMi4yMjYtMS40MzRjLTAuNjU4LTAuNDI4LTEuMDc2LTAuNjQyLTEuMjU1LTAuNjQyYy0xLjIxNiwwLTIuMzI2LDAuMTk5LTMuMzMyLDAuNTk4DQoJCWMtMS4wMDYsMC4zOTgtMS44NTgsMC45MzEtMi41NTQsMS41OThjLTAuNjk5LDAuNjY3LTEuMzE1LDEuNDc0LTEuODUzLDIuNDJjLTAuNTM4LDAuOTQ3LTAuOTY3LDEuOTE3LTEuMjg1LDIuOTE0DQoJCXMtMC41ODMsMi4wNzYtMC43OTIsMy4yNDJjLTAuMjA5LDEuMTY1LTAuMzQ5LDIuMjUxLTAuNDE4LDMuMjU2Yy0wLjA3LDEuMDA2LTAuMTA0LDIuMS0wLjEwNCwzLjE1NUMzLjkwMSw0OC41NCwzLjk4Nyw0OSw0LjE0Myw1MA0KCQloNDEuNTg5YzAuMTU2LTEsMC4yNDItMS40NiwwLjI0Mi0yLjI0M2MwLTEuMDU1LTAuMDM1LTIuMTE4LTAuMTA1LTMuMTI0QzQ1Ljc5OSw0My42MjcsNDUuNjYsNDIuNTEsNDUuNDUsNDEuMzQ1eiIvPg0KCTxwYXRoIGZpbGw9IiNFMEUwRTAiIGQ9Ik0yNC45MzgsMzIuNDg1YzMuMTY3LDAsNS44NzEtMS4xMjEsOC4xMTMtMy4zNjFjMi4yNDEtMi4yNDIsMy4zNjEtNC45NDUsMy4zNjEtOC4xMTMNCgkJcy0xLjEyMS01Ljg3Mi0zLjM2MS04LjExMmMtMi4yNDItMi4yNDEtNC45NDYtMy4zNjItOC4xMTMtMy4zNjJzLTUuODcyLDEuMTIxLTguMTEyLDMuMzYyYy0yLjI0MiwyLjI0MS0zLjM2Miw0Ljk0NS0zLjM2Miw4LjExMg0KCQlzMS4xMiw1Ljg3MSwzLjM2Miw4LjExM0MxOS4wNjUsMzEuMzY1LDIxLjc3MSwzMi40ODUsMjQuOTM4LDMyLjQ4NXoiLz4NCjwvZz4NCjwvc3ZnPg0K';
+      $variables['picture'] = '<img class="uk-comment-avatar" width="50" height="50" src="' . $default . '">';
+    }
   }
   $variables['content']['links']['#attributes']['class'][] = 'uk-float-right';
 }
@@ -811,36 +678,10 @@ function uikit_preprocess_confirm_form(&$variables) {
     $type = isset($action['#type']) ? $action['#type'] : 0;
 
     if ($type && $type == 'link') {
-      // Add the uk-button class to form action links for consistent styling
-      // with form action buttons.
-      $variables['form']['actions'][$key]['#attributes']['class'][] = 'uk-button';
+      // Add the uk-button-default class to form action links for consistent
+      // styling with form action buttons.
+      $variables['form']['actions'][$key]['#attributes']['class'][] = 'uk-button-default';
     }
-  }
-}
-
-/**
- * Implements hook_preprocess_HOOK() for theme_container().
- */
-function uikit_preprocess_container(&$variables) {
-  // Some modules do not set the classes in attributes as an array and use a
-  // string instead. Move these classes into an array to avoid string to array
-  // errors.
-  $attributes = $variables['element']['#attributes'];
-  if (isset($attributes['class']) && !is_array($attributes['class'])) {
-    $old_classes = explode(' ', $variables['element']['#attributes']['class']);
-    $variables['element']['#attributes']['class'] = $old_classes;
-  }
-
-  // Add the uk-form-row class to provide proper margin between container
-  // elements.
-  $variables['element']['#attributes']['class'][] = 'uk-form-row';
-
-  // Add the uk-display-inline-block and uk-margin-remove classes to inline
-  // containers operation form items.
-  $classes = $variables['element']['#attributes']['class'];
-  if (in_array('container-inline', $classes) || in_array('form-item-operation', $classes)) {
-    $variables['element']['#attributes']['class'][] = 'uk-display-inline-block';
-    $variables['element']['#attributes']['class'][] = 'uk-margin-remove';
   }
 }
 
@@ -883,9 +724,9 @@ function uikit_preprocess_fieldset(&$variables) {
   }
   elseif ($collapsible) {
     $variables['theme_hook_suggestions'][] = 'fieldset__collapsible';
-    $variables['element']['#attributes']['class'][] = 'uk-form-row';
+    $variables['element']['#attributes']['class'][] = 'uk-margin';
     $variables['element']['#attributes']['class'][] = 'uk-accordion';
-    $variables['element']['#attributes']['data-uk-accordion'] = '';
+    $variables['element']['#attributes']['uk-accordion'] = '';
 
     foreach ($variables['element']['#attributes']['class'] as $key => $class) {
       if ($class == 'collapsible' || $class == 'collapsed') {
@@ -893,19 +734,16 @@ function uikit_preprocess_fieldset(&$variables) {
         array_values($variables['element']['#attributes']['class']);
       }
       if ($class == 'collapsed') {
-        $variables['element']['#attributes']['data-uk-accordion'] .= '{showfirst: false}';
+        $variables['element']['#attributes']['uk-accordion'] .= '{showfirst: false}';
       }
     }
-
-    // Retrieve the accordion component CDN assets.
-    UIkit::getCdnAsset('accordion');
   }
   elseif ($format_fieldset) {
     $variables['theme_hook_suggestions'][] = 'fieldset__format';
   }
   else {
     $variables['theme_hook_suggestions'][] = 'fieldset';
-    $variables['element']['#attributes']['class'][] = 'uk-form-row';
+    $variables['element']['#attributes']['class'][] = 'uk-fieldset';
   }
 }
 
@@ -922,13 +760,6 @@ function uikit_preprocess_form(&$variables) {
     $class = $attributes['class'];
     $variables['element']['#attributes']['class'] = array($class);
   }
-
-  // Add the uk-form class to all forms.
-  $variables['element']['#attributes']['class'][] = 'uk-form';
-  $variables['element']['#attributes']['class'][] = 'uk-form-stacked';
-
-  // Retrieve the advanced form component CDN assets.
-  UIkit::getCdnAsset('form-advanced');
 }
 
 /**
@@ -949,29 +780,11 @@ function uikit_preprocess_item_list(&$variables) {
 function uikit_preprocess_links(&$variables) {
   $classes = isset($variables['attributes']['class']) ? $variables['attributes']['class'] : array();
 
-  // Add uk-subnav and uk-subnav-line classes to inline links.
+  // Add uk-subnav class to inline links.
   $inline = in_array('inline', $classes);
 
   if ($inline) {
     $variables['attributes']['class'][] = 'uk-subnav';
-    $variables['attributes']['class'][] = 'uk-subnav-line';
-  }
-}
-
-/**
- * Implements hook_preprocess_HOOK() for theme_menu_link().
- */
-function uikit_preprocess_menu_link(&$variables) {
-  $depth = $variables['element']['#original_link']['depth'];
-  $href = $variables['element']['#href'];
-  $theme = $variables['element']['#theme'];
-
-  // Define #hidden variable with default value of FALSE.
-  $variables['element']['#hidden'] = FALSE;
-
-  if ($theme == 'menu_link__navbar' && $href == '<uk-nav-header>' && $depth == 1) {
-    // Top-level nav headers should be hidden for navbar menu links.
-    $variables['element']['#hidden'] = TRUE;
   }
 }
 
@@ -980,12 +793,13 @@ function uikit_preprocess_menu_link(&$variables) {
  */
 function uikit_preprocess_menu_local_tasks(&$variables) {
   // Get the local task styles.
-  $primary_style = UIkit::getThemeSetting('primary_tasks_style', UIkit::getActiveTheme());
-  $secondary_style = UIkit::getThemeSetting('secondary_tasks_style', UIkit::getActiveTheme());
+  $primary_style = UIkit::getThemeSetting('primary_tasks_style');
+  $secondary_style = UIkit::getThemeSetting('secondary_tasks_style');
 
   // Set the default attributes.
   $variables['primary_attributes_array'] = array(
     'id' => 'primary-local-tasks',
+    'class' => array('uk-subnav'),
   );
   $variables['secondary_attributes_array'] = array(
     'id' => 'secondary-local-tasks',
@@ -993,18 +807,23 @@ function uikit_preprocess_menu_local_tasks(&$variables) {
   );
 
   // Add additional styling from theme settings.
-  if ($primary_style == 'uk-tab') {
+  if ($primary_style) {
     $variables['primary_attributes_array']['class'][] = $primary_style;
-  }
-  else {
-    $variables['primary_attributes_array']['class'][] = 'uk-subnav';
-
-    if ($primary_style != '0') {
-      $variables['primary_attributes_array']['class'][] = $primary_style;
-    }
   }
   if ($secondary_style) {
     $variables['secondary_attributes_array']['class'][] = $secondary_style;
+  }
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for theme_menu_tree().
+ */
+function uikit_preprocess_menu_tree(&$variables) {
+  $shortcut_set = preg_grep("/^(menu_tree__shortcut_set)/", $variables['#tree']['#theme_wrappers']);
+
+  if ($shortcut_set) {
+    // Provide hook suggestion for shortcut set menu trees.
+    $variables['theme_hook_suggestions'][] = 'menu_tree__shortcut_set';
   }
 }
 
@@ -1014,33 +833,6 @@ function uikit_preprocess_menu_local_tasks(&$variables) {
 function uikit_preprocess_password(&$variables) {
   // Define size attribute for password fields for consistent styling.
   $variables['element']['#attributes']['size'] = 25;
-  $element = $variables['element'];
-
-  if (isset($element['#parents']) && !empty($element['#validated']) && form_get_error($element)) {
-    $variables['element']['#attributes']['class'][] = 'uk-form-danger';
-  }
-}
-
-/**
- * Implements hook_preprocess_HOOK() for theme_radio().
- */
-function uikit_preprocess_radio(&$variables) {
-  $element = $variables['element'];
-
-  if (isset($element['#parents']) && !empty($element['#validated']) && form_get_error($element)) {
-    $variables['element']['#attributes']['class'][] = 'uk-form-danger';
-  }
-}
-
-/**
- * Implements hook_preprocess_HOOK() for theme_select().
- */
-function uikit_preprocess_select(&$variables) {
-  $element = $variables['element'];
-
-  if (isset($element['#parents']) && !empty($element['#validated']) && form_get_error($element)) {
-    $variables['element']['#attributes']['class'][] = 'uk-form-danger';
-  }
 }
 
 /**
@@ -1054,17 +846,6 @@ function uikit_preprocess_table(&$variables) {
   if ($filter_tips) {
     $variables['attributes']['class'][] = 'uk-table-striped';
     $variables['attributes']['class'][] = 'table-filter-tips';
-  }
-}
-
-/**
- * Implements hook_preprocess_HOOK() for theme_textarea().
- */
-function uikit_preprocess_textarea(&$variables) {
-  $element = $variables['element'];
-
-  if (isset($element['#parents']) && !empty($element['#validated']) && form_get_error($element)) {
-    $variables['element']['#attributes']['class'][] = 'uk-form-danger';
   }
 }
 

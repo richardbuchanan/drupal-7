@@ -77,40 +77,29 @@
 ?>
 <header<?php print $header_attributes; ?>>
   <nav<?php print $navbar_attributes; ?>>
-    <?php if ($logo): ?>
-      <a href="<?php print $front_page; ?>" id="logo-large" class="uk-navbar-brand uk-hidden-small" title="<?php print t('Home'); ?>" rel="home">
-        <img src="<?php print $logo; ?>" alt="<?php print t('Home'); ?>"/>
-      </a>
-    <?php endif; ?>
+    <div class="uk-navbar-left">
+      <?php if ($logo): ?>
+        <a href="<?php print $front_page; ?>" id="site-logo" class="uk-navbar-item uk-logo" title="<?php print t('Home'); ?>" rel="home">
+          <img class="uk-margin-small-right" src="<?php print $logo; ?>" alt="<?php print t('Home'); ?>" />
 
-    <?php if ($site_name): ?>
-      <a href="<?php print $front_page; ?>" id="site-name" class="uk-navbar-brand uk-hidden-small" title="<?php print t('Home'); ?>" rel="home">
-        <span><?php print $site_name; ?></span>
-      </a>
-    <?php endif; ?>
-
-    <?php if ($main_menu || $secondary_menu): ?>
-      <?php print render($navbar_primary); ?>
-      <?php print render($navbar_secondary); ?>
-    <?php endif; ?>
-
-    <a href="#offcanvas" class="uk-navbar-toggle uk-visible-small" data-uk-offcanvas></a>
-
-    <?php if ($logo || $site_name): ?>
-      <div id="site-branding" class="uk-navbar-center uk-visible-small">
-        <?php if ($logo): ?>
-          <a href="<?php print $front_page; ?>" class="uk-navbar-brand" title="<?php print t('Home'); ?>" rel="home" id="logo-small">
-            <img src="<?php print $logo; ?>" alt="<?php print t('Home'); ?>"/>
-          </a>
-        <?php endif; ?>
-
-        <?php if ($site_name): ?>
-          <a href="<?php print $front_page; ?>" class="uk-navbar-brand" title="<?php print t('Home'); ?>" rel="home">
+          <?php if ($site_name): ?>
             <span><?php print $site_name; ?></span>
-          </a>
-        <?php endif; ?>
-      </div>
-    <?php endif; ?>
+          <?php endif; ?>
+        </a>
+      <?php endif; ?>
+
+      <?php if ($main_menu): ?>
+        <?php print render($navbar_primary); ?>
+      <?php endif; ?>
+    </div>
+
+    <div class="uk-navbar-right">
+      <?php if ($secondary_menu): ?>
+        <?php print render($navbar_secondary); ?>
+      <?php endif; ?>
+
+      <a href="#offcanvas" uk-toggle uk-navbar-toggle-icon class="uk-navbar-toggle uk-hidden@m uk-navbar-toggle-icon uk-icon"></a>
+    </div>
   </nav>
 </header>
 
@@ -121,7 +110,7 @@
     </div>
   <?php endif; ?>
 
-  <div class="uk-grid" data-uk-grid-margin>
+  <div class="uk-grid" uk-grid>
     <?php if ($page['header']): ?>
       <?php print render($page['header']); ?>
     <?php endif; ?>
@@ -150,9 +139,7 @@
       <?php endif; ?>
 
       <?php if ($messages): ?>
-        <div id="messages" class="uk-width-1-1 uk-margin">
-          <?php print $messages; ?>
-        </div>
+        <?php print $messages; ?>
       <?php endif; ?>
 
       <?php print render($page['help']); ?>
@@ -179,7 +166,7 @@
 
   </div>
 
-  <div class="uk-grid" data-uk-grid-margin>
+  <div class="uk-grid" uk-grid>
     <?php if ($page['footer']): ?>
       <div id="footer" class="uk-width-1-1">
         <?php print render($page['footer']); ?>
@@ -190,8 +177,8 @@
 </div>
 
 <?php if ($offcanvas_primary || $offcanvas_secondary): ?>
-  <div id="offcanvas" class="uk-offcanvas">
-    <div class="uk-offcanvas-bar" mode="push">
+  <div id="offcanvas" uk-offcanvas="mode: push; overlay: true" class="uk-offcanvas">
+    <div class="uk-offcanvas-bar">
       <?php print render($offcanvas_primary); ?>
       <?php print render($offcanvas_secondary); ?>
     </div>

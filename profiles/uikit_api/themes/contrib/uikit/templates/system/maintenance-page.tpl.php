@@ -22,50 +22,32 @@
   <?php print $scripts; ?>
 </head>
 <body class="<?php print $classes; ?>">
-  <header id="page-header" class="uk-container uk-container-center">
-    <nav id="page-navbar" class="uk-navbar uk-margin-top">
-      <?php if ($logo): ?>
-        <a href="<?php print $base_path; ?>" id="logo-large" class="uk-navbar-brand uk-hidden-small" title="<?php print t('Home'); ?>" rel="home">
-          <img src="<?php print $logo; ?>" alt="<?php print t('Home'); ?>"/>
-        </a>
-      <?php endif; ?>
+  <header id="page-header">
+    <nav id="page-navbar" class="uk-navbar-container uk-navbar" uk-navbar>
+      <div class="uk-navbar-left">
+        <?php if ($logo): ?>
+          <a href="<?php print $front_page; ?>" id="site-logo" class="uk-navbar-item uk-logo" title="<?php print t('Home'); ?>" rel="home">
+            <img class="uk-margin-small-right" src="<?php print $logo; ?>" alt="<?php print t('Home'); ?>" />
 
-      <?php if ($site_name): ?>
-        <a href="<?php print $base_path; ?>" id="site-name" class="uk-navbar-brand uk-hidden-small" title="<?php print t('Home'); ?>" rel="home">
-          <span><?php print $site_name; ?></span>
-        </a>
-      <?php endif; ?>
-
-      <?php if ($logo || $site_name): ?>
-        <div id="site-branding" class="uk-navbar-center uk-visible-small">
-          <?php if ($logo): ?>
-            <a href="<?php print $base_path; ?>" class="uk-navbar-brand" title="<?php print t('Home'); ?>" rel="home" id="logo-small">
-              <img src="<?php print $logo; ?>" alt="<?php print t('Home'); ?>"/>
-            </a>
-          <?php endif; ?>
-
-          <?php if ($site_name): ?>
-            <a href="<?php print $base_path; ?>" class="uk-navbar-brand" title="<?php print t('Home'); ?>" rel="home">
+            <?php if ($site_name): ?>
               <span><?php print $site_name; ?></span>
-            </a>
-          <?php endif; ?>
-        </div>
-      <?php endif; ?>
+            <?php endif; ?>
+          </a>
+        <?php endif; ?>
+      </div>
     </nav>
   </header>
 
-  <div id="page" class="uk-container uk-container-center uk-margin">
-    <div class="uk-grid" data-uk-grid-margin>
+  <div id="page" class="uk-container uk-margin">
+    <div uk-grid>
 
       <div<?php print $content_attributes; ?>>
-        <?php if (!empty($title)): ?>
-          <h1 id="page-title" class="uk-article-title"><?php print $title; ?></h1>
-        <?php endif; ?>
+        <?php if ($title): ?>
+          <h1 id="page-title" class="uk-article-title"><?php print $title; ?></h1><?php
+        endif; ?>
 
-        <?php if (!empty($messages)): ?>
-          <div id="messages" class="uk-width-1-1 uk-margin">
-            <?php print $messages; ?>
-          </div>
+        <?php if ($messages): ?>
+          <?php print $messages; ?>
         <?php endif; ?>
 
         <div class="content"><?php print $content; ?></div>
@@ -84,12 +66,15 @@
       <?php endif; ?>
 
     </div>
-
-    <?php if (!empty($footer)): ?>
-      <?php print $footer; ?>
-    <?php endif; ?>
-
   </div>
+
+  <?php if (!empty($footer)): ?>
+    <div class="uk-grid" uk-grid>
+      <div id="footer" class="uk-width-1-1">
+        <?php print $footer; ?>
+      </div>
+    </div>
+  <?php endif; ?>
 
 </body>
 </html>

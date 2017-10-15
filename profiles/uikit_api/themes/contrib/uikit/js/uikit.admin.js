@@ -120,46 +120,34 @@
 
       // Add the initial class to the demo menus.
       $('#edit-primary-tasks', context).once(function () {
-        if (primaryValue === 'uk-tab') {
-          $(this).find('ul').addClass(primaryValue);
-        }
-        else {
-          $(this).find('ul')
-            .addClass('uk-subnav')
+        if (primaryValue !== '0') {
+          $(this).find('.uk-subnav').removeClass('uk-subnav')
             .addClass(primaryValue);
         }
       });
 
       $('#edit-secondary-tasks', context).once(function () {
-        $(this).find('ul')
-          .addClass('uk-subnav')
-          .addClass(secondaryValue);
+        if (secondaryValue !== '0') {
+          $(this).find('.uk-subnav').addClass(secondaryValue);
+        }
       });
 
       // Change the demo menu classes when the setting is changed.
       $('select[name=primary_tasks_style]').change(function () {
-        primaryMenu
-          .removeClass('uk-subnav')
-          .removeClass('uk-subnav-line')
+        primaryMenu.removeClass('uk-subnav')
           .removeClass('uk-subnav-pill')
           .removeClass('uk-tab');
 
-        if ($(this).val() === 'uk-tab') {
-          primaryMenu.addClass($(this).val());
-        }
-        else if ($(this).val() === '0') {
+        if ($(this).val() !== 'uk-tab') {
           primaryMenu.addClass('uk-subnav');
         }
-        else {
-          primaryMenu
-            .addClass('uk-subnav')
-            .addClass($(this).val());
+        if ($(this).val() !== '0') {
+          primaryMenu.addClass($(this).val());
         }
       });
 
       $('select[name=secondary_tasks_style]').change(function () {
-        secondaryMenu.removeClass('uk-subnav-line')
-          .removeClass('uk-subnav-pill');
+        secondaryMenu.removeClass('uk-subnav-pill');
 
         if ($(this).val() !== '0') {
           secondaryMenu.addClass($(this).val());

@@ -13,8 +13,6 @@ regions[sidebar_first] = 'Sidebar first'
 regions[sidebar_second] = 'Sidebar second'
 regions[footer] = 'Footer'
 
-settings[base_style] = 0
-settings[customizer_css] = 0
 settings[meta_charset] = 'utf-8'
 settings[x_ua_compatible] = 0
 settings[viewport_device_width_ratio] = 'device-width'
@@ -27,22 +25,16 @@ settings[standard_sidebar_positions] = 'holy-grail'
 settings[tablet_sidebar_positions] = 'sidebar-left-stacked'
 settings[mobile_sidebar_positions] = 'sidebars-stacked'
 settings[page_container] = 1
-settings[page_centering] = 1
 settings[page_margin] = 'uk-margin'
-settings[navbar_container] = 1
-settings[navbar_centering] = 1
-settings[navbar_attached] = 0
-settings[navbar_margin_top] = 1
-settings[navbar_margin_bottom] = 0
 settings[primary_tasks_style] = 'uk-tab'
-settings[secondary_tasks_style] = 'uk-subnav-line'
+settings[secondary_tasks_style] = 'uk-subnav'
 settings[display_breadcrumbs] = 1
 settings[breakcrumbs_home_link] = 1
 settings[breakcrumbs_current_page] = 0
 
 ; Information added by Drupal.org packaging script on 2017-09-14
-version = "7.x-2.8"
+version = "7.x-3.0-beta8"
 core = "7.x"
 project = "uikit"
-datestamp = "1505392455"
+datestamp = "1505391847"
 

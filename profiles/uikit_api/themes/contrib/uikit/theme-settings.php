@@ -30,9 +30,6 @@ function uikit_form_system_theme_settings_alter(&$form, &$form_state, $form_id =
   // Customizer CSS uploads.
   $form_state['build_info']['files']['uikit'] = drupal_get_path('theme', 'uikit') . '/theme-settings.php';
 
-  // Get Customizer CSS theme setting for later use.
-  $customizer_css = UIkit::getThemeSetting('customizer_css', $theme_key);
-
   // Build the markup for the layout demos.
   $demo_layout = '<div class="uk-layout-wrapper">';
   $demo_layout .= '<div class="uk-layout-container">';
@@ -77,22 +74,8 @@ function uikit_form_system_theme_settings_alter(&$form, &$form_state, $form_id =
     '11' => t('IE11 mode'),
   );
 
-  // Set the navbar margin options.
-  $navbar_margin_top_options = array(
-    t('No top margin'),
-    t('Normal top margin'),
-    t('Smaller top margin'),
-    t('Larger top margin'),
-  );
-  $navbar_margin_bottom_options = array(
-    t('No bottom margin'),
-    t('Normal bottom margin'),
-    t('Smaller bottom margin'),
-    t('Larger bottom margin'),
-  );
-
   // Build the markup for the local task demos.
-  $demo_local_tasks = '<ul>';
+  $demo_local_tasks = '<ul class="uk-subnav">';
   $demo_local_tasks .= '<li class="uk-active"><a href="#">Item</a></li>';
   $demo_local_tasks .= '<li><a href="#">Item</a></li>';
   $demo_local_tasks .= '<li><a href="#">Item</a></li>';
@@ -102,45 +85,24 @@ function uikit_form_system_theme_settings_alter(&$form, &$form_state, $form_id =
   // Set the subnav options for primary and secondary tasks.
   $primary_subnav_options = array(
     0 => t('Basic subnav'),
-    'uk-subnav-line' => t('Subnav line'),
     'uk-subnav-pill' => t('Subnav pill'),
     'uk-tab' => t('Tabbed'),
   );
   $secondary_subnav_options = array(
     0 => t('Basic subnav'),
-    'uk-subnav-line' => t('Subnav line'),
     'uk-subnav-pill' => t('Subnav pill'),
   );
 
   // Set the region style options.
   $region_style_options = array(
     0 => t('No style'),
-    'uk-block' => t('Block'),
-    'uk-panel' => t('Panel'),
+    'card' => t('Card'),
   );
-  $region_block_style_options = array(
-    'uk-block-default' => t('Detault'),
-    'uk-block-muted' => t('Muted'),
-    'uk-block-primary' => t('Primary'),
-    'uk-block-secondary' => t('Secondary'),
-  );
-  $region_block_padding_options = array(
-    0 => t('Default padding'),
-    'uk-block-large' => t('Large top and bottom padding'),
-    'uk-padding-remove' => t('Remove all padding'),
-    'uk-padding-top-remove' => t('Remove top padding'),
-    'uk-padding-bottom-remove' => t('Remove bottom padding'),
-    'uk-padding-vertical-remove' => t('Remove top and bottom padding'),
-  );
-  $region_panel_style_options = array(
-    0 => t('Default'),
-    'uk-panel-box-primary' => t('Primary'),
-    'uk-panel-box-secondary' => t('Secondary'),
-  );
-  $region_panel_modifier_options = array(
-    'uk-panel-hover' => t('Panel hover'),
-    'uk-panel-space' => t('Panel space'),
-    'uk-panel-divider' => t('Panel divider'),
+  $region_card_style_options = array(
+    0 => t('No card style'),
+    'default' => t('Default'),
+    'primary' => t('Primary'),
+    'secondary' => t('Secondary'),
   );
 
   // Set the viewport scale options.
@@ -169,7 +131,7 @@ function uikit_form_system_theme_settings_alter(&$form, &$form_state, $form_id =
 
   // Warn users about the future requirement of the X Autoload module.
   if (!module_exists('xautoload')) {
-    $message = t('<strong>Please be advised</strong>: UIkit will soon require the <a href="@xautoload" target="_blank">X Autoload</a> module in order to work properly. This will occur before the 7.x-2.10 release (installed: @uikit_version). Please be sure to install the X Autoload module before then. <a href="@issue" target="_blank">More information</a>', array(
+    $message = t('<strong>Please be advised</strong>: UIkit will soon require the <a href="@xautoload" target="_blank">X Autoload</a> module in order to work properly. This will occur before the 7.x-3.0-beta7 release (installed: @uikit_version). Please be sure to install the X Autoload module before then. <a href="@issue" target="_blank">More information</a>', array(
       '@xautoload' => 'https://www.drupal.org/project/xautoload',
       '@uikit_version' => $uikit_version,
       '@issue' => 'https://www.drupal.org/node/2893149',
@@ -206,61 +168,16 @@ function uikit_form_system_theme_settings_alter(&$form, &$form_state, $form_id =
     '#attached' => array(
       'css' => array(
         drupal_get_path('theme', 'uikit') . '/css/uikit.admin.css' => array(
-          'group' => CSS_DEFAULT,
+          'group' => CSS_THEME,
+          'weight' => 20,
         ),
       ),
       'js' => array(
-        drupal_get_path('theme', 'uikit') . '/js/uikit.admin.js' => array(
-          'group' => JS_DEFAULT,
-        ),
+        drupal_get_path('theme', 'uikit') . '/js/uikit.admin.js',
       ),
     ),
     '#prefix' => '<h3>' . t('UIkit Settings') . '</h3>',
     '#weight' => -10,
-  );
-
-  // UIkit theme styles.
-  $form['theme'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Theme styles'),
-    '#description' => t('UIkit comes with a basic theme and two neat themes to get you started. Here you can select which base style to start with.'),
-    '#group' => 'uikit',
-    '#attributes' => array(
-      'class' => array(
-        'uikit-theme-settings-form',
-      ),
-    ),
-  );
-  $form['theme']['base_style'] = array(
-    '#type' => 'select',
-    '#title' => t('Base style'),
-    '#options' => array(
-      0 => t('UIkit default'),
-      'almost-flat' => t('UIkit almost flat'),
-      'gradient' => t('UIkit gradient'),
-      'customizer-css' => t('Customizer CSS'),
-    ),
-    '#description' => t('Select which base style to use.<ol><li><strong>UIkit default:</strong> No border radius or gradients</li><li><strong>UIkit almost flat:</strong> Small border and border radius</li><li><strong>UIkit gradient:</strong> Almost flat style with gradient backgrounds.</li><li><strong>Customizer CSS:</strong> Use stylesheet uploaded from <a href="@customizer" target="_blank">Customizer</a>.</li></ol>', array('@customizer' => 'https://getuikit.com/v2/docs/customizer.html')),
-    '#default_value' => UIkit::getThemeSetting('base_style', $theme_key),
-  );
-  $form['theme']['theme_customizer'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('UIkit Customizer'),
-    '#description' => t('UIkit comes with a customizer that enables you to make adjustments to the theme you are using with just a few clicks and no need for any CSS knowledge. You can then download your new CSS and upload it here to override the default styles provided by UIkit. Visit <a href="@customizer" target="_blank">How to customize</a> to learn how to use Customizer.', array('@customizer' => 'https://getuikit.com/v2/docs/documentation_how-to-customize.html')),
-    '#states' => array(
-      'visible' => array(
-        ':input[name="base_style"]' => array('value' => 'customizer-css'),
-      ),
-    ),
-  );
-  $form['theme']['theme_customizer']['customizer_css'] = array(
-    '#title' => t('Customizer CSS'),
-    '#type' => 'managed_file',
-    '#description' => t('Upload the CSS file you downloaded from Customizer. This stylesheet will be added to all pages that use your theme.'),
-    '#default_value' => isset($customizer_css['fid']) ? $customizer_css['fid'] : 0,
-    '#element_validate' => array('_uikit_customizer_css_file_validate'),
-    '#upload_location' => 'public://customizer_css/',
-    "#upload_validators"  => array('file_validate_extensions' => array('css')),
   );
 
   // Mobile settings.
@@ -421,7 +338,7 @@ function uikit_form_system_theme_settings_alter(&$form, &$form_state, $form_id =
   $form['layout'] = array(
     '#type' => 'fieldset',
     '#title' => t('Layout'),
-    '#description' => t('Apply our fully responsive fluid grid system and panels, common layout parts like blog articles and comments and useful utility classes.'),
+    '#description' => t('Apply our fully responsive fluid grid system and cards, common layout parts like blog articles and comments and useful utility classes.'),
     '#group' => 'uikit',
     '#attributes' => array(
       'class' => array(
@@ -529,21 +446,10 @@ function uikit_form_system_theme_settings_alter(&$form, &$form_state, $form_id =
       ),
     ),
   );
-  $form['layout']['page_layout']['page_centering'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Page Centering'),
-    '#description' => t('To center the page container, use the .uk-container-center class.'),
-    '#default_value' => UIkit::getThemeSetting('page_centering', $theme_key),
-    '#states' => array(
-      'visible' => array(
-        ':input[name="layout_advanced"]' => array('checked' => TRUE),
-      ),
-    ),
-  );
   $form['layout']['page_layout']['page_margin'] = array(
     '#type' => 'select',
     '#title' => t('Page margin'),
-    '#description' => t('Select the margin to add to the top and bottom of the page container. This is useful, for example, when using the gradient style with a centered page container and a navbar.'),
+    '#description' => t('Select the margin to add to the top and bottom of the page container.'),
     '#default_value' => UIkit::getThemeSetting('page_margin', $theme_key),
     '#options' => array(
       0 => t('No margin'),
@@ -560,7 +466,7 @@ function uikit_form_system_theme_settings_alter(&$form, &$form_state, $form_id =
   $form['layout']['region_layout'] = array(
     '#type' => 'fieldset',
     '#title' => t('Region Layout'),
-    '#description' => t('Change region layout settings.<br><br>Use the following links to see an example of each component style.<ul class="links"><li><a href="http://getuikit.com/docs/panel.html" target="_blank">Panel</a></li><li><a href="http://getuikit.com/docs/block.html" target="_blank">Block</a></li></ul>'),
+    '#description' => t('Change region layout settings.<br><br>Use the following links to see an example of each component style.<ul class="links"><li><a href="https://getuikit.com/docs/card" target="_blank">Card</a></li></ul>'),
     '#states' => array(
       'visible' => array(
         ':input[name="layout_advanced"]' => array('checked' => TRUE),
@@ -584,53 +490,15 @@ function uikit_form_system_theme_settings_alter(&$form, &$form_state, $form_id =
       '#default_value' => UIkit::getThemeSetting($region_key . '_style', $theme_key),
       '#options' => $region_style_options,
     );
-    $form['layout']['region_layout'][$region_key][$region_key . '_block_style'] = array(
+    $form['layout']['region_layout'][$region_key][$region_key . '_card_style'] = array(
       '#type' => 'select',
-      '#title' => t('@title block style', array('@title' => $region)),
-      '#description' => t('Set the block style for the @region region.', array('@region' => $region)),
-      '#default_value' => UIkit::getThemeSetting($region_key . '_block_style', $theme_key),
-      '#options' => $region_block_style_options,
+      '#title' => t('@title card style', array('@title' => $region)),
+      '#description' => t('Set the card style for the @region region.', array('@region' => $region)),
+      '#default_value' => UIkit::getThemeSetting($region_key . '_card_style', $theme_key),
+      '#options' => $region_card_style_options,
       '#states' => array(
         'visible' => array(
-          ':input[name="' . $region_key . '_style"]' => array('value' => 'uk-block'),
-        ),
-      ),
-    );
-    $form['layout']['region_layout'][$region_key][$region_key . '_block_padding'] = array(
-      '#type' => 'select',
-      '#title' => t('@title block padding', array('@title' => $region)),
-      '#description' => t('Set the block padding for the @region region.', array('@region' => $region)),
-      '#default_value' => UIkit::getThemeSetting($region_key . '_block_padding', $theme_key),
-      '#options' => $region_block_padding_options,
-      '#states' => array(
-        'visible' => array(
-          ':input[name="' . $region_key . '_style"]' => array('value' => 'uk-block'),
-        ),
-      ),
-    );
-    $form['layout']['region_layout'][$region_key][$region_key . '_panel_style'] = array(
-      '#type' => 'select',
-      '#title' => t('@title panel style', array('@title' => $region)),
-      '#description' => t('Set the panel style for the @region region.', array('@region' => $region)),
-      '#default_value' => UIkit::getThemeSetting($region_key . '_panel_style', $theme_key),
-      '#options' => $region_panel_style_options,
-      '#states' => array(
-        'visible' => array(
-          ':input[name="' . $region_key . '_style"]' => array('value' => 'uk-panel'),
-        ),
-      ),
-    );
-
-    $panel_modifiers = UIkit::getThemeSetting($region_key . '_panel_modifiers', $theme_key);
-    $form['layout']['region_layout'][$region_key][$region_key . '_panel_modifiers'] = array(
-      '#type' => 'checkboxes',
-      '#title' => t('@title panel modifiers', array('@title' => $region)),
-      '#description' => t('Set the panel modifiers for the @region region.', array('@region' => $region)),
-      '#default_value' => $panel_modifiers ? $panel_modifiers : array(),
-      '#options' => $region_panel_modifier_options,
-      '#states' => array(
-        'visible' => array(
-          ':input[name="' . $region_key . '_style"]' => array('value' => 'uk-panel'),
+          ':input[name="' . $region_key . '_style"]' => array('value' => 'card'),
         ),
       ),
     );
@@ -642,57 +510,6 @@ function uikit_form_system_theme_settings_alter(&$form, &$form_state, $form_id =
     '#title' => t('Navigations'),
     '#description' => t('UIkit offers different types of navigations, like navigation bars and side navigations. Use breadcrumbs or a pagination to steer through articles.'),
     '#group' => 'uikit',
-  );
-  $form['navigations']['main_navbar'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Navigation bar'),
-    '#description' => t('Configure settings for the navigation bar.'),
-  );
-  $form['navigations']['main_navbar']['navbar_container_settings'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Navbar container'),
-    '#description' => t('Configure settings for the navigation bar container.'),
-    '#collapsible' => TRUE,
-    '#collapsed' => TRUE,
-  );
-  $form['navigations']['main_navbar']['navbar_container_settings']['navbar_container'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Container'),
-    '#description' => t('Add the .uk-container class to the navbar container to give it a max-width and wrap the navbar of your website. For large screens it applies a different max-width.'),
-    '#default_value' => UIkit::getThemeSetting('navbar_container', $theme_key),
-  );
-  $form['navigations']['main_navbar']['navbar_container_settings']['navbar_centering'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Centering'),
-    '#description' => t('To center the navbar container, use the .uk-container-center class.'),
-    '#default_value' => UIkit::getThemeSetting('navbar_centering', $theme_key),
-  );
-  $form['navigations']['main_navbar']['navbar_container_settings']['navbar_attached'] = array(
-    '#type' => 'checkbox',
-    '#title' => t('Navbar attached'),
-    '#description' => t("Adds the <code>.uk-navbar-attached</code> class to optimize the navbar's styling to be attached to the top of the viewport. For example, rounded corners will be removed."),
-    '#default_value' => UIkit::getThemeSetting('navbar_attached', $theme_key),
-  );
-  $form['navigations']['main_navbar']['navbar_margin'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Navbar margin'),
-    '#description' => t('Configure the top and bottom margin to apply to the navbar.'),
-    '#collapsible' => TRUE,
-    '#collapsed' => TRUE,
-  );
-  $form['navigations']['main_navbar']['navbar_margin']['navbar_margin_top'] = array(
-    '#type' => 'select',
-    '#title' => t('Navbar top margin'),
-    '#description' => t('Select the amount of top margin to apply to the navbar.'),
-    '#default_value' => UIkit::getThemeSetting('navbar_margin_top', $theme_key),
-    '#options' => $navbar_margin_top_options,
-  );
-  $form['navigations']['main_navbar']['navbar_margin']['navbar_margin_bottom'] = array(
-    '#type' => 'select',
-    '#title' => t('Navbar bottom margin'),
-    '#description' => t('Select the amount of bottom margin to apply to the navbar.'),
-    '#default_value' => UIkit::getThemeSetting('navbar_margin_bottom', $theme_key),
-    '#options' => $navbar_margin_bottom_options,
   );
   $form['navigations']['local_tasks'] = array(
     '#type' => 'fieldset',
@@ -774,66 +591,8 @@ function uikit_form_system_theme_settings_alter(&$form, &$form_state, $form_id =
   // Group Drupal's default theme settings in the basic settings.
   $form['theme_settings']['#group'] = 'basic_settings';
   $form['logo']['#group'] = 'basic_settings';
-  $form['logo']['#attributes']['class'] = array('form-wrapper', 'vertical-tabs-pane');
+  $form['logo']['#attributes']['class'] = array();
   $form['favicon']['#group'] = 'basic_settings';
-
-  // Set validation callback to call when saving theme settings.
-  $form['#validate'][] = 'uikit_theme_settings_validate';
-}
-
-/**
- * Callback function to validate the Customizer CSS field.
- *
- * When using the Customizer option as a base style, this function validates the
- * file being uploaded. This provides the user with useful information and
- * instructions to be sure the file is uploaded and saved as a managed file.
- * This allows the base theme to load the stylesheet as a managed file from the
- * database.
- */
-function _uikit_customizer_css_file_validate($element, &$form_state) {
-  $theme_key = $form_state['build_info']['args'][0];
-
-  // If referencing an existing file, only allow if there are existing
-  // references. This prevents unmanaged files from being deleted if this
-  // item were to be deleted.
-  $clicked_button = end($form_state['triggering_element']['#parents']);
-
-  if ($clicked_button == 'upload_button') {
-    if ($file = !file_load($element['fid']['#value'])) {
-      form_error($element, t('The file referenced by the !name field does not exist.', array('!name' => $element['#title'])));
-    }
-    else {
-      $fid = $element['fid']['#value'];
-      $file = file_load($fid);
-
-      if (is_object($file)) {
-
-        // Check to make sure that the file is set to be permanent.
-        if ($file->status == 0) {
-          // Update the status.
-          $file->status = FILE_STATUS_PERMANENT;
-
-          // Save the update.
-          file_save($file);
-
-          // Add a reference to prevent warnings.
-          file_usage_add($file, $theme_key, 'theme', 1);
-
-          // Alert the user to save the form to update the theme settings.
-          drupal_set_message(t('@filename successfully uploaded. All changes are stored temporarily. Click Save configuration to make your changes permanent.', array('@filename' => $file->filename)), 'warning');
-        }
-      }
-    }
-  }
-  elseif ($clicked_button == 'remove_button') {
-    // Delete the file and file usage from the database and file system.
-    $file = file_load($element['fid']['#value']);
-    file_usage_delete($file, $theme_key, 'theme', 1);
-    file_delete($file);
-
-    // Alert the user to save the form to update the theme settings.
-    drupal_set_message(t('@filename successfully removed. All changes are stored temporarily. Click Save configuration to make your changes permanent.', array('@filename' => $file->filename)), 'warning');
-  }
 }
 
 /**
@@ -871,22 +630,5 @@ function _uikit_viewport_custom_height_validate($element, &$form_state) {
   }
   elseif ($device_height_ratio && !empty($element['#value']) && !ctype_digit($element['#value'])) {
     form_set_error($element['#name'], t('<b>Custom device height</b> can only contain an integer number, without a decimal point. Please check the value for <b>Custom device height</b> under <b>Mobile settings</b> and save the configuration.'));
-  }
-}
-
-/**
- * Callback function to validate the system theme settings form.
- *
- * When the Customizer option is used as a base style, this function validates
- * a stylesheet was in fact uploaded. This ensures the base theme will still
- * load a UIkit-supplied style until the user fixes the error and uploads a
- * stylesheet.
- */
-function uikit_theme_settings_validate($form, &$form_state) {
-  $base_style = $form_state['values']['base_style'];
-  $customizer_css = $form_state['values']['customizer_css']['fid'];
-
-  if ($base_style == 'customizer-css' && !$customizer_css) {
-    form_set_error('customizer_css', t('Customizer CSS is selected as your base style but you have not uploaded a stylesheet.'));
   }
 }

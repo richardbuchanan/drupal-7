@@ -1,0 +1,14 @@
+name = 'Docs API'
+description = 'Custom UIkit sub-theme for uikit-drupal.com'
+core = 7.x
+base theme = uikit_api
+
+stylesheets[all][] = css/docs_api.css
+stylesheets[all][] = vendor/prism/prism.css
+
+scripts[] = js/docs_api.js
+scripts[] = vendor/prism/prism.js
+
+settings[toggle_logo] = 1
+settings[toggle_name] = 0
+settings[toggle_slogan] = 0
