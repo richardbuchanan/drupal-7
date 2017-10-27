@@ -271,7 +271,7 @@ function uikit_preprocess_form_element(&$variables) {
   $variables['label_text'] = '';
   if ($form_advanced) {
     if (is_object($variables['label']['#title'])) {
-      $label = $variables['label']['#title']->getUntranslatedString();
+      $label = $variables['label']['#title']->__toString();
     }
     else {
       $label = $variables['label']['#title'];
@@ -323,21 +323,7 @@ function uikit_preprocess_links__dropbutton(&$variables) {
   if ($multiple) {
     // Shift the first link off the array to use it as the dropbutton link.
     $dropbutton = array_shift($links);
-
-    if (isset($dropbutton['link'])) {
-      // Add the uk-button class to the dropbutton link.
-      $dropbutton['link']['#options']['attributes']['class'] = ['uk-button'];
-    }
-
     $variables['dropbutton'] = $dropbutton;
-  }
-  else {
-    foreach ($links as $key => $item) {
-      if (isset($item['link'])) {
-        // Links not in the dropbutton group need the uk-button class added.
-        $links[$key]['link']['#options']['attributes']['class'][] = 'uk-button';
-      }
-    }
   }
 
   // Assign new links with the first link shifted off the array to provide the
