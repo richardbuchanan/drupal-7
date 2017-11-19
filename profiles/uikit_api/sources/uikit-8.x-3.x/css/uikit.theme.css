@@ -24,6 +24,13 @@
 }
 
 /**
+ * Progress
+ */
+.progress__track {
+  border: 0;
+}
+
+/**
  * Subnavs.
  */
 .uk-list ul.uk-subnav {
@@ -51,4 +58,29 @@ ul.comment-links>*>a:hover {
  */
 sup > i.form-required {
   font-size: 65%;
+}
+.js input.form-autocomplete,
+.js input.form-autocomplete.ui-autocomplete-loading {
+  background-image: none;
+}
+.uk-form-icon.icon-spin {
+  -webkit-animation: icon-spin 2s infinite linear;
+  animation: icon-spin 2s infinite linear;
+}
+
+@-webkit-keyframes icon-spin {
+  0% {
+    -webkit-transform: rotate(0)
+  }
+  100% {
+    -webkit-transform: rotate(359deg)
+  }
+}
+@keyframes icon-spin {
+  0% {
+    transform: rotate(0)
+  }
+  100% {
+    transform: rotate(359deg)
+  }
 }

@@ -6,6 +6,7 @@
  */
 
 use Drupal\docs\Docs;
+use Drupal\uikit\UIkit;
 
 define('UIKIT_7X_2X_CURRENT_VERSION', '7.x-2.8');
 define('UIKIT_7X_3X_CURRENT_VERSION', '7.x-3.0-rc2');
@@ -484,8 +485,8 @@ function docs_companion_release_cycle_overview() {
  * Page callback for the screenshots page.
  */
 function docs_companion_screenshots() {
-  uikit_get_cdn_asset('lightbox');
-  uikit_get_cdn_asset('slidenav');
+  UIkit::getCdnAsset('lightbox');
+  UIkit::getCdnAsset('slidenav');
   $module = drupal_get_path('module', 'docs_companion');
   $filename = $module . '/includes/screenshots.inc';
   $handle = fopen($filename, "r");

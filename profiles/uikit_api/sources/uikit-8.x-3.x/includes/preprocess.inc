@@ -223,6 +223,19 @@ function uikit_preprocess_comment(&$variables) {
 }
 
 /**
+ * Implements template_preprocess_details().
+ */
+function uikit_preprocess_details(&$variables) {
+  $element = $variables['element'];
+  $group_details = isset($element['#group_details']) && $element['#group_details'];
+  $variables['group_details'] = FALSE;
+
+  if ($group_details) {
+    $variables['group_details'] = TRUE;
+  }
+}
+
+/**
  * Implements hook_preprocess_HOOK() for feed-icon.html.twig.
  *
  * Feed icon on the front page is missing the site name, as reported in
@@ -269,7 +282,7 @@ function uikit_preprocess_form_element(&$variables) {
   // Perform various changes to the variables for advanced form elements.
   $form_advanced = $type == 'checkbox' || $type == 'radio';
   $variables['label_text'] = '';
-  if ($form_advanced) {
+  if ($form_advanced && isset($variables['label']['#title'])) {
     if (is_object($variables['label']['#title'])) {
       $label = $variables['label']['#title']->__toString();
     }
@@ -323,6 +336,16 @@ function uikit_preprocess_links__dropbutton(&$variables) {
   if ($multiple) {
     // Shift the first link off the array to use it as the dropbutton link.
     $dropbutton = array_shift($links);
+
+    if (isset($dropbutton['link']) && $dropbutton['link']) {
+      $dropbutton['link']['#options']['attributes']['class'][] = 'uk-button';
+      $dropbutton['link']['#options']['attributes']['class'][] = 'uk-button-default';
+    }
+    else {
+      $dropbutton['attributes']->addClass('uk-button');
+      $dropbutton['attributes']->addClass('uk-button-default');
+    }
+
     $variables['dropbutton'] = $dropbutton;
   }
 

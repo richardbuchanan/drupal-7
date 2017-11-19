@@ -20,7 +20,12 @@ libraries:
 libraries-extend:
   core/drupal.active-link:
     - uikit/active-link
+  core/drupal.autocomplete:
+    - uikit/autocomplete
+  core/jquery.ui:
+    - uikit/jquery.ui
 
 libraries-override:
-  core/drupal.tabledrag: uikit/tabledrag
+  core/drupal.progress: uikit/progress
+  core/drupal.tableselect: uikit/tableselect
   comment/drupal.comment-new-indicator: uikit/comment-new-indicator

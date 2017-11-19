@@ -1,16 +1,16 @@
 uikit:
   remote: https://getuikit.com/
-  version: 3.0.0-beta.31
+  version: 3.0.0-beta.33
   license:
     name: MIT
     url: https://github.com/uikit/uikit/blob/develop/LICENSE.md
     gpl-compatible: true
   css:
     base:
-      //cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.31/css/uikit.min.css: { type: external, minified: true }
+      //cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.33/css/uikit.min.css: { type: external, minified: true }
   js:
-    //cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.31/js/uikit.min.js: { type: external, minified: true }
-    //cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.31/js/uikit-icons.min.js: { type: external, minified: true }
+    //cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.33/js/uikit.min.js: { type: external, minified: true }
+    //cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.33/js/uikit-icons.min.js: { type: external, minified: true }
   dependencies:
     - core/jquery
     - core/jquery.once
@@ -58,12 +58,32 @@ comment-new-indicator:
     - history/api
     - core/drupal.displace
 
+autocomplete:
+  version: VERSION
+  js:
+    js/uikit.autocomplete.js: {}
+
 dropbutton:
   version: VERSION
   js:
     js/uikit.dropbutton.js: {}
 
-tabledrag:
+jquery.ui:
+  version: VERSION
+  css:
+    theme:
+      css/uikit.jquery.ui.css: {}
+
+progress:
   version: VERSION
   js:
-    js/uikit.tabledrag.js: {}
+    js/uikit.progress.js: {}
+  dependencies:
+    - core/drupal
+    - core/jquery
+    - core/drupalSettings
+
+tableselect:
+  version: VERSION
+  js:
+    js/uikit.tableselect.js: {}
