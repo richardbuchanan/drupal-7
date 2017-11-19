@@ -8,6 +8,8 @@
 // Include the UIkit class definition.
 include_once 'src/UIkit.php';
 
+use Drupal\uikit\UIkit;
+
 /**
  * Loads a UIkit include file.
  *
@@ -18,8 +20,8 @@ include_once 'src/UIkit.php';
  *
  * Examples:
  * @code
- *   // Load includes/uikit_subtheme.admin.inc from the node module.
- *   uikit_load_include('inc', 'uikit_subtheme', 'uikit_subtheme.admin', 'includes');
+ *   // Load includes/theme.inc from the uikit_subtheme theme.
+ *   uikit_load_include('inc', 'uikit_subtheme', 'theme', 'includes');
  *   // Load preprocess.inc from the uikit_subtheme theme.
  *   uikit_load_include('inc', 'uikit_subtheme', 'preprocess');
  * @endcode
@@ -39,6 +41,11 @@ include_once 'src/UIkit.php';
  *
  * @return string
  *   The name of the included file, if successful; FALSE otherwise.
+ *
+ * @deprecated in UIkit 7.x-2.9, will be removed before UIkit 7.x-2.12.
+ *   Use \Drupal\uikit\UIkit::loadIncludeFile();
+ *
+ * @see https://www.drupal.org/node/2893149
  */
 function uikit_load_include($type, $theme, $name = NULL, $sub_directory = '') {
   static $files = array();
@@ -74,7 +81,7 @@ function uikit_load_include($type, $theme, $name = NULL, $sub_directory = '') {
 /**
  * Load UIkit's include files for theme processing.
  */
-uikit_load_include('inc', 'uikit', 'preprocess', 'includes');
-uikit_load_include('inc', 'uikit', 'process', 'includes');
-uikit_load_include('inc', 'uikit', 'theme', 'includes');
-uikit_load_include('inc', 'uikit', 'alter', 'includes');
+UIkit::loadIncludeFile('inc', 'uikit', 'preprocess', 'includes');
+UIkit::loadIncludeFile('inc', 'uikit', 'process', 'includes');
+UIkit::loadIncludeFile('inc', 'uikit', 'theme', 'includes');
+UIkit::loadIncludeFile('inc', 'uikit', 'alter', 'includes');

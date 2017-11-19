@@ -40,7 +40,7 @@ UIkit for Drupal theme.
    Provides additional components and functionality to the UIkit base theme.
    https://www.drupal.org/project/uikit_components
 
- * UIkit Components:
+ * UIkit Admin:
    An administration theme using UIkit as a base theme.
    https://www.drupal.org/project/uikit_admin
 
@@ -49,7 +49,7 @@ INSTALLATION
 ------------
 
  * Install as you would normally install a contributed Drupal theme. See:
-   https://www.drupal.org/getting-started/install-contrib/themes
+   https://www.drupal.org/docs/7/extending-drupal/installing-themes
    for further information.
 
 
