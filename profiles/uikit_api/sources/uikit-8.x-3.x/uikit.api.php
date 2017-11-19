@@ -1,9 +1,47 @@
 <?php
 
 /**
+ * @mainpage UIkit
+ *
+ * Welcome to the UIkit developer's documentation. Newcomers to Drupal 8 theme
+ * development should review the
+ * @link https://api.drupal.org/api/drupal/core%21lib%21Drupal%21Core%21Render%21theme.api.php/group/themeable/8.2.x Default theme implementations @endlink
+ * API reference and
+ * @link https://www.drupal.org/theming Theming and Front End Development with Drupal @endlink
+ * before reading the heavily-documented UIkit topics below.
+ *
+ * @section about_uikit About UIkit
+ * UIkit is a lightweight and modular front-end framework for developing fast
+ * and powerful web interfaces. This API site contains documentation for the
+ * UIkit Drupal 8 theme. To view the official UIkit framework documentation,
+ * please see @link https://getuikit.com/ getuikit.com @endlink.
+ *
+ * UIkit gives you a comprehensive collection of HTML, CSS, and JS components
+ * with configurable options built-in. This collection of small, responsive
+ * components using consistent and conflict-free nameing conventions gives you
+ * fine-grain control over the look and feel without conflicting with other
+ * frameworks.
+ *
+ * With a mobile-first approach UIkit provides a consistent experience from
+ * phones and tablets to desktops, without the need to worry about device sizes
+ * and breakpoints.
+ *
+ * You can try out a demonstration of any release of UIkit by visiting
+ * @link https://simplytest.me/project/uikit/8.x-3.0-rc3 simplytest.me @endlink.
+ *
+ * @section uikit_api UIkit API Topics
+ * Here are some topics to help you get started developing with UIkit 8:
+ * - @link getting_started Getting started with UIkit @endlink
+ * - @link sub_theme Creating a UIkit sub-theme @endlink
+ * - @link theme_settings UIkit theme settings @endlink
+ * - @link uikit_themeable UIkit theme implementations @endlink
+ * - @link /project-maintainers Project maintainers @endlink
+ */
+
+/**
  * @defgroup getting_started Getting started with UIkit
  * @{
- * @lead get_familiar Get familiar with the basic setup and structure of UIkit 8.
+ * @section get_familiar Get familiar with the basic setup and structure of UIkit 8.
  * UIkit 8 does not come with the required UIkit framework files because, in
  * general,
  * @link https://www.drupal.org/node/422996 3rd party libraries and content are forbidden @endlink
@@ -14,8 +52,6 @@
  *
  * This also makes the footprint of our repository smaller. Simply follow the
  * instructions below to get started with using UIkit 8.
- *
- * @divider
  *
  * @section download_uikit Download UIkit
  * First of all you need to download UIkit 8. There are three ways to do this:
@@ -28,33 +64,33 @@
  * article before installing UIkit 8. We only provide the download methods
  * below, not how to install themes.
  *
- * @heading h3 NOTE: Recommended for theme developers only @endheading
- * Since UIkit 8 is still in development, none of the following ways to
- * download UIkit 8 are recommended for use on production sites. UIkit 8 is
- * still considered unstable.
+ * NOTE: Recommended for theme developers only. Since UIkit 8 is still in
+ * development, none of the following ways to download UIkit 8 are recommended
+ * for use on production sites. UIkit 8 is still considered unstable.
  *
- * @subtitle via drupal.org
+ * @subsection via-drupal-org via drupal.org (recommended for site administrators)
  * You can either visit
  * @link https://drupal.org/project/uikit drupal.org @endlink or use one of the
  * links below to download the project directly from drupal.org.
  *
- * @button_large https://ftp.drupal.org/files/projects/uikit-8.x-2.x-dev.tar.gz UIkit 8.x-2.x-dev.tar.gz @endbutton_large @button_large https://ftp.drupal.org/files/projects/uikit-8.x-2.x-dev.zip UIkit 8.x-2.x-dev.zip @endbutton_large
+ * @link https://ftp.drupal.org/files/projects/uikit-8.x-3.0-rc3.tar.gz UIkit 8.x-3.0-rc3.tar.gz @endlink
+ * @link https://ftp.drupal.org/files/projects/uikit-8.x-3.0-rc3.zip UIkit 8.x-3.0-rc3.zip @endlink
  *
- * @subtitle via Drush
+ * @subsection via-drush via Drush (recommended for site administrators comfortable with Drush)
  * Drush is a command line and shell scripting interface for Drupal. Use the
  * following command to download UIkit 8 with Drush.
  *
- * @inlineblockcode drush dl uikit @endinlineblockcode
+ * @code drush dl uikit @endcode
  *
  * Information on installing and using Drush can be found
  * @link http://www.drush.org/en/master/ here @endlink.
  *
- * @subtitle via git.drupal.org
+ * @subsection via-git via git.drupal.org (recomended for theme developers only)
  * Use the following Git command to download the development release from the
  * 8.x-2.x branch. This will ensure you get the latest commited development
  * release.
  *
- * @inlineblockcode git clone --branch 8.x-2.x https://git.drupal.org/project/uikit.git @endinlineblockcode
+ * @code git clone --branch 8.x-2.x https://git.drupal.org/project/uikit.git @endcode
  *
  * The development branch is where all new development resides and not
  * recommended for use on production sites. Work still needs done before a
@@ -62,12 +98,8 @@
  * @link https://www.drupal.org/project/issues/uikit?categories=All issue queue @endlink
  * to report bugs, support or feature requests.
  *
- * @divider
- *
  * @section requirements Requirements
  * There are no requirements to use UIkit 8.
- *
- * @divider
  *
  * Once you have finished implementing UIkit into your Drupal site, take a look
  * look at the @link sub_theme Creating a UIkit sub-theme @endlink to create a
@@ -78,28 +110,24 @@
 /**
  * @defgroup sub_theme Creating a UIkit sub-theme
  * @{
- * @lead subtheme Create a custom theme by inheriting the UIkit 8 base theme.
+ * @section subtheme Create a custom theme by inheriting the UIkit 8 base theme.
  * Creating a custom theme utilizing UIkit is just like creating any other
  * theme. The only difference with creating a UIkit sub-theme is your custom
  * theme will automatically inherit all UIkit offers without having to reinvent
  * the wheel.
  *
- * @subtitle Jump to a section
- * - @ref manually
- * - @ref drush
- *
  * @section manually Creating a sub-theme manually
- * UIkit for Drupal ships with a @inlinecode STARTERKIT @endinlinecode to get
- * you going quickly when creating a UIkit sub-theme. If you're comfortable
- * using the command line, we recommend @ref drush instead.
+ * UIkit for Drupal ships with a STARTERKIT to get you going quickly when
+ * creating a UIkit sub-theme. If you're comfortable using the command line, we
+ * recommend @ref drush instead.
  *
- * To get started you can copy the @inlinecode STARTERKIT @endinlinecode folder
- * in the root directory of UIkit and paste it where you place your themes in
- * your Drupal installation. See
+ * To get started you can copy the STARTERKIT folder in the root directory of
+ * UIkit and paste it where you place your themes in your Drupal installation.
+ * See
  * @link https://www.drupal.org/docs/8/theming-drupal-8/drupal-8-theme-folder-structure Drupal 8 Theme folder structure @endlink
  * to learn where to place your themes in Drupal 8.
  *
- * The folder structure of the @inlinecode STARTERKIT @endinlinecode looks like:
+ * The folder structure of the STARTERKIT looks like:
  * @code
  * |-config
  * |  |-install
@@ -135,17 +163,15 @@
  * |-theme-settings.php
  * @endcode
  *
- * Next you will need to replace all instances of
- * @inlinecode STARTERKIT @endinlinecode in the file names and contents with
- * your theme name. Remember to use the machine name for file names and
- * functions, i.e. @inlinecode theme_name @endinlinecode and a human-readable
- * name elsewhere, i.e. @inlinecode Theme name @endinlinecode.
+ * Next you will need to replace all instances of STARTERKIT in the file names
+ * and contents with your theme name. Remember to use the machine name for file
+ * names and functions, i.e. "theme_name" and a human-readable name elsewhere,
+ * i.e. "Theme name".
  *
  * Finally, one last change is needed in order for Drupal to recognize your new
  * sub-theme. Remove the .ymltmp extension from the theme info file, i.e.
- * @inlinecode theme_name.info.yml @endinlinecode. We included the .ymltmp
- * extension in @inlinecode STARTERKIT @endinlinecode so Drupal would not
- * display @inlinecode STARTERKIT @endinlinecode on the Appearance page.
+ * theme_name.info.yml. We included the .ymltmp extension in STARTERKIT so
+ * Drupal would not display STARTERKIT on the Appearance page.
  *
  * That's it! You are now ready to start making changes to your new sub-theme.
  * More information on customizing UIkit themes can be found in the
@@ -158,21 +184,17 @@
  * UIkit sub-theme, creating the files necessary for you with one simple
  * command.
  *
- * The Drush command @inlinecode uikit-starterkit @endinlinecode (alias
- * @inlinecode uikit-sk @endinlinecode) uses the STARTERKIT now included with
- * the project.
+ * The Drush command uikit-starterkit (alias uikit-sk) uses the STARTERKIT now
+ * included with the project.
  *
- * @heading h4 Use example @endheading
- * @code
- * drush uikit-sk machine_name "Theme name" --path=sites/default/themes --description="Awesome theme description."
- * @endcode
+ * @subsection uikit-sk-example Use example
+ * @code drush uikit-sk machine_name "Theme name" --path=sites/default/themes --description="Awesome theme description." @endcode
  *
- * @inlinecode machine_name @endinlinecode, @inlinecode --path @endinlinecode
- * and @inlinecode --description @endinlinecode are all optional; only the
+ * [machine_name], [--path] and [--description] are all optional; only the
  * theme name (wrapped in double-quotes) is required. Use
- * @inlinecode drush uikit-sk --help @endinlinecode to view more detailed help
- * information. If Drush reports it cannot find the command, be sure to run
- * @inlinecode drush cc drush @endinlinecode to clear Drush's cache.
+ * "drush uikit-sk --help" to view more detailed help information. If Drush
+ * reports it cannot find the command, be sure to run "drush cc drush" to clear
+ * Drush's cache.
  *
  * Once the sub-theme has been created you can begin customizing the sub-theme.
  * The file structure for the sub-theme mirrors the file structure
@@ -181,14 +203,14 @@
  * main difference is where common theme functions are located, which is
  * discussed in the next section.
  *
- * @heading h3 Theme functions @endheading
+ * @subsection theme-functions Theme functions
  * Common themeing functions have been split up and placed into relative include
  * files in order to make it easier to locate a function you wish to
  * edit/create. All theme functions (template_preprocess_HOOK(),
  * hook_HOOK_alter(), theme_HOOK(), etc.) can be found under the includes
  * directory of the sub-theme.
  *
- * @heading h4 Sub-theme includes directory structure: @endheading
+ * @subsection sub-theme-includes Sub-theme includes directory structure:
  * @code
  * |-includes
  * |  |-alter.inc
@@ -234,27 +256,20 @@
 /**
  * @defgroup theme_settings UIkit theme settings
  * @{
- * @lead settings Customizing UIkit 8 from the Drupal administration back-end.
+ * @section settings Customizing UIkit 8 from the Drupal administration back-end.
  * UIkit comes with an extensive variety of theme settings to configure almost
  * all themeable aspects of your Drupal site. This topic provides a brief
  * overview of these theme settings to customize the look of your website.
  *
- * @subtitle Jump to a section
- * - @ref theme_styles
+ * @subsection jump-to-section Jump to a section
  * - @ref layout
  * - @ref navigations
- *
- * @section theme_styles Theme styles
- * UIkit comes with a basic theme and two neat themes to get you started. Here
- * you can select which base style to start with.
- *
- * @divider
  *
  * @section layout Layout
  * Apply our fully responsive fluid grid system and panels, common layout parts
  * like blog articles and comments and useful utility classes.
  *
- * @heading h3 Page Layout @endheading
+ * @subsection page-layout Page Layout
  * Page layout settings are available for standard, tablet and mobile layouts,
  * allowing you to arrange the main content and sidebar regions in various ways.
  * Each layout is independent of the others, giving you many ways to present
@@ -264,47 +279,27 @@
  * - Page Container: Add the .uk-container class to the page container to give
  *   it a max-width and wrap the main content of your website. For large screens
  *   it applies a different max-width.
- * - Page Centering: To center the page container, use the .uk-container-center
- *   class.
  * - Page Margin: Select the margin to add to the top and bottom of the page
  *   container. This is useful, for example, when using the gradient style with
  *   a centered page container and a navbar.
  *
- * @heading h3 Region Layout @endheading
+ * @subsection region-layout Region Layout
  * Change region layout settings on a per region basis. You can currently apply
  * the following two components to each region (more will be added in the
  * future):
- * - Panel
- * - Block
- *
- * @divider
+ * - Card
  *
  * @section navigations Navigations
  * UIkit offers different types of navigations, like navigation bars and side
  * navigations. Use breadcrumbs or a pagination to steer through articles.
  *
- * @heading h3 Navigation Bar @endheading
- * Configure settings for the navigation bar, where the primary and secondary
- * menus reside. Configurable options:
- * - Navbar container: Configure settings for the navigation bar container with
- *   the following options:
- *   - Container: Add the .uk-container class to the navbar container to give it
- *     a max-width and wrap the navbar of your website. For large screens it
- *     applies a different max-width.
- *   - Centering: To center the navbar container, use the .uk-container-center
- *     class.
- *   - Navbar attached: Adds the .uk-navbar-attached class to optimize the
- *     navbar's styling to be attached to the top of the viewport. For example,
- *     rounded corners will be removed.
- * - Navbar margin: Configure the top and bottom margin to apply to the navbar.
- *
- * @heading h3 Local Tasks @endheading
+ * @subsection local-tasks Local Tasks
  * Configure settings for the local tasks menus.
  * - Primary tasks style: Select the style to apply to the primary local tasks.
  * - Secondary tasks style: Select the style to apply to the secondary local
  *   tasks.
  *
- * @heading h3 Breadcrumbs @endheading
+ * @subsection breadcrumbs Breadcrumbs
  * Configure settings for breadcrumb navigation.
  * - Display breadcrumbs: Check this box to display the breadcrumb.
  * - Display home link in breadcrumbs: Check this box to display the home link
@@ -317,7 +312,7 @@
 /**
  * @defgroup uikit_themeable UIkit theme implementations
  * @{
- * @lead implementations Functions and templates for the user interface to be implemented by UIkit 8.
+ * @section implementations Functions and templates for the user interface to be implemented by UIkit 8.
  * Drupal's default template renderer is a simple PHP parsing engine that
  * includes the template and stores the output. The default template engine in
  * Drupal 8 is Twig. This is the template engine utilized by UIkit 8.
