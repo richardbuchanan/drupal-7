@@ -15,37 +15,113 @@ use Drupal\Core\Template\Attribute;
 use Drupal\uikit_components\UIkitComponents;
 
 /**
- * Prepares variables for UIkit Accordion templates.
+ * Prepares variables for UIkit Accordion components.
  *
- * Default template: uk-accordion.html.twig.
+ * Default template: uikit-accordion.html.twig.
  *
  * @param $variables
  *   An associative array containing:
- *   - items: An array of items to be displayed in the accordion. Each item must
- *     contain the #title and #content properties. The #title property can only
- *     be a string, whereas the #content property can contain any valid HTML.
+ *   - element: An associative array containing:
+ *     - #items: An array of items to be displayed in the accordion. Each item
+ *       must contain the title and content properties.
+ *     - #component_options: An array containing the component options to apply
+ *       to the accordion. These must be in the form of "option: value" in order
+ *       to work correctly.
+ *
+ * Usage example:
+ * @code
+ * $form['author'] = array(
+ *   '#type' => 'uikit_accordion',
+ *   '#items' => array(
+ *     array(
+ *       'title' => $this->t('Item 1'),
+ *       'content' => Markup::create($markup),
+ *     ),
+ *     array(
+ *       'title' => $this->t('Item 2'),
+ *       'content' => Markup::create($markup),
+ *     ),
+ *     array(
+ *       'title' => $this->t('Item 3'),
+ *       'content' => Markup::create($markup),
+ *     ),
+ *   ),
+ *   '#component_options' => array(
+ *     'multiple: false',
+ *     'duration: 500',
+ *   ),
+ * );
+ * @endcode
+ *
+ * @see \Drupal\uikit_components\Element\UIkitAccordion
+ * @see https://getuikit.com/docs/accordion#component-options
  */
-function template_preprocess_uk_accordion(&$variables) {
-  $attributes = new Attribute();
-  $attributes->addClass('uk-accordion');
-  $attributes->setAttribute('uk-accordion', '');
-  $variables['attributes'] = $attributes;
+function template_preprocess_uikit_accordion(&$variables) {
+  $element = $variables['element'];
+
+  // Set the items variable, if items is not empty.
+  if (!empty($element['#items'])) {
+    $variables['items'] = $element['#items'];
+  }
+
+  // Prepare the component options for the accordion.
+  $component_options = '';
+  if (!empty($element['#component_options'])) {
+    $component_options = implode('; ', $element['#component_options']);
+  }
+
+  // Set the attributes for the accordion outer element.
+  $variables['attributes'] = new Attribute();
+  $variables['attributes']->addClass('uk-accordion');
+  $variables['attributes']->setAttribute('uk-accordion', $component_options);
 }
 
 /**
- * Prrpares variables for UIkit Article templates.
+ * Prepares variables for UIkit Article templates.
  *
- * Default template: uk-article.html.twig.
+ * Default template: uikit-article.html.twig.
  *
- * @param $variables:
+ * @param $variables
  *   An associative array containing:
-  *   - title (optional): The title of the article.
-  *   - meta (optional): The metadata of the article, such as the author and
-  *     created date.
-  *   - lead (optional): The leading paragraph of the article.
-  *   - content: The content of the article.
+ *   - element: An associative array containing:
+ *     - #title (optional): The title of the article.
+ *     - #meta (optional): The metadata of the article, such as the author and
+ *       created date.
+ *     - #lead (optional): The leading paragraph of the article.
+ *     - #content: The content of the article.
+ *
+ * Usage example:
+ * @code
+ * $build['article'] = [
+ *   '#type' => 'uikit_article',
+ *   '#title' => $this->t('Heading'),
+ *   '#meta' => Markup::create($meta),
+ *   '#lead' => $this->t('Lorem ipsum dolor sit amet'),
+ *   '#content' => Markup::create($content),
+ * ];
+ * @endcode
+ *
+ * @see \Drupal\uikit_components\Element\UIkitArticle
+ * @see https://getuikit.com/docs/article
  */
-function template_preprocess_uk_article(&$variables) {
+function template_preprocess_uikit_article(&$variables) {
+  $element = $variables['element'];
+
+  // Set the title, meta, lead and content variables, if they are not empty.
+  if (!empty($element['#title'])) {
+    $variables['title'] = $element['#title'];
+  }
+  if (!empty($element['#meta'])) {
+    $variables['meta'] = $element['#meta'];
+  }
+  if (!empty($element['#lead'])) {
+    $variables['lead'] = $element['#lead'];
+  }
+  if (!empty($element['#content'])) {
+    $variables['content'] = $element['#content'];
+  }
+
+  // Set the attributes for the article outer element.
   $attributes = new Attribute();
   $attributes->addClass('uk-article');
   $variables['attributes'] = $attributes;
@@ -54,35 +130,176 @@ function template_preprocess_uk_article(&$variables) {
 /**
  * Prrpares variables for UIkit Badge templates.
  *
- * Default template: uk-badge.html.twig.
+ * Default template: uikit-badge.html.twig.
  *
  * @param $variables:
  *   An associative array containing:
- *   - content: The content of the article.
+ *   - element: An associative array containing:
+ *     - #value: The value of the article.
+ *
+ * Usage example:
+ * @code
+ * $build['badge'] = [
+ *   '#type' => 'uikit_badge',
+ *   '#value' => '100',
+ * ];
+ * @endcode
  */
-function template_preprocess_uk_badge(&$variables) {
+function template_preprocess_uikit_badge(&$variables) {
+  $element = $variables['element'];
+
+  // Set the attributes for the badge.
   $attributes = new Attribute();
   $attributes->addClass('uk-badge');
+  $variables['attributes'] = $attributes;
+
+  // Set the value for the badge, if not empty.
+  if (!empty($element['#value'])) {
+    $variables['value'] = $element['#value'];
+  }
+}
+
+/**
+ * Prepares variables for UIkit Article templates.
+ *
+ * Default template: uikit-card.html.twig.
+ *
+ * @param $variables
+ *   An associative array containing:
+ *   - element: An associative array containing:
+ *     - #content: The content of the article.
+ *     - #title (optional): The title of the card.
+ *     - #style (optional): The style of the card. Defaults to "default".
+ *     - #hover (optional): Add hover effect to card. Defaults to FALSE.
+ *     - #size (optional): The padding to apply to the card.
+ *     - #badge (optional): The badge to apply to the card.
+ *     - #header (optional): The heading to add to the card.
+ *     - #footer (optional): The footer to add to the card.
+ *     - #media (optional): An associative array containing:
+ *       - alignment: Where the media is aligned in the card. Possible values
+ *         are top or bottom. Left and right alignment is not currently
+ *         available.
+ *       - image_url: The URL for the image to display in the card.
+ *
+ * If #media is set, #header and #footer will be ignored. This prevents the
+ * layout from being disrupted when #media is set. Since left and right media
+ * layouts are too complex, left and right alignment values are currently
+ * unavailable. See the documentation link below for more information.
+ *
+ * Usage example:
+ * @code
+ * $build['card'] = [
+ *   '#type' => 'uikit_card',
+ *   '#title' => $this->t('Title'),
+ *   '#content' => Markup::create($content),
+ *   '#style' => 'default',
+ *   '#hover' => TRUE,
+ *   '#size' => 'large',
+ *   '#badge' => $this->t('Badge'),
+ *   '#header' => Markup::create($header),
+ *   '#footer' => Markup::create($footer),
+ * ];
+ * @endcode
+ *
+ * @see \Drupal\uikit_components\Element\UIkitCard
+ * @see https://getuikit.com/docs/card
+ */
+function template_preprocess_uikit_card(&$variables) {
+  $element = $variables['element'];
+
+  // Set the title, content, badge, header, footer and media variables, if they
+  // are not empty.
+  if (!empty($element['#title'])) {
+    $variables['title'] = $element['#title'];
+  }
+  if (!empty($element['#content'])) {
+    $variables['content'] = $element['#content'];
+  }
+  if (!empty($element['#badge'])) {
+    $variables['badge'] = $element['#badge'];
+  }
+  if (!empty($element['#header'])) {
+    $variables['header'] = $element['#header'];
+  }
+  if (!empty($element['#footer'])) {
+    $variables['footer'] = $element['#footer'];
+  }
+  if (!empty($element['#media'])) {
+    $variables['media'] = $element['#media'];
+  }
+
+  // Set the attributes for the card.
+  $attributes = new Attribute();
+  $attributes->addClass('uk-card');
+  $attributes->addClass('uk-card-' . $element['#style']);
+
+  if ($element['#hover']) {
+    $attributes->addClass('uk-card-hover');
+  }
+  if (!empty($element['#size'])) {
+    $attributes->addClass('uk-card-' . $element['#size']);
+  }
+  if (!empty($element['#badge'])) {
+    $variables['badge'] = $element['#badge'];
+  }
+
   $variables['attributes'] = $attributes;
 }
 
 /**
  * Prepares variables for UIkit Breadcrumb templates.
  *
- * Default template: uk-breadcrumb.html.twig.
+ * Default template: uikit-breadcrumb.html.twig.
  *
  * @param $variables
  *   An associative array containing:
- *   - items: An array of items to be displayed in the breadcrumb. Each item
- *     must contain the #text property and can optionally contain the #url
- *     property to display the item as a link.
+ *   - element: An associative array containing:
+ *     - #items: An array of items to be displayed in the breadcrumb. Each item
+ *       must contain the text property and can optionally contain the url
+ *       property to display the item as a link. Each item can also contain a
+ *       disabled property to set the item as disabled using 'disabled' => TRUE.
+ *
+ * Usage example:
+ * @code
+ * $build['breadcrumb'] = [
+ *   '#type' => 'uikit_breadcrumb',
+ *   '#items' => [
+ *     [
+ *       'text' => t('Item 1'),
+ *       'url' => Url::fromRoute('<front>'),
+ *     ],
+ *     [
+ *       'text' => t('Item 2'),
+ *       'url' => Url::fromRoute($route_two),
+ *     ],
+ *     [
+ *       'text' => t('Disabled'),
+ *       'url' => Url::fromRoute($route_three),
+ *       'disabled' => TRUE,
+ *     ],
+ *     [
+ *       'text' => t('Active'),
+ *     ],
+ *   ],
+ * ];
+ * @endcode
+ *
+ * @see \Drupal\uikit_components\Element\UIkitBreadcrumb
+ * @see https://getuikit.com/docs/breadcrumb
  */
-function template_preprocess_uk_breadcrumb(&$variables) {
+function template_preprocess_uikit_breadcrumb(&$variables) {
+  $element = $variables['element'];
+
+  // Set the attributes for the breadcrumb.
   $attributes = new Attribute();
   $attributes->addClass('uk-breadcrumb');
   $variables['attributes'] = $attributes;
 
+  // Set the items property.
+  $variables['items'] = $element['#items'];
+
   foreach ($variables['items'] as $key => $item) {
+    // Set the item attributes.
     $item_attributes = new Attribute();
 
     if (isset($item['disabled']) && $item['disabled']) {
@@ -91,58 +308,6 @@ function template_preprocess_uk_breadcrumb(&$variables) {
 
     $variables['items'][$key]['attributes'] = $item_attributes;
   }
-}
-
-/**
- * Prepares variables for UIkit Card templates.
- *
- * Default template: uk-card.html.twig.
- *
- * @param $variables
- *   An associative array containing:
- *   - title (optional): The title to display in the card.
- *   - content: The content of the card.
- *   - modifiers: An associative array of UIkit card modifiers containing:
- *     - style (optional): Adds a specific style to cards. Can be one of
- *       following:
- *       - default (Default): Creates a visually styled box.
- *       - primary: Emphasize the card with a primary color.
- *       - secondary: Gives the card a secondary background color.
- *     - hover (optional): Set to TRUE to create a hover effect on the card.
- *     - size (optional): Applies different size modifiers to cards that will
- *       decrease or increase the padding. Can be one of the following:
- *       - small: Applies a smaller padding.
- *       - large: Applies a larger padding.
- *   - header (optional): Content to display above the default card body.
- *   - footer (optional): Content to display below the default card body.
- */
-function template_preprocess_uk_card(&$variables) {
-  $modifiers = $variables['modifiers'];
-  $style = $modifiers['style'];
-  $hover = isset($modifiers['hover']) && $modifiers['hover'];
-  $size = isset($modifiers['size']) ? $modifiers['size'] : FALSE;
-
-  $attributes = new Attribute($variables['attributes']);
-  $body_attributes = new Attribute();
-  $attributes->addClass('uk-card');
-  $attributes->addClass("uk-card-$style");
-
-  if ($variables['header'] || $variables['footer']) {
-    $body_attributes->addClass('uk-card-body');
-  }
-  else {
-    $attributes->addClass('uk-card-body');
-  }
-
-  if ($hover) {
-    $attributes->addClass('uk-card-hover');
-  }
-  if ($size) {
-    $attributes->addClass("uk-card-$size");
-  }
-
-  $variables['attributes'] = $attributes;
-  $variables['body_attributes'] = $body_attributes;
 }
 
 /**
@@ -178,9 +343,9 @@ function template_preprocess_uk_countdown(&$variables) {
 }
 
 /**
- * Implements template_preprocess_HOOK() for menu--uk-list.html.twig.
+ * Implements template_preprocess_HOOK() for menu--uikit-list.html.twig.
  */
-function template_preprocess_menu__uk_list(&$variables) {
+function template_preprocess_menu__uikit_list(&$variables) {
   $menu_name = $variables['menu_name'];
 
   $menu_style = UIkitComponents::getMenuStyle($menu_name);
@@ -213,9 +378,9 @@ function template_preprocess_menu__uk_list(&$variables) {
 }
 
 /**
- * Implements template_preprocess_HOOK() for menu--uk-nav.html.twig.
+ * Implements template_preprocess_HOOK() for menu--uikit-nav.html.twig.
  */
-function template_preprocess_menu__uk_nav(&$variables) {
+function template_preprocess_menu__uikit_nav(&$variables) {
   $menu_name = $variables['menu_name'];
 
   $menu_style = UIkitComponents::getMenuStyle($menu_name);
@@ -257,9 +422,9 @@ function template_preprocess_menu__uk_nav(&$variables) {
 }
 
 /**
- * Implements template_preprocess_HOOK() for menu--uk-subnav.html.twig.
+ * Implements template_preprocess_HOOK() for menu--uikit-subnav.html.twig.
  */
-function template_preprocess_menu__uk_subnav(&$variables) {
+function template_preprocess_menu__uikit_subnav(&$variables) {
   $menu_name = $variables['menu_name'];
 
   $menu_style = UIkitComponents::getMenuStyle($menu_name);

@@ -16,46 +16,25 @@ function uikit_components_theme($existing, $type, $theme, $path) {
 
   return [
     // UIkit framework component theme implementations.
-    'uk_accordion' => [
-      'variables' => [
-        'items' => NULL,
-      ],
-      'path' => "$path/dataset",
+    'uikit_accordion' => [
+      'render element' => 'element',
+      'path' => "$path/components",
     ],
-    'uk_article' => [
-      'variables' => [
-        'title' => NULL,
-        'meta' => NULL,
-        'lead' => NULL,
-        'content' => NULL,
-      ],
-      'path' => "$path/dataset",
+    'uikit_article' => [
+      'render element' => 'element',
+      'path' => "$path/components",
     ],
-    'uk_badge' => [
-      'variables' => [
-        'items' => NULL,
-      ],
-      'path' => "$path/dataset",
+    'uikit_badge' => [
+      'render element' => 'element',
+      'path' => "$path/components",
     ],
-    'uk_breadcrumb' => [
-      'variables' => [
-        'items' => NULL,
-      ],
-      'path' => "$path/navigation",
+    'uikit_card' => [
+      'render element' => 'element',
+      'path' => "$path/components",
     ],
-    'uk_card' => [
-      'variables' => [
-        'title' => NULL,
-        'content' => NULL,
-        'modifiers' => [
-          'style' => 'default',
-          'hover' => FALSE,
-          'size' => NULL,
-        ],
-        'header' => NULL,
-        'footer' => NULL,
-      ],
-      'path' => "$path/dataset",
+    'uikit_breadcrumb' => [
+      'render element' => 'element',
+      'path' => "$path/components",
     ],
     'uk_countdown' => [
       'variables' => [
@@ -67,17 +46,17 @@ function uikit_components_theme($existing, $type, $theme, $path) {
     ],
 
     // Theme implementations which extend an existing core theme implementation.
-    'menu__uk_list' => [
+    'menu__uikit_list' => [
       'path' => "$path/navigation",
-      'template' => 'menu--uk-list',
+      'template' => 'menu--uikit-list',
     ],
-    'menu__uk_nav' => [
+    'menu__uikit_nav' => [
       'path' => "$path/navigation",
-      'template' => 'menu--uk-nav',
+      'template' => 'menu--uikit-nav',
     ],
-    'menu__uk_subnav' => [
+    'menu__uikit_subnav' => [
       'path' => "$path/navigation",
-      'template' => 'menu--uk-subnav',
+      'template' => 'menu--uikit-subnav',
     ],
   ];
 }
