@@ -70,6 +70,15 @@ function uikit_theme_suggestions_container_alter(array &$suggestions, array $var
 }
 
 /**
+ * Implements hook_theme_suggestions_HOOK_alter() for details templates.
+ */
+function uikit_theme_suggestions_details_alter(array &$suggestions, array $variables) {
+  if (isset($variables['element']['#group']) && $variables['element']['#group']) {
+    $suggestions[] = 'details__grouped';
+  }
+}
+
+/**
  * Implements hook_theme_suggestions_HOOK_alter() for form element templates.
  */
 function uikit_theme_suggestions_form_element_alter(array &$suggestions, array $variables) {

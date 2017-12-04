@@ -282,14 +282,8 @@ function uikit_preprocess_form_element(&$variables) {
   // Perform various changes to the variables for advanced form elements.
   $form_advanced = $type == 'checkbox' || $type == 'radio';
   $variables['label_text'] = '';
-  if ($form_advanced && isset($variables['label']['#title'])) {
-    if (is_object($variables['label']['#title'])) {
-      $label = $variables['label']['#title']->__toString();
-    }
-    else {
-      $label = $variables['label']['#title'];
-    }
-    $variables['label_text'] = t('@label', ['@label' => $label]);
+  if ($form_advanced && isset($variables['label']['#title']) && $variables['label']['#title'] != '') {
+    $variables['label_text'] = ['#markup' => $variables['label']['#title']];
   }
 }
 
@@ -298,13 +292,76 @@ function uikit_preprocess_form_element(&$variables) {
  */
 function uikit_preprocess_input(&$variables) {
   $element = $variables['element'];
-  $errors = FALSE;
 
   if (isset($element['#parents']) && isset($element['#errors']) && !empty($element['#validated'])) {
-    $errors = TRUE;
+    $variables['attributes']['class'][] = 'uk-form-danger';
   }
 
-  $variables['errors'] = $errors;
+  switch ($element['#type']) {
+    case 'email':
+    case 'number':
+    case 'password':
+    case 'search':
+    case 'tel':
+    case 'textfield':
+    case 'url':
+      $variables['attributes']['class'][] = 'uk-input';
+      break;
+
+    case 'checkbox':
+      $variables['attributes']['class'][] = 'uk-checkbox';
+      break;
+
+    case 'date':
+      $variables['attributes']['class'][] = 'uk-input';
+      $variables['attributes']['class'][] = 'uk-form-small';
+      $variables['attributes']['class'][] = 'uk-form-width-medium';
+      break;
+
+    case 'hidden':
+      $variables['attributes']['class'][] = 'uk-margin';
+      break;
+
+    case 'radio':
+      $variables['attributes']['class'][] = 'uk-radio';
+     break;
+
+    case 'range':
+      $variables['attributes']['class'][] = 'uk-range';
+      break;
+
+    case 'button':
+    case 'submit':
+      $variables['attributes']['class'][] = 'uk-button';
+      break;
+  }
+
+  if ($element['#type'] == 'button' || $element['#type'] == 'submit') {
+    if (is_object($variables['element']['#value'])) {
+      $value = $variables['element']['#value']->__toString();
+    }
+    else {
+      $value = $variables['element']['#value'];
+    }
+
+    switch (TRUE) {
+      case preg_match('/Apply.*/', $value):
+      case preg_match('/Filter.*/', $value):
+      case preg_match('/Generate.*/', $value):
+      case preg_match('/Install.*/', $value):
+      case preg_match('/Save.*/', $value):
+        $variables['attributes']['class'][] = 'uk-button-primary';
+        break;
+
+      case preg_match('/Delete.*/', $value):
+      case preg_match('/Remove.*/', $value):
+        $variables['attributes']['class'][] = 'uk-button-danger';
+        break;
+
+      default:
+        $variables['attributes']['class'][] = 'uk-button-default';
+    }
+  }
 }
 
 /**
@@ -323,35 +380,6 @@ function uikit_preprocess_links__comment(&$variables) {
       $variables['links'][$key]['link']['attributes']->addClass('uk-link-muted');
     }
   }
-}
-
-/**
- * Implements template_preprocess_links() for links--dropbutton.html.twig.
- */
-function uikit_preprocess_links__dropbutton(&$variables) {
-  $links = $variables['links'];
-  $multiple = count($links) > 1 ? TRUE : FALSE;
-  $variables['multiple'] = $multiple;
-
-  if ($multiple) {
-    // Shift the first link off the array to use it as the dropbutton link.
-    $dropbutton = array_shift($links);
-
-    if (isset($dropbutton['link']) && $dropbutton['link']) {
-      $dropbutton['link']['#options']['attributes']['class'][] = 'uk-button';
-      $dropbutton['link']['#options']['attributes']['class'][] = 'uk-button-default';
-    }
-    else {
-      $dropbutton['attributes']->addClass('uk-button');
-      $dropbutton['attributes']->addClass('uk-button-default');
-    }
-
-    $variables['dropbutton'] = $dropbutton;
-  }
-
-  // Assign new links with the first link shifted off the array to provide the
-  // dropdown menu links.
-  $variables['links'] = $links;
 }
 
 /**

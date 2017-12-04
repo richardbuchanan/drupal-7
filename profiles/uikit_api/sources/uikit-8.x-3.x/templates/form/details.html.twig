@@ -16,25 +16,22 @@
  * @ingroup uikit_themeable
  */
 #}
-{%
-  set classes = [
-    group_details ? 'uk-padding-small' : 'uk-margin',
-  ]
-%}
-<details{{ attributes.addClass(classes) }}>
-  {%- if title -%}
-    <summary{{ summary_attributes }}>{{ title }}</summary>
-  {%- endif -%}
+<ul{{ attributes }} uk-accordion>
+  <li>
+    {%- if title -%}
+      <h3{{ summary_attributes.addClass('uk-accordion-title') }}>{{ title }}</h3>
+    {%- endif -%}
 
-  <div>
-    {% if errors %}
-      <div>
-        {{ errors }}
-      </div>
-    {% endif %}
+    <div class="uk-accordion-content">
+      {% if errors %}
+        <div>
+          {{ errors }}
+        </div>
+      {% endif %}
 
-    {{ description }}
-    {{ children }}
-    {{ value }}
-  </div>
-</details>
+      {{ description }}
+      {{ children }}
+      {{ value }}
+    </div>
+  </li>
+</ul>

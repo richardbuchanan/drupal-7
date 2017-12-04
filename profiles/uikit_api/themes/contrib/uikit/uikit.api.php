@@ -2,6 +2,7 @@
 
 /**
  * @mainpage UIkit
+ *
  * Welcome to the UIkit developer's documentation. Newcomers to Drupal 7 theme
  * development should review the
  * @link https://api.drupal.org/api/drupal/modules%21system%21theme.api.php/group/themeable/7.x Default theme implementations @endlink
@@ -25,8 +26,6 @@
  * phones and tablets to desktops, without the need to worry about device sizes
  * and breakpoints.
  *
- * This site uses the 7.x-2.x branch of UIkit as a base theme. The footer
- * contains the current version and release date of the UIkit theme being used.
  * You can try out a demonstration of any release of UIkit by visiting
  * @link https://simplytest.me/project/uikit/7.x-2.8 simplytest.me @endlink.
  *

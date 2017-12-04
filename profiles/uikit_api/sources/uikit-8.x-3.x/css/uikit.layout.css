@@ -356,3 +356,14 @@
     left: -90%;
   }
 }
+
+.form--inline .form-item {
+  float: left;
+  margin-right: 0.5em;
+}
+.form--inline .form-item+.uk-margin {
+  margin-top: 0 !important;
+}
+.form--inline .form-item+.uk-margin:last-child {
+  margin-bottom: 0 !important;
+}

@@ -105,18 +105,16 @@
 
   Drupal.behaviors.externalLinks = {
     attach: function () {
-      if (location.hostname === 'uikit-drupal.com') {
-        $('a').each(function () {
-          if (this.hostname !== location.host) {
-            // Make sure all external links open in a new tab.
-            $(this).prop('target', '_blank');
+      $('a').each(function () {
+        if (this.hostname !== location.host) {
+          // Make sure all external links open in a new tab.
+          $(this).prop('target', '_blank');
 
-            if (/drupal/i.test(this.hostname)) {
-              $(this).addClass('drupal-api');
-            }
+          if (/drupal/i.test(this.hostname)) {
+            $(this).addClass('drupal-api');
           }
-        });
-      }
+        }
+      });
     }
   };
 
@@ -133,34 +131,28 @@
     }
   };
 
-  Drupal.behaviors.docsSVGFallback = {
-    attach: function () {
-      if (!Modernizr.svg) {
-        $('img[src*="svg"]').attr('src', function() {
-          return $(this).attr('src').replace('.svg', '.png');
-        });
-      }
-    }
-  };
-
   Drupal.behaviors.selectCode = {
     attach: function () {
-      $('pre>code').click(function() {
-        $(this).select();
+      $('pre>code').click(function(e) {
+        if (!(typeof $(e.target).attr('href') !== typeof undefined && $(e.target).attr('href') !== false)) {
+          $(this).select();
 
-        var text = this,
-          range, selection;
+          var text = this,
+            range, selection;
 
-        if (document.body.createTextRange) {
-          range = document.body.createTextRange();
-          range.moveToElementText(text);
-          range.select();
-        } else if (window.getSelection) {
-          selection = window.getSelection();
-          range = document.createRange();
-          range.selectNodeContents(text);
-          selection.removeAllRanges();
-          selection.addRange(range);
+          if (document.body.createTextRange) {
+            range = document.body.createTextRange();
+            range.moveToElementText(text);
+            range.select();
+          }
+          else
+            if (window.getSelection) {
+              selection = window.getSelection();
+              range = document.createRange();
+              range.selectNodeContents(text);
+              selection.removeAllRanges();
+              selection.addRange(range);
+            }
         }
       });
     }

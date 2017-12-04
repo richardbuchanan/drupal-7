@@ -26,7 +26,7 @@ include drupal_get_path('theme', 'docs') . '/includes/alter.inc';
  *   'classes', etc.) and the values are the count of how many there are in
  *   that listing for the given branch.
  */
-function api_listing_counts($branch) {
+/*function api_listing_counts($branch) {
   static $cached_counts = array();
 
   // Check the cache.
@@ -114,4 +114,4 @@ function api_listing_counts($branch) {
 
   $cached_counts[$key] = $return;
   return $return;
-}
+}*/

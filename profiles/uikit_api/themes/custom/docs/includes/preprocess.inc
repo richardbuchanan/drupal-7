@@ -225,24 +225,6 @@ function docs_preprocess_node(&$variables) {
 }
 
 /**
- * Implements template_preprocess_comment().
- */
-function docs_preprocess_comment(&$variables) {
-  if (isset($variables['theme_hook_suggestion']) && $variables['theme_hook_suggestion'] == 'advanced_forum_post') {
-    $account = $variables['account'];
-
-    $comment = $variables['elements']['#comment'];
-    $id = $variables['id'] + 1;
-    $uri = entity_uri('comment', $comment);
-    $uri['options'] += array('attributes' => array('class' => array('permalink'), 'rel' => 'bookmark'));
-
-    $variables['author_link'] = theme('username', array('account' => $account));
-    $variables['classes_array'][] = 'uk-margin-bottom';
-    $variables['permalink'] = l(t('#@id', array('@id' => $id)), $uri['path'], $uri['options']);
-  }
-}
-
-/**
  * Implements template_preprocess_comment_wrapper().
  */
 function docs_preprocess_comment_wrapper(&$variables) {
@@ -313,24 +295,6 @@ function docs_preprocess_user_profile(&$variables) {
   foreach (element_children($variables['elements']) as $key) {
     $variables['user_profile'][$key] = $variables['elements'][$key];
   }
-}
-
-/**
- * Implements template_preprocess_views_view().
- */
-function docs_preprocess_views_view__advanced_forum_topic_list(&$variables) {
-  $variables['forum_tools'] = 0;
-  $tid = $variables['view']->query->where[0]['conditions'][0]['value'];
-  $mark_as_read = array();
-  advanced_forum_get_mark_read_link($tid, $mark_as_read);
-  if (isset($mark_as_read['mark-read'])) {
-    $variables['forum_tools'] = l($mark_as_read['mark-read']['title'], $mark_as_read['mark-read']['href']);
-  }
-
-  $path = explode('/', current_path());
-  $tid = $path[1];
-  $forum = taxonomy_term_load($tid);
-  $variables['parent_forum'] = count($forum->forums);
 }
 
 /**
@@ -463,66 +427,6 @@ function docs_preprocess_forum_list(&$variables) {
 
         $item->subforums = $subforums;
       }
-    }
-  }
-}
-
-/**
- * Implements hook_preprocess_HOOK().
- */
-function docs_preprocess_forum_submitted(&$variables) {
-  if (isset($variables['topic']->node_title)) {
-    $nid = $variables['topic']->nid;
-    $node = new stdClass();
-    $node->nid = $nid;
-    $node->type = $variables['topic']->type;
-
-    $comment_count = db_query('SELECT COUNT(cid) FROM {comment} WHERE nid = :nid', array(':nid' => $nid))->fetchField();
-    $new_replies = advanced_forum_reply_num_new($nid);
-    $query = advanced_forum_page_first_new($comment_count, $new_replies, $node);
-
-    $title_length = variable_get('advanced_forum_topic_title_length', 15);
-    if ($title_length == 0) {
-      $short_topic_title = $variables['topic']->node_title;
-    }
-    else {
-      $short_topic_title = truncate_utf8($variables['topic']->node_title, $title_length, TRUE, TRUE);
-    }
-
-    $fragment = ($new_replies) ? 'new' : NULL;
-
-    $variables['topic_link'] = l($short_topic_title, "node/$nid", array(
-      'query' => $query,
-      'fragment' => $fragment,
-      'attributes' => array(
-        'title' => t('@title', array('@title' => $variables['topic']->node_title)),
-      ),
-    ));
-  }
-}
-
-/**
- * Implements hook_preprocess_HOOK().
- */
-function docs_preprocess_forums(&$variables) {
-  $variables['latest_users'] = 0;
-  $latest_users = advanced_forum_statistics_latest_users();
-  if (empty($variables['parents'])) {
-    $variables['latest_users'] = implode(', ', $latest_users);
-  }
-
-  $variables['forum_legend'] = 0;
-  if (!empty($variables['forums'])) {
-    $variables['forum_legend'] = theme('advanced_forum_forum_legend');
-  }
-
-  $variables['forum_tools'] = 0;
-
-  if (!$variables['tid']) {
-    $mark_as_read = array();
-    advanced_forum_get_mark_read_link($variables['tid'], $mark_as_read);
-    if (isset($mark_as_read['mark-read'])) {
-      $variables['forum_tools'] = l($mark_as_read['mark-read']['title'], $mark_as_read['mark-read']['href']);
     }
   }
 }
