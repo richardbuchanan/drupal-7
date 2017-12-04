@@ -304,10 +304,12 @@ function docs_preprocess_views_view_field(&$variables) {
   $display = $variables['view']->current_display;
   $block_files = $display == 'block_files';
   $block_listing = $display == 'block_listing';
+  $block_services = $display == 'block_services';
   $block_items_in_group = 'block_items_in_group';
 
-  if (($block_files || $block_listing || $block_items_in_group) && !empty($variables['output'])) {
+  if (($block_files || $block_listing || $block_items_in_group || $block_services) && !empty($variables['output'])) {
     $output = $variables['output'];
+    $output = str_replace('./<wbr />', '<wbr />', $output);
     $output = str_replace('sources/<wbr />uikit-7.x-2.x/<wbr />', '', $output);
     $output = str_replace('sources/<wbr />uikit-7.x-3.x/<wbr />', '', $output);
     $output = str_replace('sources/<wbr />uikit-8.x-2.x/<wbr />', '', $output);

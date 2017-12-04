@@ -43,9 +43,15 @@
 
   function tableDoubleScroll() {
     var overflowContainer = $('.uk-overflow-container');
+    var overflowContainerHeight = overflowContainer.outerHeight(false);
+    var windowHeight = $(window).outerHeight(false);
 
-    overflowContainer.doubleScroll();
-    $('.doubleScroll-scroll').css('width', overflowContainer.find('table:not(.sticky-header)').width());
+    if (overflowContainerHeight > windowHeight) {
+      overflowContainer.doubleScroll();
+      $('.doubleScroll-scroll')
+        .css('width', overflowContainer.find('table:not(.sticky-header)')
+          .width());
+    }
   }
 
   function bodyMinHeight() {
