@@ -8,10 +8,10 @@
 use Drupal\docs\Docs;
 use Drupal\uikit\UIkit;
 
-define('UIKIT_7X_2X_CURRENT_VERSION', '7.x-2.9');
-define('UIKIT_7X_3X_CURRENT_VERSION', '7.x-3.0-rc3');
-define('UIKIT_8X_2X_CURRENT_VERSION', '8.x-2.12');
-define('UIKIT_8X_3X_CURRENT_VERSION', '8.x-3.0-rc3');
+define('UIKIT_7X_2X_CURRENT_VERSION', '7.x-2.10');
+define('UIKIT_7X_3X_CURRENT_VERSION', '7.x-3.0');
+define('UIKIT_8X_2X_CURRENT_VERSION', '8.x-2.13');
+define('UIKIT_8X_3X_CURRENT_VERSION', '8.x-3.0');
 
 /**
  * Implements hook_menu().
