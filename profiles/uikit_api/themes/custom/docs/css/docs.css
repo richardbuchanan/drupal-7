@@ -429,6 +429,10 @@ html.js .ctools-collapsible-container .ctools-collapsible-handle {
   font-size: 26px;
   line-height: 23px;
 }
+ol#api-alternatives,
+ol#api-alternatives > li {
+  padding-left: 0;
+}
 #api-alternatives > li > * {
   color: #D05;
 }

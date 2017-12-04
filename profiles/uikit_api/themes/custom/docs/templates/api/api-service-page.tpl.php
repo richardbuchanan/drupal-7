@@ -35,45 +35,41 @@
 
 <div id="docs-api">
   <?php if (!empty($alternatives)): ?>
-    <div id="docs-api-alternatives">
+    <div id="docs-api-alternatives" class="uk-margin-small-bottom">
       <?php print $alternatives; ?>
     </div>
-    <hr>
   <?php endif; ?>
 
   <?php if ($class): ?>
-    <div id="docs-api-class">
+    <div id="docs-api-class" class="uk-margin-bottom">
       <a href="#class" class="uk-link-muted docs-link-anchor">
         <h3 id="class"><?php print t('Class'); ?><i class="uk-icon uk-icon-link uk-text-muted"></i></h3>
       </a>
       <?php print $class; ?>
     </div>
-    <hr>
   <?php endif; ?>
 
   <?php if ($tags): ?>
-    <div id="docs-api-tags">
+    <div id="docs-api-tags" class="uk-margin-bottom">
       <a href="#class" class="uk-link-muted docs-link-anchor">
         <h3 id="tags"><?php print t('Tags'); ?><i class="uk-icon uk-icon-link uk-text-muted"></i></h3>
       </a>
       <?php print $tags; ?>
     </div>
-    <hr>
   <?php endif; ?>
 
   <?php if (!empty($call_links)): ?>
-    <div id="docs-api-call-links">
+    <div id="docs-api-call-links" class="uk-margin-bottom">
       <?php foreach ($call_links as $link): ?>
         <?php print $link; ?>
       <?php endforeach; ?>
     </div>
-    <hr>
   <?php endif; ?>
 
-  <div id="docs-api-file">
+  <div id="docs-api-file" class="uk-margin-bottom">
     <a href="#file" class="uk-link-muted docs-link-anchor">
       <h3 id="file"><?php print t('File'); ?><i class="uk-icon uk-icon-link uk-text-muted"></i></h3>
-    </a><br>
+    </a>
     <span><?php print $defined; ?></span>
 
     <div>
@@ -84,5 +80,4 @@
       )); ?>
     </div>
   </div>
-  <hr>
 </div>

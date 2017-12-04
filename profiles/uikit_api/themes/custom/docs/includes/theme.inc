@@ -19,7 +19,7 @@ function docs_breadcrumb(&$variables) {
     // screen-reader users. Make the heading invisible with .uk-hidden.
     $output = '<h2 class="uk-hidden">' . t('You are here') . '</h2>';
 
-    $output .= '<ul class="uk-breadcrumb uk-margin-small-bottom">';
+    $output .= '<ul class="uk-breadcrumb uk-margin-top-remove uk-margin-bottom">';
 
     foreach ($breadcrumb as $crumb) {
       $output .= '<li>' . $crumb . '</li>';

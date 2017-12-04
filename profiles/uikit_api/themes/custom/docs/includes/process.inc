@@ -48,7 +48,6 @@ function docs_process_page(&$variables) {
 
     if ($type) {
       $title = '<span class="uk-badge">' . $type . '</span> ' . $title;
-      $title .= '<hr>';
     }
 
     $variables['title'] = $title;

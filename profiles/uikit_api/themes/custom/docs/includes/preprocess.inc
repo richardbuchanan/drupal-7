@@ -309,7 +309,7 @@ function docs_preprocess_views_view_field(&$variables) {
 
   if (($block_files || $block_listing || $block_items_in_group || $block_services) && !empty($variables['output'])) {
     $output = $variables['output'];
-    $output = str_replace('./<wbr />', '<wbr />', $output);
+    $output = str_replace('./<wbr />', '', $output);
     $output = str_replace('sources/<wbr />uikit-7.x-2.x/<wbr />', '', $output);
     $output = str_replace('sources/<wbr />uikit-7.x-3.x/<wbr />', '', $output);
     $output = str_replace('sources/<wbr />uikit-8.x-2.x/<wbr />', '', $output);
@@ -450,6 +450,7 @@ function docs_preprocess_image(&$variables) {
 function docs_preprocess_api_class_page(&$variables) {
   $alternatives = isset($variables['alternatives']) && !empty($variables['alternatives']) ? $variables['alternatives'] : FALSE;
   $defined = isset($variables['defined']) ? $variables['defined'] : FALSE;
+  $see = isset($variables['see']) ? $variables['see'] : FALSE;
 
   if ($alternatives) {
     // Replace arbitrary text in the alternative links.
@@ -482,6 +483,11 @@ function docs_preprocess_api_class_page(&$variables) {
     $defined = str_replace('sources/<wbr />uikit_components-8.x-2.x/<wbr />', '', $defined);
     $defined = str_replace('sources/<wbr />uikit_components-8.x-3.x/<wbr />', '', $defined);
     $variables['defined'] = $defined;
+  }
+  if ($see) {
+    $see = str_replace('<p>', '<li>', $see);
+    $see = str_replace('</p>', '</li>', $see);
+    $variables['see'] = $see;
   }
 }
 
@@ -615,6 +621,7 @@ function docs_preprocess_api_function_page(&$variables) {
 function docs_preprocess_api_functions(&$variables) {
   foreach ($variables['functions'] as $key => $function) {
     $file = $function['file'];
+    $variables['functions'][$key]['file'] = str_replace('./<wbr />', '', $file);
 
     if (strpos($file, 'uikit-7.x-2.x') !== false) {
       $variables['functions'][$key]['file'] = str_replace('sources/<wbr />uikit-7.x-2.x/<wbr />', '', $file);

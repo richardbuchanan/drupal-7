@@ -43,51 +43,46 @@
 
 <div id="docs-api">
   <?php if (!empty($alternatives)): ?>
-    <div id="docs-api-alternatives">
+    <div id="docs-api-alternatives" class="uk-margin-small-bottom">
       <?php print $alternatives; ?>
     </div>
-    <hr>
   <?php endif; ?>
 
   <?php if (!empty($documentation)): ?>
-    <div id="docs-api-documentation">
+    <div id="docs-api-documentation" class="uk-margin-bottom">
       <?php print $documentation ?>
     </div>
-    <hr>
   <?php endif; ?>
 
   <?php if ($implements) : ?>
-    <div id="docs-api-implements">
+    <div id="docs-api-implements" class="uk-margin-bottom">
       <a href="#implements" class="uk-link-muted docs-link-anchor">
         <h3 id="implements"><?php print t('Implemented by'); ?><i class="uk-icon uk-icon-link uk-text-muted"></i></h3>
       </a>
       <?php print $implements; ?>
     </div>
-    <hr>
   <?php endif; ?>
 
   <?php if (!empty($hierarchy)): ?>
-    <div id="docs-api-hierarchy">
+    <div id="docs-api-hierarchy" class="uk-margin-bottom">
       <a href="#hierarchy" class="uk-link-muted docs-link-anchor">
         <h3 id="hierarchy"><?php print t('Hierarchy'); ?><i class="uk-icon uk-icon-link uk-text-muted"></i></h3>
       </a>
       <?php print $hierarchy; ?>
     </div>
-    <hr>
   <?php endif; ?>
 
   <?php if (!empty($deprecated)): ?>
-    <div id="docs-api-deprecated" class="uk-alert uk-alert-warning">
+    <div id="docs-api-deprecated" class="uk-alert uk-alert-warning uk-margin-bottom">
       <a href="#deprecated" class="uk-link-muted docs-link-anchor">
         <h3 id="deprecated"><?php print t('Deprecated') ?><i class="uk-icon uk-icon-link uk-text-muted"></i></h3>
       </a>
       <?php print $deprecated ?>
     </div>
-    <hr>
   <?php endif; ?>
 
   <?php if (!empty($see)): ?>
-    <div id="docs-api-see-also">
+    <div id="docs-api-see-also" class="uk-margin-bottom">
       <a href="#see-also" class="uk-link-muted docs-link-anchor">
         <h3 id="see-also" class="uk-panel-title"><?php print t('See also') ?><i class="uk-icon uk-icon-link uk-text-muted"></i></h3>
       </a>
@@ -95,33 +90,39 @@
         <?php print $see ?>
       </ul>
     </div>
-    <hr>
   <?php endif; ?>
 
   <?php if (!empty($related_topics)): ?>
-    <div id="docs-api-related-topics">
+    <div id="docs-api-related-topics" class="uk-margin-bottom">
       <a href="#related-topics" class="uk-link-muted docs-link-anchor">
         <h3 id="related-topics"><?php print t('Related topics') ?><i class="uk-icon uk-icon-link uk-text-muted"></i></h3>
       </a>
       <?php print $related_topics ?>
     </div>
-    <hr>
   <?php endif; ?>
 
   <?php if (!empty($call_links)): ?>
-    <div id="docs-api-call-links">
+    <div id="docs-api-call-links" class="uk-margin-bottom">
       <?php foreach ($call_links as $link): ?>
         <?php print $link; ?>
       <?php endforeach; ?>
     </div>
-    <hr>
   <?php endif; ?>
 
-  <div id="docs-api-file">
+  <div id="docs-api-file" class="uk-margin-bottom">
     <a href="#file" class="uk-link-muted docs-link-anchor">
       <h3 id="file"><?php print t('File'); ?><i class="uk-icon uk-icon-link uk-text-muted"></i></h3>
     </a>
     <span><?php print $defined; ?></span>
+
+    <?php if ($namespace): ?>
+      <div id="docs-api-namespace">
+        <a href="#namespace" class="uk-link-muted docs-link-anchor">
+          <h3 id="namespace"><?php print t('Namespace'); ?><i class="uk-icon uk-icon-link uk-text-muted"></i></h3>
+        </a>
+        <?php print $namespace; ?>
+      </div>
+    <?php endif; ?>
 
     <div>
       <?php print theme('ctools_collapsible', array(
@@ -131,22 +132,10 @@
       )); ?>
     </div>
   </div>
-  <hr>
-
-  <?php if ($namespace): ?>
-    <div id="docs-api-namespace">
-      <a href="#namespace" class="uk-link-muted docs-link-anchor">
-        <h3 id="namespace"><?php print t('Namespace'); ?><i class="uk-icon uk-icon-link uk-text-muted"></i></h3>
-      </a>
-      <?php print $namespace; ?>
-    </div>
-    <hr>
-  <?php endif; ?>
 
   <?php if (!empty($objects)): ?>
-    <div id="docs-api-objects" class="uk-margin-top">
+    <div id="docs-api-objects" class="uk-margin-top uk-margin-bottom">
       <?php print $objects; ?>
     </div>
-    <hr>
   <?php endif; ?>
 </div>
