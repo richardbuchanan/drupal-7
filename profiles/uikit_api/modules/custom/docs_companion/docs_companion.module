@@ -436,8 +436,8 @@ function docs_companion_frontpage() {
   $handle = fopen($filename, "r");
   $contents = fread($handle, filesize($filename));
   fclose($handle);
-  $contents = str_replace('UIKIT_7X_2X_CURRENT_VERSION', UIKIT_7X_2X_CURRENT_VERSION, $contents);
-  $contents = str_replace('UIKIT_8X_2X_CURRENT_VERSION', UIKIT_8X_2X_CURRENT_VERSION, $contents);
+  $contents = str_replace('UIKIT_7X_3X_CURRENT_VERSION', UIKIT_7X_3X_CURRENT_VERSION, $contents);
+  $contents = str_replace('UIKIT_8X_3X_CURRENT_VERSION', UIKIT_8X_3X_CURRENT_VERSION, $contents);
 
   $output = check_markup($contents, $format_id = 'full_html');
   return $output;
