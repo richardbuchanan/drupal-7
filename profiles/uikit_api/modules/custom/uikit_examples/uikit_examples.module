@@ -6,9 +6,9 @@ use Drupal\uikit\UIkit;
  * Implements hook_menu().
  */
 function uikit_examples_menu() {
-  $items['layouts'] = array(
-    'title' => t('Layout examples'),
-    'page callback' => 'uikit_layouts',
+  $items['tests'] = array(
+    'title' => t('Tests'),
+    'page callback' => '_uikit_examples_tests',
     'access arguments' => array('access content'),
     'file' => 'uikit_examples.module',
     'file path' => drupal_get_path('module', 'uikit_examples'),
@@ -23,9 +23,9 @@ function uikit_examples_menu() {
       ),
     ),
   );
-  $items['layouts/frontpage'] = array(
-    'title' => t('Frontpage'),
-    'page callback' => 'uikit_layouts_frontpage',
+  $items['tests/v2'] = array(
+    'title' => t('v2 Tests'),
+    'page callback' => '_uikit_examples_tests_v2',
     'access arguments' => array('access content'),
     'file' => 'uikit_examples.module',
     'file path' => drupal_get_path('module', 'uikit_examples'),
@@ -34,9 +34,9 @@ function uikit_examples_menu() {
     'menu_name' => 'main-menu',
     'weight' => -50,
   );
-  $items['layouts/portfolio'] = array(
-    'title' => t('Portfolio'),
-    'page callback' => 'uikit_layouts_portfolio',
+  $items['tests/v3'] = array(
+    'title' => t('v3 Tests'),
+    'page callback' => '_uikit_examples_tests_v3',
     'access arguments' => array('access content'),
     'file' => 'uikit_examples.module',
     'file path' => drupal_get_path('module', 'uikit_examples'),
@@ -45,135 +45,35 @@ function uikit_examples_menu() {
     'menu_name' => 'main-menu',
     'weight' => -49,
   );
-  $items['layouts/blog'] = array(
-    'title' => t('Blog'),
-    'page callback' => 'uikit_layouts_blog',
-    'access arguments' => array('access content'),
-    'file' => 'uikit_examples.module',
-    'file path' => drupal_get_path('module', 'uikit_examples'),
-    'module' => 'uikit_examples',
-    'type' => MENU_NORMAL_ITEM,
-    'menu_name' => 'main-menu',
-    'weight' => -48,
-  );
-  $items['layouts/post'] = array(
-    'title' => t('Blog post'),
-    'page callback' => 'uikit_layouts_post',
-    'access arguments' => array('access content'),
-    'file' => 'uikit_examples.module',
-    'file path' => drupal_get_path('module', 'uikit_examples'),
-    'module' => 'uikit_examples',
-    'type' => MENU_NORMAL_ITEM,
-    'menu_name' => 'main-menu',
-    'weight' => -47,
-  );
-  $items['layouts/documentation'] = array(
-    'title' => t('Documentation'),
-    'page callback' => 'uikit_layouts_documentation',
-    'access arguments' => array('access content'),
-    'file' => 'uikit_examples.module',
-    'file path' => drupal_get_path('module', 'uikit_examples'),
-    'module' => 'uikit_examples',
-    'type' => MENU_NORMAL_ITEM,
-    'menu_name' => 'main-menu',
-    'weight' => -46,
-  );
-  $items['layouts/contact'] = array(
-    'title' => t('Contact'),
-    'page callback' => 'uikit_layouts_contact',
-    'access arguments' => array('access content'),
-    'file' => 'uikit_examples.module',
-    'file path' => drupal_get_path('module', 'uikit_examples'),
-    'module' => 'uikit_examples',
-    'type' => MENU_NORMAL_ITEM,
-    'menu_name' => 'main-menu',
-    'weight' => -45,
-  );
 
   return $items;
 }
 
-/**
- * Page callback for the frontpage.
- */
-function uikit_layouts_frontpage() {
-  $module = drupal_get_path('module', 'uikit_examples');
-  $filename = $module . '/includes/2.x/layouts_frontpage.inc';
-  $handle = fopen($filename, "r");
-  $contents = fread($handle, filesize($filename));
-  fclose($handle);
+function _uikit_examples_tests() {
+  drupal_goto('tests/v3');
+}
 
-  $output = check_markup($contents, $format_id = 'demo_html');
+function _uikit_examples_tests_v2() {
+  _uikit_examples_examples_js();
+  $src = '/' . drupal_get_path('module', 'uikit_examples') . '/includes/uikit/uikit-v2/tests/overview.html';
+  $output = '<iframe id="uikit-tests" src="' . $src . '" style="height: 1487px; width: 100%; box-shadow: 0 5px 15px rgba(0,0,0,0.1);"></iframe>';
   return $output;
 }
 
-/**
- * Page callback for the portfolio layout page.
- */
-function uikit_layouts_portfolio() {
-  $module = drupal_get_path('module', 'uikit_examples');
-  $filename = $module . '/includes/2.x/layouts_portfolio.inc';
-  $handle = fopen($filename, "r");
-  $contents = fread($handle, filesize($filename));
-  fclose($handle);
+function _uikit_examples_tests_v3() {
+  _uikit_examples_examples_js();
+  $src = '/' . drupal_get_path('module', 'uikit_examples') . '/includes/uikit/uikit-v3/tests/index.html';
+  $output = '<iframe id="uikit-tests" src="' . $src . '" style="height: 4643px; width: 100%; box-shadow: 0 5px 15px rgba(0,0,0,0.1);"></iframe>';
 
-  $output = check_markup($contents, $format_id = 'demo_html');
   return $output;
 }
 
-/**
- * Page callback for the blog layout page.
- */
-function uikit_layouts_blog() {
-  $module = drupal_get_path('module', 'uikit_examples');
-  $filename = $module . '/includes/2.x/layouts_blog.inc';
-  $handle = fopen($filename, "r");
-  $contents = fread($handle, filesize($filename));
-  fclose($handle);
-
-  $output = check_markup($contents, $format_id = 'demo_html');
-  return $output;
-}
-
-/**
- * Page callback for the blog post layout page.
- */
-function uikit_layouts_post() {
-  $module = drupal_get_path('module', 'uikit_examples');
-  $filename = $module . '/includes/2.x/layouts_post.inc';
-  $handle = fopen($filename, "r");
-  $contents = fread($handle, filesize($filename));
-  fclose($handle);
-
-  $output = check_markup($contents, $format_id = 'demo_html');
-  return $output;
-}
-
-/**
- * Page callback for the documentation layout page.
- */
-function uikit_layouts_documentation() {
-  UIkit::getCdnAsset('sticky');
-  $module = drupal_get_path('module', 'uikit_examples');
-  $filename = $module . '/includes/2.x/layouts_documentation.inc';
-  $handle = fopen($filename, "r");
-  $contents = fread($handle, filesize($filename));
-  fclose($handle);
-
-  $output = check_markup($contents, $format_id = 'demo_html');
-  return $output;
-}
-
-/**
- * Page callback for the contact layout page.
- */
-function uikit_layouts_contact() {
-  $module = drupal_get_path('module', 'uikit_examples');
-  $filename = $module . '/includes/2.x/layouts_contact.inc';
-  $handle = fopen($filename, "r");
-  $contents = fread($handle, filesize($filename));
-  fclose($handle);
-
-  $output = check_markup($contents, $format_id = 'demo_html');
-  return $output;
+function _uikit_examples_examples_js() {
+  $js = drupal_get_path('module', 'uikit_examples') . '/uikit_examples.js';
+  drupal_add_js($js, array(
+    'type' => 'file',
+    'group' => JS_THEME,
+    'scope' => 'footer',
+    'weight' => 1000,
+  ));
 }

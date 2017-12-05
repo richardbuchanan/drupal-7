@@ -29,17 +29,6 @@ function docs_companion_menu() {
     'module' => 'api',
     'weight' => -50,
   );
-  $items['screenshots'] = array(
-    'title' => t('Screenshots'),
-    'page callback' => 'docs_companion_screenshots',
-    'access arguments' => array('access content'),
-    'file' => 'docs_companion.module',
-    'file path' => drupal_get_path('module', 'docs_companion'),
-    'module' => 'docs_companion',
-    'type' => MENU_NORMAL_ITEM,
-    'menu_name' => 'main-menu',
-    'weight' => -48,
-  );
   $items['frontpage'] = array(
     'title' => t('UIkit for Drupal'),
     'page callback' => 'docs_companion_frontpage',
@@ -406,22 +395,6 @@ function _docs_redirect_node_page() {
 function docs_companion_release_cycle_overview() {
   $module = drupal_get_path('module', 'docs_companion');
   $filename = $module . '/includes/release_cycle_overview.inc';
-  $handle = fopen($filename, "r");
-  $contents = fread($handle, filesize($filename));
-  fclose($handle);
-
-  $output = check_markup($contents, $format_id = 'full_html');
-  return $output;
-}
-
-/**
- * Page callback for the screenshots page.
- */
-function docs_companion_screenshots() {
-  UIkit::getCdnAsset('lightbox');
-  UIkit::getCdnAsset('slidenav');
-  $module = drupal_get_path('module', 'docs_companion');
-  $filename = $module . '/includes/screenshots.inc';
   $handle = fopen($filename, "r");
   $contents = fread($handle, filesize($filename));
   fclose($handle);
