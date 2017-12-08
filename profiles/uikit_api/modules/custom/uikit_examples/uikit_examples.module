@@ -4,16 +4,39 @@
  * Implements hook_menu().
  */
 function uikit_examples_menu() {
-  $items['examples'] = array(
-    'title' => 'UIkit Examples',
-    'page callback' => '_uikit_examples_tests_v3',
+  // Documentation pages.
+  $items['docs'] = array(
+    'title' => 'UIkit Documentation',
+    'page callback' => '_uikit_examples_docs_v3',
     'access arguments' => array('access content'),
     'file' => 'uikit_examples.pages.inc',
     'type' => MENU_NORMAL_ITEM,
     'menu_name' => 'main-menu',
-    'weight' => -49,
+    'weight' => 49,
   );
-  // Tabs begin here.
+  $items['docs/v3'] = array(
+    'title' => 'UIkit v3 Documentation',
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => -10,
+  );
+  $items['docs/v2'] = array(
+    'title' => 'UIkit v2 Documentation',
+    'page callback' => '_uikit_examples_docs_v2',
+    'access arguments' => array('access content'),
+    'file' => 'uikit_examples.pages.inc',
+    'type' => MENU_LOCAL_TASK,
+  );
+
+  // Example pages.
+  $items['examples'] = array(
+    'title' => 'UIkit Examples',
+    'page callback' => '_uikit_examples_examples_v3',
+    'access arguments' => array('access content'),
+    'file' => 'uikit_examples.pages.inc',
+    'type' => MENU_NORMAL_ITEM,
+    'menu_name' => 'main-menu',
+    'weight' => 48,
+  );
   $items['examples/v3'] = array(
     'title' => 'UIkit v3 Examples',
     'type' => MENU_DEFAULT_LOCAL_TASK,
@@ -21,13 +44,21 @@ function uikit_examples_menu() {
   );
   $items['examples/v2'] = array(
     'title' => 'UIkit v2 Examples',
-    'page callback' => '_uikit_examples_tests_v2',
+    'page callback' => '_uikit_examples_examples_v2',
     'access arguments' => array('access content'),
     'file' => 'uikit_examples.pages.inc',
     'type' => MENU_LOCAL_TASK,
   );
 
   return $items;
+}
+
+/**
+ * Implements hook_menu_alter().
+ */
+function uikit_examples_menu_alter(&$items) {
+  $items['api/uikit']['weight'] = -50;
+  $items['api/projects']['weight'] = 46;
 }
 
 function _uikit_examples_examples_js() {

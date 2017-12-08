@@ -37,6 +37,16 @@ function docs_companion_menu() {
     'file path' => drupal_get_path('module', 'docs_companion'),
     'module' => 'docs_companion',
   );
+  $items['getting-involved'] = array(
+    'title' => 'Getting Involved',
+    'page callback' => 'docs_companion_getting_involved',
+    'access arguments' => array('access content'),
+    'menu_name' => 'main-menu',
+    'file' => 'docs_companion.module',
+    'file path' => drupal_get_path('module', 'docs_companion'),
+    'module' => 'docs_companion',
+    'weight' => 47,
+  );
 
   return $items;
 }
@@ -411,6 +421,17 @@ function docs_companion_frontpage() {
   fclose($handle);
   $contents = str_replace('UIKIT_7X_3X_CURRENT_VERSION', UIKIT_7X_3X_CURRENT_VERSION, $contents);
   $contents = str_replace('UIKIT_8X_3X_CURRENT_VERSION', UIKIT_8X_3X_CURRENT_VERSION, $contents);
+
+  $output = check_markup($contents, $format_id = 'full_html');
+  return $output;
+}
+
+function docs_companion_getting_involved() {
+  $module = drupal_get_path('module', 'docs_companion');
+  $filename = $module . '/includes/getting_involved.inc';
+  $handle = fopen($filename, "r");
+  $contents = fread($handle, filesize($filename));
+  fclose($handle);
 
   $output = check_markup($contents, $format_id = 'full_html');
   return $output;
