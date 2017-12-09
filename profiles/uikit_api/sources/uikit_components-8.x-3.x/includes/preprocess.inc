@@ -180,6 +180,54 @@ function template_preprocess_uikit_breadcrumb(&$variables) {
 }
 
 /**
+ * Prrpares variables for UIkit Button templates.
+ *
+ * Default template: uikit-button.html.twig.
+ *
+ * @param $variables:
+ *   An associative array containing:
+ *   - element: An associative array containing:
+ *     - #text: The text to display in the button.
+ *     - #url: The url to use in the button, if the button should be rendered in
+ *       an @code <a> @endcode element. If omitted, the button will be rendered
+ *       in a @code <button> @endcode element.
+ *     - #style: The style of the button. Possible values:
+ *       - default: Default button style.
+ *       - primary: Indicates the primary action.
+ *       - secondary: Indicates an important action.
+ *       - danger: Indicates a dangerous or negative action.
+ *       - text: Applies an alternative, typographic style.
+ *       - link: Makes a @code <button> @endcode look like an @code <a> @endcode
+ *         element.
+ *       Defaults to "default".
+ *     - #size: The size of the button. Possible values are "small" and "large".
+ *     - #full_width: A boolean indicating if the button will take up the full
+ *       width of the parent element. Defaults to FALSE.
+ *     - #disabled: A boolean indicating whether the button is disabled or not.
+ *
+ * @see \Drupal\uikit_components\Element\UIkitButton
+ * @see https://getuikit.com/docs/button
+ *
+ * @ingroup uikit_components_theme_render
+ */
+function template_preprocess_uikit_button(&$variables) {
+  $element = $variables['element'];
+
+  // Set the attributes for the badge.
+  $variables['attributes'] = $element['#attributes'];
+
+  if ($element['#text']) {
+    $variables['text'] = $element['#text'];
+  }
+  if ($element['#url']) {
+    $variables['button_type'] = 'a';
+  }
+  else {
+    $variables['button_type'] = 'button';
+  }
+}
+
+/**
  * Prepares variables for UIkit Card templates.
  *
  * Default template: uikit-card.html.twig.
@@ -237,6 +285,66 @@ function template_preprocess_uikit_card(&$variables) {
 
   // Set the attributes variable.
   $variables['attributes'] = $element['#attributes'];
+}
+
+/**
+ * Prrpares variables for UIkit Comment templates.
+ *
+ * Default template: uikit-comment.html.twig.
+ *
+ * @param $variables:
+ *   An associative array containing:
+ *   - element: An associative array containing:
+ *     - #avatar: An assocative array containing:
+ *       - style_name: The name of the image style to be applied.
+ *       - uri: URI of the source image before styling.
+ *       - height: The height of the image.
+ *       - width: The width of the image.
+ *       - alt: The alternative text for text-based browsers. HTML 4 and XHTML
+ *         1.0 always require an alt attribute. The HTML 5 draft allows the alt
+ *         attribute to be omitted in some cases. Therefore, this variable
+ *         defaults to an empty string, but can be set to NULL for the attribute
+ *         to be omitted. Usually, neither omission nor an empty string
+ *         satisfies accessibility requirements, so it is strongly encouraged
+ *         for code using '#theme' => 'image_style' to pass a meaningful value
+ *         for this variable.
+ *         - http://www.w3.org/TR/REC-html40/struct/objects.html#h-13.8
+ *         - http://www.w3.org/TR/xhtml1/dtds.html
+ *         - http://dev.w3.org/html5/spec/Overview.html#alt
+ *       - title: The title text is displayed when the image is hovered in some
+ *         popular browsers.
+ *       - attributes: Associative array of attributes to be placed in the img
+ *         tag.
+ *     - #title: The title to display in the comment header.
+ *     - #meta: An array containing the metadata to display in the comment
+ *       header.
+ *     - #comment: The content to display for the comment body.
+ *
+ * @see template_preprocess_image_style()
+ * @see \Drupal\uikit_components\Element\UIkitComment
+ * @see https://getuikit.com/docs/comment
+ *
+ * @ingroup uikit_components_theme_render
+ */
+function template_preprocess_uikit_comment(&$variables) {
+  $element = $variables['element'];
+
+  // Set the attributes for the comment.
+  $variables['attributes'] = $element['#attributes'];
+
+  // Set the avatar, title, metadata and comment variables, if not empty.
+  if (!empty($element['#avatar'])) {
+    $variables['avatar'] = $element['#avatar'];
+  }
+  if (!empty($element['#title'])) {
+    $variables['title'] = $element['#title'];
+  }
+  if (!empty($element['#meta'])) {
+    $variables['meta'] = $element['#meta'];
+  }
+  if (!empty($element['#comment'])) {
+    $variables['comment'] = $element['#comment'];
+  }
 }
 
 /**
